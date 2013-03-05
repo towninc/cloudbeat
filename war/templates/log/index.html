@@ -1,0 +1,25 @@
+<script type="text/javascript">
+    //<![CDATA[
+    $(function(){
+        $.initList( "checkLogList", "checkLogItem", true, "/log/json" );
+    });
+    //]]>
+</script>
+<h4><liquidtpl:text key="checkLog"/></h4>
+<table id="checkLogList" class="listTable" style="display: none;">
+  <tr>
+    <th><liquidtpl:text key="checkLog.name"/></th>
+    <th><liquidtpl:text key="checkLog.url"/></th>
+    <th class='thin'><liquidtpl:text key="checkLog.status"/></th>
+    <th></th>
+  </tr>
+</table>
+
+<script id="checkLogItem" type="text/x-jquery-tmpl">
+  <tr class="row selectable">
+    <td>${name}</td>
+    <td class='thin'>${url}</td>
+    <td class="thin{{if status=='D'}} noticeMessage{{else status=='R'}} confirmMessage{{/if}}">${statusString}</td>
+    <td class="thin">${createdAt}</td>
+  </tr>
+</script>

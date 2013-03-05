@@ -1,0 +1,53 @@
+<script type="text/javascript">
+    //<![CDATA[
+    $(function(){
+        $.initList( "checkList", "checkItem", true, "/check/json", null, function(jsonData){
+            var values = jsonData.values;
+            var size = values.length;
+            for(var i = 0; i < size; i++){
+                var text = values[i].errorMessage;
+                text = text.replace(/\r\n/g, "<br />");
+                text = text.replace(/(\n|\r)/g, "<br />");
+                values[i].errorMessageWrap = text;
+            }
+            $.setListValues("checkList", "checkItem", true, jsonData);
+			$("#checkList").find(".comment-button").click(function(e){
+			    var $this=$(this);
+				var	checkId=$this.data("checkId");
+			    var $tr=$("#checkItem-error-message-tr-"+checkId);
+			    $this.toggleClass("open");
+			    $tr.toggleClass("open");
+			});
+        });
+    });
+    //]]>
+</script>
+<h4><liquidtpl:text key="check.list"/></h4>
+
+<table id="checkList" class="listTable" style="display: none;">
+    <tr class="row">
+        <th><liquidtpl:text key="check.name"/></th>
+<th><liquidtpl:text key="check.url"/></th>
+<th class='thin'><liquidtpl:text key="check.active"/></th>
+<th class='thin'><liquidtpl:text key="check.status"/></th>
+<th></th>
+<th></th>
+</tr>
+</table>
+
+<script id="checkItem" type="text/x-jquery-tmpl">
+    <tr class="row selectable">
+        <td class='thin'><span class='comment-button' data-checkId='${id}'></span>${name}</td>
+        <td><a href="${url}" target="_blank">${url}</a></td>
+        <td class="thin {{if active=='true'}}  noticeMessage{{else}} confirmMessage {{/if}}">{{if active=='true'}}<liquidtpl:text key="check.isActive"/>{{else}}<liquidtpl:text key="check.isInactive"/>{{/if}}</td>
+        <td class="thin{{if status=='E'}} noticeMessage{{else status=='O'}} confirmMessage{{/if}}">${statusString} </td>
+        <td class='thin'><a href="/check/form?id=${id}" class="icon_edit"><liquidtpl:text key="edit"/></a></td>
+        <td class='thin'><a href="/check/delete?id=${id}" class="icon_delete" onclick="return confirm('${deleteConfirm}');"><liquidtpl:text key="delete"/></a></td>
+    </tr>
+    <tr id="checkItem-error-message-tr-${id}" class="row selectable error-message-tr">
+        <td colspan="6">
+            <textarea id='checkItem-error-message-${id}' class="w99" rows="10" readonly="readonly">{{html errorMessage}}</textarea>
+            {{if checkedAt}}<div><liquidtpl:text key="check.LastCheckedAt"/>: ${checkedAt}</div>{{/if}}
+        </td>
+    </tr>
+</script>
