@@ -1,4 +1,3 @@
-
 <project name="slim3-blank" default="gen-controller" basedir=".">
     <property file="build.properties" />
 
