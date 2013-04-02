@@ -21,6 +21,7 @@ import sjson.json.DefaultProtocol
 import sjson.json.Format
 import sjson.json.JsonSerialization
 import org.dotme.liquidtpl.lib.memcache.ReverseCounterLogService
+import com.aimluck.lib.util.Encrypter
 
 object UserDataService {
   val logger = Logger.getLogger(UserDataService.getClass.getName)
@@ -53,6 +54,14 @@ object UserDataService {
   def fetchByEmail(email: String): Option[UserData] = {
     val m: UserDataMeta = UserDataMeta.get
     Datastore.query(m).filter(m.email.equal(email)).asSingle match {
+      case v: UserData => Some(v)
+      case null => None
+    }
+  }
+
+  def fetchByEmailAndPassword(email: String, password: String): Option[UserData] = {
+    val m: UserDataMeta = UserDataMeta.get
+    Datastore.query(m).filter(m.email.equal(email), m.password.equal(Encrypter.getHash(password, Encrypter.ALG_SHA512))).asSingle match {
       case v: UserData => Some(v)
       case null => None
     }
