@@ -40,27 +40,27 @@ class RegisterController extends AbstractFormController {
     } else if (!MailUtil.validate(mail)) {
       addError("email", LanguageUtil.get("error.mailIncorrect"))
     }
-    UserDataService.fetchByEmail(mail) match {
-      case None =>
-      case _ =>
-        addError("email", LanguageUtil.get("error.mailUsed"))
-    }
     !existsError
   }
 
   override def update: Boolean = {
     val mail = asString("email")
     val password = SecureUtil.randomPassword(PASS_LENGTH);
-    val user = UserDataService.createNew
-    user.setEmail(mail)
-    user.setPassword(Encrypter.getHash(password, Encrypter.ALG_SHA512))
-    user.setCreatedAt(new Date)
-    val userId = UserDataService.createUserId
-    user.setUserId(userId.toString)
-    user.setKey(Datastore.createKey(classOf[UserData], userId))
-    UserDataService.save(user)
-    MailUtil.sendRegisterMail(mail, password)
-    val userService = UserServiceFactory.getUserService
+    UserDataService.fetchByEmail(mail) match {
+      case None => {
+        val user = UserDataService.createNew
+        user.setEmail(mail)
+        user.setPassword(Encrypter.getHash(password, Encrypter.ALG_SHA512))
+        user.setCreatedAt(new Date)
+        val userId = UserDataService.createUserId
+        user.setUserId(userId.toString)
+        user.setKey(Datastore.createKey(classOf[UserData], userId))
+        UserDataService.save(user)
+        MailUtil.sendRegisterMail(mail, password)
+        val userService = UserServiceFactory.getUserService
+      }
+      case _ =>
+    }
     !existsError
   }
 }
