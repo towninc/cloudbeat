@@ -8,9 +8,9 @@
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/classes/logging.properties"/>
     </system-properties>
-    <ssl-enabled>true</ssl-enabled>
-    <!--
+    <ssl-enabled>true</ssl-enabled>   
     <sessions-enabled>true</sessions-enabled>
+    <!--
     <system-properties> 
         <property name="com.google.gdata.DisableCookieHandler" value="true"/> 
     </system-properties>

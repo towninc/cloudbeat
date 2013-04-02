@@ -1,0 +1,40 @@
+<script type="text/javascript">
+	//<![CDATA[
+	$(function(){
+        $.setFormValues( "loginForm", "" );
+	});
+	//]]>
+</script>
+<div class="single">
+    <div class="single-header">
+    	<div class="inner">
+        <h1>CloudDoctor</h1>
+        <h2>ログイン</h2>
+        </div>
+    </div>
+    <div class="single-content">
+        <form id="loginForm" class="signup" action="/login">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span6 fields">
+                        <label for="login-email">メールアドレス</label>
+                        <input name="email" type="email" id="email" class="field" />
+                    </div>
+                    <div class="span6 fields">
+                        <label for="login-pass">パスワード</label>
+                        <input name="password" type="password" id="password" class="field" />
+                    </div>
+                </div>
+            </div>
+           	<div class="ma5">
+				<span id="emailError" class="warningMessageOne" style="display:none;"></span>
+            </div>
+           	<div class="ma5">
+				<span id="passwordError" class="warningMessageOne" style="display:none;"></span>
+            </div>
+            <div class="submit-box clearfix">
+            	<div class="pull-right"><input type="submit" class="btn btn-primary btn-large" value="ログイン" /></div>
+            </div>
+        </form>
+    </div>
+</div>

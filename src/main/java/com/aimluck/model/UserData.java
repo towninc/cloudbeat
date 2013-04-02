@@ -19,6 +19,8 @@ public class UserData {
     private String name;
     @Attribute(name = "e")
     private String email;
+    @Attribute(name = "p")
+    private String password;
     @Attribute(name = "iA")
     private boolean isAdmin;
     @Attribute(name = "cA")
@@ -152,4 +154,12 @@ public class UserData {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }
