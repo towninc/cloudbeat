@@ -20,6 +20,7 @@ import scala.collection.JavaConversions._
 import sjson.json.DefaultProtocol
 import sjson.json.Format
 import sjson.json.JsonSerialization
+import org.dotme.liquidtpl.lib.memcache.ReverseCounterLogService
 
 object UserDataService {
   val logger = Logger.getLogger(UserDataService.getClass.getName)
@@ -35,71 +36,72 @@ object UserDataService {
 
       def writes(userData: UserData): JsValue =
         JsObject(List(
-            (JsString(Constants.KEY_ID), tojson(if(userData.getKey != null) KeyFactory.keyToString(userData.getKey) else null)),
-            (JsString("name"),  tojson(userData.getName)),
-            (JsString("email"), tojson(userData.getEmail))
-          ))
+          (JsString(Constants.KEY_ID), tojson(if (userData.getKey != null) KeyFactory.keyToString(userData.getKey) else null)),
+          (JsString("name"), tojson(userData.getName)),
+          (JsString("email"), tojson(userData.getEmail))))
     }
   }
 
-  def fetchOne( userId:String ):Option[UserData] = {
-    val m:UserDataMeta = UserDataMeta.get
+  def fetchOne(userId: String): Option[UserData] = {
+    val m: UserDataMeta = UserDataMeta.get
     Datastore.query(m).filter(m.userId.equal(userId)).asSingle match {
-      case v:UserData => Some(v)
+      case v: UserData => Some(v)
       case null => None
     }
   }
 
-  def fetchByEmail( email:String ):Option[UserData] = {
-    val m:UserDataMeta = UserDataMeta.get
+  def fetchByEmail(email: String): Option[UserData] = {
+    val m: UserDataMeta = UserDataMeta.get
     Datastore.query(m).filter(m.email.equal(email)).asSingle match {
-      case v:UserData => Some(v)
+      case v: UserData => Some(v)
       case null => None
     }
   }
 
-  def fetchAll():List[UserData] = {
-    val m:UserDataMeta = UserDataMeta.get
+  def fetchAll(): List[UserData] = {
+    val m: UserDataMeta = UserDataMeta.get
     Datastore.query(m).asList.toList
   }
 
-  def fetchAllAdmin():List[UserData] = {
-    val m:UserDataMeta = UserDataMeta.get
+  def fetchAllAdmin(): List[UserData] = {
+    val m: UserDataMeta = UserDataMeta.get
     Datastore.query(m).filter(m.admin.equal(true)).asList.toList
   }
 
-  def createNew():UserData = {
-    val result:UserData = new UserData
+  def createNew(): UserData = {
+    val result: UserData = new UserData
     result
   }
 
-  def save(model:UserData):Key = {
-    val key:Key = model.getKey
-    val oldModel:UserData = try {
+  def createUserId = ReverseCounterLogService.increment("userId")
+
+  def save(model: UserData): Key = {
+    val key: Key = model.getKey
+    val oldModel: UserData = try {
       Datastore.get(classOf[UserData], key)
     } catch {
-      case e:Exception => model
+      case e: Exception => model
     }
-    val isNew:Boolean = (oldModel == model)
+    val isNew: Boolean = (oldModel == model)
 
-    val now:Date = new Date
-    if(model.getCreatedAt == null){
+    val now: Date = new Date
+    if (model.getCreatedAt == null) {
       model.setCreatedAt(now)
     }
     model.setUpdatedAt(now)
 
     //Unique userId
-    var duplicate:Boolean = false;
-    if(!Datastore.putUniqueValue("u_uD", model.getUserId())){
-      if(!isNew){
-        if(oldModel.getUserId != model.getUserId){
+    var duplicate: Boolean = false;
+    if (!Datastore.putUniqueValue("u_uD", model.getUserId())) {
+      if (!isNew) {
+        if (oldModel.getUserId != model.getUserId) {
           duplicate = true
         }
       } else {
         duplicate = true
       }
     }
-    if(duplicate){
+    if (duplicate) {
       logger.warning("Duplicate user Id. Data has NOT saved")
       throw new DuplicateDataException
     } else {
@@ -107,22 +109,22 @@ object UserDataService {
     }
   }
 
-  def getCurrentModel:Option[UserData] = {
+  def getCurrentModel: Option[UserData] = {
     val service = UserServiceFactory.getUserService
-    val user:User = service.getCurrentUser
+    val user: User = service.getCurrentUser
     if ((user != null) && service.isUserLoggedIn) {
-      val id:String = user.getUserId
-      val userData:UserData = fetchOne(id) match {
+      val id: String = user.getUserId
+      val userData: UserData = fetchOne(id) match {
         case Some(v) => v
         case None => {
-            val newData:UserData = createNew
-            newData.setName(user.getNickname)
-            newData.setEmail(user.getEmail)
-            newData.setUserId(user.getUserId)
-            newData.setAdmin(service.isUserAdmin)
-            save(newData)
-            newData
-          }
+          val newData: UserData = createNew
+          newData.setName(user.getNickname)
+          newData.setEmail(user.getEmail)
+          newData.setUserId(user.getUserId)
+          newData.setAdmin(service.isUserAdmin)
+          save(newData)
+          newData
+        }
       }
       Some(userData)
     } else {
@@ -130,15 +132,15 @@ object UserDataService {
     }
   }
 
-  def isUserAdmin:Boolean = {
+  def isUserAdmin: Boolean = {
     val service = UserServiceFactory.getUserService
-    val user:User = service.getCurrentUser
+    val user: User = service.getCurrentUser
     ((user != null) && service.isUserAdmin)
   }
 
-  def isUserLogin:Boolean = {
+  def isUserLogin: Boolean = {
     val service = UserServiceFactory.getUserService
-    val user:User = service.getCurrentUser
+    val user: User = service.getCurrentUser
     (user != null)
   }
 }
