@@ -1,3 +1,4 @@
+<!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> -->
 <script type="text/javascript">
     //<![CDATA[
     $(function(){
@@ -11,42 +12,75 @@
                 values[i].errorMessageWrap = text;
             }
             $.setListValues("checkList", "checkItem", true, jsonData);
-			$("#checkList").find(".comment-button").click(function(e){
+            
+			$("#error-message").click(function(e){
 			    var $this=$(this);
 				var	checkId=$this.data("checkId");
 			    var $tr=$("#checkItem-error-message-tr-"+checkId);
-			    $this.toggleClass("open");
-			    $tr.toggleClass("open");
+			    $tr.toggle();
 			});
         });
     });
+    
     //]]>
 </script>
-<h4><liquidtpl:text key="check.list"/></h4>
-
-<table id="checkList" class="listTable" style="display: none;">
-    <tr class="row">
-        <th><liquidtpl:text key="check.name"/></th>
-<th><liquidtpl:text key="check.url"/></th>
-<th class='thin'><liquidtpl:text key="check.active"/></th>
-<th class='thin'><liquidtpl:text key="check.status"/></th>
-<th></th>
-<th></th>
-</tr>
-</table>
-
+<div class="span9">
+				<h1 class="page-title">
+					<i class="icon-home"></i>
+					<span>ダッシュボード</span>					
+				</h1>
+				<div class="stat-container">
+					<div class="stat-holder">						
+						<div class="stat">							
+							<span>2</span>							
+							Errors							
+						</div> <!-- /stat -->						
+					</div> <!-- /stat-holder -->
+					<div class="stat-holder">						
+						<div class="stat">							
+							<span>100</span>							
+							Sites							
+						</div> <!-- /stat -->						
+					</div> <!-- /stat-holder -->
+				</div> <!-- /stat-container -->
+				<div class="row-fluid">
+        	<a href="../check/form" class="btn"><liquidtpl:text key="check.form"/></a>
+        </div>
+	<div class="widget widget-table">
+					<div class="widget-header">
+						<i class="icon-th-list"></i>
+						<h3><liquidtpl:text key="check.list"/></h3>
+					</div> <!-- /widget-header -->
+					<div class="widget-content">
+						<table  class="table table-striped table-bordered">
+							<thead>
+								<tr>
+									<th>Title</th>
+									<th>URL</th>
+									<th>Active</th>
+									<th >Status</th>
+									<th >Edit</th>
+								</tr>
+							</thead>
+							<tbody id="checkList">
+							</tbody>
+			
+						</table>
+					</div> <!-- /widget-content -->
+				</div> <!-- /widget -->
+</div> <!-- /row -->
 <script id="checkItem" type="text/x-jquery-tmpl">
-    <tr class="row selectable">
-        <td class='thin'><span class='comment-button' data-checkId='${id}'></span>${name}</td>
+    <tr>
+        <td ><a href="javascript:void();" onclick="$('#checkItem-error-message-tr-${id}').toggle();" id="error-message">${name}</a></td>
         <td><a href="${url}" target="_blank">${url}</a></td>
-        <td class="thin {{if active=='true'}}  noticeMessage{{else}} confirmMessage {{/if}}">{{if active=='true'}}<liquidtpl:text key="check.isActive"/>{{else}}<liquidtpl:text key="check.isInactive"/>{{/if}}</td>
-        <td class="thin{{if status=='E'}} noticeMessage{{else status=='O'}} confirmMessage{{/if}}">${statusString} </td>
-        <td class='thin'><a href="/check/form?id=${id}" class="icon_edit"><liquidtpl:text key="edit"/></a></td>
-        <td class='thin'><a href="/check/delete?id=${id}" class="icon_delete" onclick="return confirm('${deleteConfirm}');"><liquidtpl:text key="delete"/></a></td>
+        <td>{{if active=='true'}}<liquidtpl:text key="check.isActive"/>{{else}}<liquidtpl:text key="check.isInactive"/>{{/if}}</td>
+        <td>${statusString} </td>
+        <td class="action-td"><a href="/check/form?id=${id}" class="btn btn-small btn-warning"><i class="icon-edit" title="Edit"></i></a>
+        <a href="/check/delete?id=${id}" onclick="return confirm('${deleteConfirm}');" class="btn btn-small"><i class="icon-remove" title="Remove"></i></a></td>
     </tr>
-    <tr id="checkItem-error-message-tr-${id}" class="row selectable error-message-tr">
-        <td colspan="6">
-            <textarea id='checkItem-error-message-${id}' class="w99" rows="10" readonly="readonly">{{html errorMessage}}</textarea>
+    <tr id="checkItem-error-message-tr-${id}" class="selectable error-message-tr" style="display:none;">
+        <td colspan="5">
+            <textarea id='checkItem-error-message-${id}' class="span8" rows="10" readonly="readonly">{{html errorMessage}}</textarea>
             {{if checkedAt}}<div><liquidtpl:text key="check.LastCheckedAt"/>: ${checkedAt}</div>{{/if}}
         </td>
     </tr>
