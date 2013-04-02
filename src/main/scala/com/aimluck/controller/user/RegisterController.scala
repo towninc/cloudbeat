@@ -21,7 +21,7 @@ class RegisterController extends AbstractFormController {
 
   override val logger = Logger.getLogger(classOf[RegisterController].getName)
 
-  override def redirectUri: String = "/";
+  override def redirectUri: String = "/login";
 
   override def getTemplateName: String = {
     "register"
@@ -51,8 +51,6 @@ class RegisterController extends AbstractFormController {
   override def update: Boolean = {
     val mail = asString("email")
     val password = SecureUtil.randomPassword(PASS_LENGTH);
-    println("passwwwwwwwwwwwwwwwwwwwwwwwwwwwwword")
-    println(password)
     val user = UserDataService.createNew
     user.setEmail(mail)
     user.setPassword(Encrypter.getHash(password, Encrypter.ALG_SHA512))

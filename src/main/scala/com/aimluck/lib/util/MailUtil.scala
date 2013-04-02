@@ -28,6 +28,7 @@ object MailUtil {
         "--" + CL +
         "cloudbeat")
       ms.send(msg) // メール送信を実行
+      println(msg.getTextBody())
     } catch {
       case e: Exception =>
     }
