@@ -124,7 +124,7 @@ class FormController extends AbstractFormController {
 
   override def update: Boolean = {
 
-    UserDataService.getCurrentModel match {
+    UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
         try {
           val id = request.getParameter(Constants.KEY_ID)

@@ -118,6 +118,7 @@ object UserDataService {
     }
   }
 
+  @deprecated
   def getCurrentModel: Option[UserData] = {
     val service = UserServiceFactory.getUserService
     val user: User = service.getCurrentUser

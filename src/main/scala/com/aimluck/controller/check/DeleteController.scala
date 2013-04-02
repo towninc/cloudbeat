@@ -19,7 +19,7 @@ class DeleteController extends Controller {
 
   @throws(classOf[Exception])
   override protected def run():Navigation = {
-    UserDataService.getCurrentModel match {
+    UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
         val id:String = request.getParameter(Constants.KEY_ID);
         CheckService.fetchOne(id, Some(userData)) match{

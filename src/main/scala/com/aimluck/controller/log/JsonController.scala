@@ -18,7 +18,7 @@ class JsonController extends AbstractJsonDataController {
   override def getList:JsValue = {
     import com.aimluck.service.CheckLogService.CheckLogProtocol._
     val startDate:Date =  new Date
-    UserDataService.getCurrentModel match {
+    UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
         JsonSerialization.tojson(CheckLogService.fetchAll(None).sortWith{ (x, y) =>
             x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0
@@ -33,7 +33,7 @@ class JsonController extends AbstractJsonDataController {
     import com.aimluck.service.CheckLogService.CheckLogProtocol._
     val startDate:Date =  new Date
 
-    UserDataService.getCurrentModel match {
+    UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
         CheckLogService.fetchOne(id, None) match {
           case Some(v) => {
@@ -55,7 +55,7 @@ class JsonController extends AbstractJsonDataController {
   override def getForm(id:String):JsValue = {
     import com.aimluck.service.CheckLogService.CheckLogProtocol._
     val startDate:Date =  new Date
-    UserDataService.getCurrentModel match {
+    UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
         if((id != null) && (id.size > 0)){
           CheckLogService.fetchOne(id,None) match {
