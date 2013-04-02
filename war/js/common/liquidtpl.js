@@ -311,7 +311,8 @@ $.setFormValues = function(formId, jsonData, beforeSubmit, afterSuccess, afterSu
 
     $.tmpl("idHiddenTemplate", jsonData).appendTo("#" + formId);
 
-    if ($("#" + formId).find("input[type='submit']").size() == 0) {
+    if (($("#" + formId).find("input[type='submit']").size() == 0)
+    	&& ($("#" + formId).find("button[type='submit']").size() == 0)) {
         $.tmpl("submitTemplate", jsonData).appendTo("#" + formId);
     }
 
@@ -325,9 +326,9 @@ $.setFormValues = function(formId, jsonData, beforeSubmit, afterSuccess, afterSu
 };
 
 $.submit = function(formId, afterSuccess, afterSubmit) {
-    $(".warningMessage").hide();
-    $(".warningMessageOne").hide();
+    $(".alert-danger").hide();
     $("#" + formId).find("input[type='submit']").attr('disabled', 'disabled');
+    $("#" + formId).find("button[type='submit']").attr('disabled', 'disabled');
 
     $.ajax({
         type : "POST",
@@ -373,6 +374,8 @@ $.submit = function(formId, afterSuccess, afterSubmit) {
             }
             $("#" + formId).find("input[type='submit']").removeAttr(
                 'disabled');
+            $("#" + formId).find("button[type='submit']").removeAttr(
+            'disabled');
             if (afterSubmit) {
                 afterSubmit();
             }
@@ -383,6 +386,8 @@ $.submit = function(formId, afterSuccess, afterSubmit) {
                 error + "\n" + result).slideDown("fast");
             $("#" + formId).find("input[type='submit']").removeAttr(
                 'disabled');
+            $("#" + formId).find("button[type='submit']").removeAttr(
+            'disabled');
             if (afterSubmit) {
                 afterSubmit();
             }
