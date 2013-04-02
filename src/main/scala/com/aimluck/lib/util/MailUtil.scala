@@ -18,13 +18,13 @@ object MailUtil {
     val ms = MailServiceFactory.getMailService // MailServiceを取得
     try {
       val msg = new MailService.Message()
-      msg.setSubject("[cloudbeat] About registration procedure.")
+      msg.setSubject("[cloudbeat] ご登録について")
       msg.setTo(mail)
       msg.setSender(AppConstants.DEFAULT_SENDER)
-      msg.setTextBody("Thank you for the registration." + CL +
-        "We announce your account has been issued successfully." + CL +
-        "Mail address: %s".format(mail) + CL +
-        "Password: %s".format(password) + CL * 3 +
+      msg.setTextBody("ご登録ありがとうございます。" + CL +
+        "アカウントの作成が完了したことをお知らせします。" + CL +
+        "メールアドレス：　%s".format(mail) + CL +
+        "パスワード：　%s".format(password) + CL * 3 +
         "--" + CL +
         "cloudbeat")
       ms.send(msg) // メール送信を実行

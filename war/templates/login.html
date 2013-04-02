@@ -1,40 +1,55 @@
 <script type="text/javascript">
 	//<![CDATA[
 	$(function(){
-        $.setFormValues( "loginForm", "" );
+        $.setFormValues( "loginForm", {values: {rememvber: "off"}} );
 	});
 	//]]>
 </script>
-<div class="single">
-    <div class="single-header">
-    	<div class="inner">
-        <h1>CloudDoctor</h1>
-        <h2>ログイン</h2>
-        </div>
-    </div>
-    <div class="single-content">
-        <form id="loginForm" class="signup" action="/login">
-            <div class="container-fluid">
-                <div class="row-fluid">
-                    <div class="span6 fields">
-                        <label for="login-email">メールアドレス</label>
-                        <input name="email" type="email" id="email" class="field" />
-                    </div>
-                    <div class="span6 fields">
-                        <label for="login-pass">パスワード</label>
-                        <input name="password" type="password" id="password" class="field" />
-                    </div>
-                </div>
-            </div>
-           	<div class="ma5">
-				<span id="emailError" class="warningMessageOne" style="display:none;"></span>
-            </div>
-           	<div class="ma5">
-				<span id="passwordError" class="warningMessageOne" style="display:none;"></span>
-            </div>
-            <div class="submit-box clearfix">
-            	<div class="pull-right"><input type="submit" class="btn btn-primary btn-large" value="ログイン" /></div>
-            </div>
-        </form>
-    </div>
-</div>
+<div id="login-container">
+	
+	
+	<div id="login-header">
+		
+		<h3>Login</h3>
+		
+	</div> <!-- /login-header -->
+	
+	<div id="login-content" class="clearfix">
+	
+	<form id="loginForm" action="/login">
+				<fieldset>
+					<div class="control-group">
+						<label class="control-label" for="email">メールアドレス</label>
+						<div class="controls">
+							<input type="email" class="" name="email" id="email" placeholder="メールアドレス"/>
+						</div>
+						<div id="emailError" class="alert alert-danger" style="display:none; margin:0 0 10px 0">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="password">パスワード</label>
+						<div class="controls">
+							<input type="password" class="" name="password" id="password" placeholder="パスワード"/>
+						</div>
+						<div id="passwordError" class="alert alert-danger" style="display:none; margin:0 0 10px 0">
+						</div>
+					</div>
+				</fieldset>
+			
+				<div class="pull-right">
+					<button type="submit" class="btn btn-warning btn-large">
+						ログイン
+					</button>
+				</div>
+			</form>
+			
+		</div> <!-- /login-content -->
+		
+		
+		<div id="login-extra">
+			<p>Don't have an account? <a href="/user/register">Sign Up.</a></p>
+			<!-- <p>Remind Password? <a href="forgot_password.html">Retrieve.</a></p> -->
+			
+		</div> <!-- /login-extra -->
+	
+</div> <!-- /login-wrapper -->

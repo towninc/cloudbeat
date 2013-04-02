@@ -13,6 +13,7 @@ import sjson.json.JsonSerialization
 import sjson.json.JsonSerialization._
 import sjson.json.DefaultProtocol._
 import scala.collection.JavaConversions._
+import javax.servlet.http.Cookie;
 
 class LoginController extends AbstractFormController {
   override val logger = Logger.getLogger(classOf[LoginController].getName)
@@ -44,9 +45,11 @@ class LoginController extends AbstractFormController {
   override def update: Boolean = {
     val email = asString("email")
     val password = asString("password")
+    //val remember = asString("remember");
     UserDataService.fetchByEmailAndPassword(email, password) match {
-      case Some(user) =>
+      case Some(user) => {
         sessionScope("userId", user.getUserId())
+      }
       case None =>
         addError("email", LanguageUtil.get("error.loginFailed"));
     }
