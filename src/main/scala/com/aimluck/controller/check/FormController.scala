@@ -13,8 +13,9 @@ import sjson.json.JsonSerialization
 import sjson.json.JsonSerialization._
 import sjson.json.DefaultProtocol._
 import scala.collection.JavaConversions._
+import com.aimluck.controller.AbstractUserBaseFormController
 
-class FormController extends AbstractFormController {
+class FormController extends AbstractUserBaseFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
   override def redirectUri: String = "/check/index";
