@@ -13,9 +13,10 @@ import java.util.logging.Logger
 
 object MailUtil {
   val validatePat = """(^[a-zA-Z0-9!#$%&'_`/=~\\.\\*\\+\\-\\?\\^\\{\\|\\}]+@[a-zA-Z0-9][a-zA-Z0-9\\-]*[\\.[a-zA-Z0-9\\-]+]*$)""".r
-  def sendRegisterMail(mail: String, password: String) {
+  def sendRegisterMail(mail: String, password: String, baseUrl: String) {
     val CL = System.getProperty("line.separator")
     val ms = MailServiceFactory.getMailService // MailServiceを取得
+    val url =baseUrl+"/login"
     try {
       val msg = new MailService.Message()
       msg.setSubject("[cloudbeat] ご登録について")
@@ -26,16 +27,18 @@ object MailUtil {
         "メールアドレス：　%s".format(mail) + CL +
         "パスワード：　%s".format(password) + CL * 3 +
         "--" + CL +
-        "cloudbeat")
+        "cloudbeat"++ CL +
+         url)
       ms.send(msg) // メール送信を実行
       println(msg.getTextBody())
     } catch {
       case e: Exception =>
     }
   }
-   def sendResendMail(mail: String, password: String) {
+   def sendResendMail(mail: String, password: String, baseUrl:String) {
     val CL = System.getProperty("line.separator")
     val ms = MailServiceFactory.getMailService // MailServiceを取得
+     val url =baseUrl+"/login"
     try {
       val msg = new MailService.Message()
       msg.setSubject("[cloudbeat] パスワード再発行について")
@@ -45,7 +48,8 @@ object MailUtil {
         "パスワードの再発行が完了したことをお知らせします。" + CL +
         "パスワード：　%s".format(password) + CL * 3 +
         "--" + CL +
-        "cloudbeat")
+        "cloudbeat"+CL+
+        url)
       ms.send(msg) // メール送信を実行
       println(msg.getTextBody())
     } catch {

@@ -18,6 +18,7 @@ import org.dotme.liquidtpl.controller.AbstractFormController
 import java.util.logging.Logger
 import org.dotme.liquidtpl.Constants
 import org.dotme.liquidtpl.LanguageUtil
+import com.aimluck.lib.util.ServletUtils
 import com.aimluck.lib.util.AppConstants
 
 class ResendController extends AbstractFormController {
@@ -54,7 +55,8 @@ class ResendController extends AbstractFormController {
       case Some(user) => {
         user.setPassword(password)
          UserDataService.save(user)
-         MailUtil.sendResendMail(mail, password)
+         val baseUrl=ServletUtils.getBaseUrl(request);
+         MailUtil.sendResendMail(mail, password,baseUrl)
         
       }
        case None => {
