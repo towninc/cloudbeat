@@ -20,6 +20,7 @@ import org.dotme.liquidtpl.Constants
 import org.dotme.liquidtpl.LanguageUtil
 import com.aimluck.lib.util.ServletUtils
 import com.aimluck.lib.util.AppConstants
+import com.aimluck.service.RepublishService
 
 class ResendController extends AbstractFormController {
    final val PASS_LENGTH = 6
@@ -50,13 +51,14 @@ class ResendController extends AbstractFormController {
 
   override def update: Boolean = {
     val mail = asString("email")
-    val password = SecureUtil.randomPassword(PASS_LENGTH);
+    
     UserDataService.fetchByEmail(mail) match {
       case Some(user) => {
-        user.setPassword(password)
-         UserDataService.save(user)
+        val userId=user.getUserId();
+         val republish =RepublishService.createRepublish(mail,userId);
+         val key =  Datastore.keyToString(republish.getKey());
          val baseUrl=ServletUtils.getBaseUrl(request);
-         MailUtil.sendResendMail(mail, password,baseUrl)
+         MailUtil.sendResendMail(mail, key ,baseUrl)
         
       }
        case None => {
