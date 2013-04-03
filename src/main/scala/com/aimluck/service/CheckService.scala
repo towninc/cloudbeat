@@ -67,7 +67,7 @@ object CheckService {
           (JsString("checkedAt"), if (getCheckedAt(check) != null) tojson(AppConstants.dateTimeFormat.format(getCheckedAt(check))) else tojson("")),
           (JsString("failCount"), tojson(check.getFailCount)),
           (JsString("failThreshold"), tojson(check.getFailThreshold)),
-          (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("contact"), check.getName)))))))
+          (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("check"), check.getName)))))))
       }
     }
   }
@@ -98,7 +98,7 @@ object CheckService {
           (JsString("checkedAt"), if (getCheckedAt(check) != null) tojson(AppConstants.dateTimeFormat.format(getCheckedAt(check))) else tojson("")),
           (JsString("failCount"), tojson(check.getFailCount)),
           (JsString("failThreshold"), tojson(check.getFailThreshold)),
-          (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("contact"), check.getName)))))))
+          (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("check"), check.getName)))))))
     }
   }
 
@@ -149,12 +149,20 @@ object CheckService {
     }
   }
 
+  def countAll(_userData: Option[UserData]): Int = {
+    val m: CheckMeta = CheckMeta.get
+    _userData match {
+      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey)).limit(100).count()
+      case None => Datastore.query(m).limit(100).count()
+    }
+  }
+
   def fetchActiveAllKeys(_userData: Option[UserData]): List[Key] = {
     val m: CheckMeta = CheckMeta.get
     _userData match {
       case Some(userData) => Datastore.query(m)
-      .filter(m.userDataRef.equal(userData.getKey))
-      .filter(m.active.equal(true)).asKeyList().toList
+        .filter(m.userDataRef.equal(userData.getKey))
+        .filter(m.active.equal(true)).asKeyList().toList
       case None => try {
         memcacheService.get(CHECK_KEYS_NAMESPACE).asInstanceOf[List[Key]] match {
           case null => throw new NullPointerException

@@ -19,7 +19,7 @@ object MailUtil {
     val url =baseUrl+"/login"
     try {
       val msg = new MailService.Message()
-      msg.setSubject("[cloudbeat] ご登録について")
+      msg.setSubject("[" + LanguageUtil.get("title") + "] ご登録について")
       msg.setTo(mail)
       msg.setSender(AppConstants.DEFAULT_SENDER)
       msg.setTextBody("ご登録ありがとうございます。" + CL +
@@ -27,8 +27,8 @@ object MailUtil {
         "メールアドレス：　%s".format(mail) + CL +
         "パスワード：　%s".format(password) + CL * 3 +
         "--" + CL +
-        "cloudbeat"++ CL +
-         url)
+        LanguageUtil.get("title") + CL +
+        url)
       ms.send(msg) // メール送信を実行
       println(msg.getTextBody())
     } catch {
@@ -41,7 +41,7 @@ object MailUtil {
      val url =baseUrl+"/user/resendcomplete?republishKey="+key
     try {
       val msg = new MailService.Message()
-      msg.setSubject("[cloudbeat] パスワード再発行について")
+      msg.setSubject("[" + LanguageUtil.get("title") + "] パスワード再発行について")
       msg.setTo(mail)
       msg.setSender(AppConstants.DEFAULT_SENDER)
       msg.setTextBody(
@@ -58,17 +58,17 @@ object MailUtil {
    def sendResendCompleteMail(mail: String, password: String, baseUrl:String) {
     val CL = System.getProperty("line.separator")
     val ms = MailServiceFactory.getMailService // MailServiceを取得
-     val url =baseUrl+"/login"
+     val url = baseUrl+ "/login"
     try {
       val msg = new MailService.Message()
-      msg.setSubject("[cloudbeat] パスワード再発行について")
+      msg.setSubject("[" + LanguageUtil.get("title") + "] パスワード再発行について")
       msg.setTo(mail)
       msg.setSender(AppConstants.DEFAULT_SENDER)
       msg.setTextBody(
-        "パスワード再発行が完了しました。" + CL +
+        "パスワードの再発行が完了したことをお知らせします。" + CL +
         "パスワード：　%s".format(password)  + CL * 3 +
         "--" + CL +
-        "cloudbeat"+CL+
+        LanguageUtil.get("title")+CL+
          url)
       ms.send(msg) // メール送信を実行
       println(msg.getTextBody())

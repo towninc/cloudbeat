@@ -106,7 +106,7 @@ $.wrapLongText = function(str, step) {
 /**
  * initialize list data
  */
-$.initList = function(listId, itemTplId, showEmptyMsg, url, params, callback, onEmpty, onError) {
+$.initList = function(listId, itemTplId, showEmptyMsg, url, params, callback, onEmpty, onError, onSuccess) {
     var postParams = $.getUrlParams();
     postParams["mode"] = "list";
     for (var i in params) {
@@ -135,7 +135,7 @@ $.initList = function(listId, itemTplId, showEmptyMsg, url, params, callback, on
                 if (callback) {
                     callback(jsonData);
                 } else {
-                    $.setListValues(listId, itemTplId, showEmptyMsg, jsonData, onEmpty)
+                    $.setListValues(listId, itemTplId, showEmptyMsg, jsonData, onEmpty, onSuccess)
                 }
             } else {
                 if (onError) {
@@ -166,7 +166,7 @@ $.initList = function(listId, itemTplId, showEmptyMsg, url, params, callback, on
     });
 };
 
-$.setListValues = function(listId, itemTplId, showEmptyMsg, jsonData) {
+$.setListValues = function(listId, itemTplId, showEmptyMsg, jsonData, onEmpty, onSuccess) {
     var values = jsonData.values;
     if (values && (values.length > 0)) {
         if ($("#" + itemTplId).size() > 0) {
@@ -175,6 +175,9 @@ $.setListValues = function(listId, itemTplId, showEmptyMsg, jsonData) {
             $.tmpl(itemTplId, values).appendTo("#" + listId);
         }
         $.listColor("#" + listId);
+        if(onSuccess){
+        	onSuccess();
+        }
     } else if (showEmptyMsg) {
         var errorHtml = $("<div>").addClass("mt10").addClass("confirmMessage")
             .text(jsonData["empty"]);

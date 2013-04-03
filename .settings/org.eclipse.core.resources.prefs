@@ -1,3 +1,9 @@
-#Tue Apr 02 09:59:28 JST 2013
+#Wed Apr 03 16:23:39 JST 2013
 eclipse.preferences.version=1
+encoding//war/templates/login.html=UTF-8
+encoding//war/templates/user/register.html=UTF-8
+encoding//war/templates/user/resend.html=UTF-8
+encoding//war/templates/user/resendcomplete.html=UTF-8
+encoding//war/templates/user/resenderror.html=UTF-8
+encoding//war/templates/user/resendfinish.html=UTF-8
 encoding/<project>=UTF-8

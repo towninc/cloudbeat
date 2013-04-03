@@ -11,16 +11,12 @@
                 text = text.replace(/(\n|\r)/g, "<br />");
                 values[i].errorMessageWrap = text;
             }
-            $.setListValues("checkList", "checkItem", false, jsonData, function(){
-            },
-            function(){
-            	$('#checkListContainer').show();
-            });
+            $.setListValues("checkList", "checkItem", true, jsonData);
             
 			$("#error-message").click(function(e){
 			    var $this=$(this);
 				var	checkId=$this.data("checkId");
-			    var $tr=$("#checkItem-error-message-tr-" + checkId);
+			    var $tr=$("#checkItem-error-message-tr-"+checkId);
 			    $tr.toggle();
 			});
         });
@@ -31,12 +27,23 @@
 <div class="span9">
 				<h1 class="page-title">
 					<i class="icon-home"></i>
-					<span>Web監視一覧</span>					
+					<span>ダッシュボード</span>					
 				</h1>
-				<div id="buttonWrapper" style='margin-bottom: 10px;'>
-					<button onclick="location.href='/check/form';" class="btn btn-warning btn-large">Web監視登録</button>											
-				</div>
-				<div id="checkListContainer" class="widget widget-table hide">
+				<div class="stat-container">
+					<div class="stat-holder">						
+						<div class="stat">							
+							<span>2</span>							
+							Errors							
+						</div> <!-- /stat -->						
+					</div> <!-- /stat-holder -->
+					<div class="stat-holder">						
+						<div class="stat">							
+							<span>100</span>							
+							Sites							
+						</div> <!-- /stat -->						
+					</div> <!-- /stat-holder -->
+				</div> <!-- /stat-container -->
+	<div class="widget widget-table">
 					<div class="widget-header">
 						<i class="icon-th-list"></i>
 						<h3><liquidtpl:text key="check.list"/></h3>
@@ -54,13 +61,14 @@
 							</thead>
 							<tbody id="checkList">
 							</tbody>
+			
 						</table>
 					</div> <!-- /widget-content -->
 				</div> <!-- /widget -->
 </div> <!-- /row -->
 <script id="checkItem" type="text/x-jquery-tmpl">
     <tr>
-        <td><a href="javascript:void(0)" onclick="$('#checkItem-error-message-tr-${id}').toggle();" id="error-message">${name}</a></td>
+        <td ><a href="javascript:void(0)" onclick="$('#checkItem-error-message-tr-${id}').toggle();" id="error-message">${name}</a></td>
         <td><a href="${url}" target="_blank">${url}</a></td>
         <td>{{if active=='true'}}<liquidtpl:text key="check.isActive"/>{{else}}<liquidtpl:text key="check.isInactive"/>{{/if}}</td>
         <td>${statusString} </td>

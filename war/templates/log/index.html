@@ -1,22 +1,41 @@
 <script type="text/javascript">
     //<![CDATA[
     $(function(){
-        $.initList( "checkLogList", "checkLogItem", true, "/log/json" );
+        $.initList( "checkLogList", "checkLogItem", false, "/log/json", null, null, null, null, function(){
+        	$('#checkLogListContainer').show();	
+        });
     });
     //]]>
 </script>
 <h4><liquidtpl:text key="checkLog"/></h4>
-<table id="checkLogList" class="listTable" style="display: none;">
-  <tr>
-    <th><liquidtpl:text key="checkLog.name"/></th>
-    <th><liquidtpl:text key="checkLog.url"/></th>
-    <th class='thin'><liquidtpl:text key="checkLog.status"/></th>
-    <th></th>
-  </tr>
-</table>
-
+<div class="span9">
+	<h1 class="page-title">
+		<i class="icon-home"></i>
+		<span>Web監視ログ</span>					
+	</h1>
+	<div id="checkLogListContainer" class="widget widget-table hide">
+		<div class="widget-header">
+			<i class="icon-th-list"></i>
+				<h3>Web監視ログ</h3>
+			</div> <!-- /widget-header -->
+			<div class="widget-content">
+				<table  class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th><liquidtpl:text key="checkLog.name"/></th>
+    						<th><liquidtpl:text key="checkLog.url"/></th>
+    						<th class='thin'><liquidtpl:text key="checkLog.status"/></th>
+    						<th></th>
+						</tr>
+					</thead>
+					<tbody id="checkLogList">
+					</tbody>
+				</table>
+			</div>
+	</div>
+</div>
 <script id="checkLogItem" type="text/x-jquery-tmpl">
-  <tr class="row selectable">
+  <tr class="selectable">
     <td>${name}</td>
     <td class='thin'>${url}</td>
     <td class="thin{{if status=='D'}} noticeMessage{{else status=='R'}} confirmMessage{{/if}}">${statusString}</td>

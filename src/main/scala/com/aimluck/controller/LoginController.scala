@@ -18,7 +18,7 @@ import javax.servlet.http.Cookie;
 class LoginController extends AbstractFormController {
   override val logger = Logger.getLogger(classOf[LoginController].getName)
 
-  override def redirectUri: String = "/check/index";
+  override def redirectUri: String = "/dashboard";
 
   override def getTemplateName: String = {
     "login"
