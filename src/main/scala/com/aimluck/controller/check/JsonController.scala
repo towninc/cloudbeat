@@ -15,65 +15,65 @@ import sjson.json.JsonSerialization._
 class JsonController extends AbstractJsonDataController {
   Logger.getLogger(classOf[JsonController].getName)
 
-  override def getList:JsValue = {
+  override def getList: JsValue = {
     import com.aimluck.service.CheckService.CheckListProtocol._
-    val startDate:Date =  new Date
+    val startDate: Date = new Date
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
-        JsonSerialization.tojson(CheckService.fetchAll(None).sortWith{ (x, y) =>
-            x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0
-          })
+        JsonSerialization.tojson(CheckService.fetchAll(Some(userData)).sortWith { (x, y) =>
+          x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0
+        })
       case None =>
         addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.sessionError"))
         null
     }
   }
 
-  override def getDetail(id:String):JsValue = {
+  override def getDetail(id: String): JsValue = {
     import com.aimluck.service.CheckService.CheckProtocol._
-    val startDate:Date =  new Date
+    val startDate: Date = new Date
 
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
-        CheckService.fetchOne(id,None) match {
+        CheckService.fetchOne(id, Some(userData)) match {
           case Some(v) => {
-              tojson(v)
-            }
+            tojson(v)
+          }
           case None => {
-              addError(Constants.KEY_GLOBAL_ERROR,
-                       LanguageUtil.get("error.dataNotFound"))
-              null
-            }
+            addError(Constants.KEY_GLOBAL_ERROR,
+              LanguageUtil.get("error.dataNotFound"))
+            null
+          }
         }
       case None =>
         addError(Constants.KEY_GLOBAL_ERROR,
-                 LanguageUtil.get("error.sessionError"))
+          LanguageUtil.get("error.sessionError"))
         null
     }
   }
 
-  override def getForm(id:String):JsValue = {
+  override def getForm(id: String): JsValue = {
     import com.aimluck.service.CheckService.CheckProtocol._
-    val startDate:Date =  new Date
+    val startDate: Date = new Date
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
-        if((id != null) && (id.size > 0)){
-          CheckService.fetchOne(id,None) match {
+        if ((id != null) && (id.size > 0)) {
+          CheckService.fetchOne(id, Some(userData)) match {
             case Some(v) => {
-                tojson(v)
-              }
+              tojson(v)
+            }
             case None => {
-                addError(Constants.KEY_GLOBAL_ERROR,
-                         LanguageUtil.get("error.dataNotFound"))
-                null
-              }
+              addError(Constants.KEY_GLOBAL_ERROR,
+                LanguageUtil.get("error.dataNotFound"))
+              null
+            }
           }
         } else {
           tojson(CheckService.createNew)
         }
       case None =>
         addError(Constants.KEY_GLOBAL_ERROR,
-                 LanguageUtil.get("error.sessionError"))
+          LanguageUtil.get("error.sessionError"))
         null
     }
   }
