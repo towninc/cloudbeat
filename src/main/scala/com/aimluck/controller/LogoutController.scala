@@ -9,7 +9,6 @@ class LogoutController extends Controller {
   @throws(classOf[Exception])
   override protected def run():Navigation = {
 	sessionScope("userId", null)
-    val userService = UserServiceFactory.getUserService
-    redirect( userService.createLogoutURL("/") )
+    redirect("/")
   }
 }

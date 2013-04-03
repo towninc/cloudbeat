@@ -35,7 +35,7 @@ class JsonController extends AbstractJsonDataController {
 
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
-        CheckLogService.fetchOne(id, None) match {
+        CheckLogService.fetchOne(id, Some(userData)) match {
           case Some(v) => {
               tojson(v)
             }
@@ -58,7 +58,7 @@ class JsonController extends AbstractJsonDataController {
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
         if((id != null) && (id.size > 0)){
-          CheckLogService.fetchOne(id,None) match {
+          CheckLogService.fetchOne(id, Some(userData)) match {
             case Some(v) => {
                 tojson(v)
               }
