@@ -33,6 +33,25 @@ object MailUtil {
       case e: Exception =>
     }
   }
+   def sendResendMail(mail: String, password: String) {
+    val CL = System.getProperty("line.separator")
+    val ms = MailServiceFactory.getMailService // MailServiceを取得
+    try {
+      val msg = new MailService.Message()
+      msg.setSubject("[cloudbeat] パスワード再発行について")
+      msg.setTo(mail)
+      msg.setSender(AppConstants.DEFAULT_SENDER)
+      msg.setTextBody(
+        "パスワードの再発行が完了したことをお知らせします。" + CL +
+        "パスワード：　%s".format(password) + CL * 3 +
+        "--" + CL +
+        "cloudbeat")
+      ms.send(msg) // メール送信を実行
+      println(msg.getTextBody())
+    } catch {
+      case e: Exception =>
+    }
+  }
 
   def validate(mail: String) = {
     mail match {

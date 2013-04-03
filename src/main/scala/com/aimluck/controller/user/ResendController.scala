@@ -1,3 +1,7 @@
+/* To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package com.aimluck.controller.user;
 
 import org.slim3.controller.Navigation
@@ -16,15 +20,15 @@ import org.dotme.liquidtpl.Constants
 import org.dotme.liquidtpl.LanguageUtil
 import com.aimluck.lib.util.AppConstants
 
-class RegisterController extends AbstractFormController {
-  final val PASS_LENGTH = 6
+class ResendController extends AbstractFormController {
+   final val PASS_LENGTH = 6
 
-  override val logger = Logger.getLogger(classOf[RegisterController].getName)
+  override val logger = Logger.getLogger(classOf[ResendController].getName)
 
-  override def redirectUri: String = "/login";
-
+  override def redirectUri: String = "/user/resendfinish";
+                                      
   override def getTemplateName: String = {
-    "register"
+    "resend"
   }
 
   override def getOuterTemplateName: String = {
@@ -47,20 +51,19 @@ class RegisterController extends AbstractFormController {
     val mail = asString("email")
     val password = SecureUtil.randomPassword(PASS_LENGTH);
     UserDataService.fetchByEmail(mail) match {
-      case None => {
-        val user = UserDataService.createNew
-        user.setEmail(mail)
+      case Some(user) => {
         user.setPassword(password)
-        user.setCreatedAt(new Date)
-        val userId = UserDataService.createUserId
-        user.setUserId(userId.toString)
-        user.setKey(Datastore.createKey(classOf[UserData], userId))
-        UserDataService.save(user)
-        MailUtil.sendRegisterMail(mail, password)
-        val userService = UserServiceFactory.getUserService
+         UserDataService.save(user)
+         MailUtil.sendResendMail(mail, password)
+        
       }
-      case _ =>
+       case None => {
+       
+      }
     }
     !existsError
   }
+  
+  
+  
 }
