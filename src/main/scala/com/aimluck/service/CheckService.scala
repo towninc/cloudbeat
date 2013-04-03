@@ -60,6 +60,7 @@ object CheckService {
           (JsString("description"), tojson(check.getDescription)),
           (JsString("status"), tojson(check.getStatus)),
           (JsString("statusString"), tojson(statusString(check))),
+          (JsString("statusHtml"), tojson(statusHtml(check))),
           (JsString("statusMap"), BasicHelper.jsonFromStringPairs(statusMap)),
           (JsString("errorMessage"), tojson(check.getErrorMessage)),
           (JsString("recipients"), tojson(check.getRecipients.toList)),
@@ -93,6 +94,7 @@ object CheckService {
           (JsString("xPath"), tojson(check.getXPath)),
           (JsString("status"), tojson(check.getStatus)),
           (JsString("statusString"), tojson(statusString(check))),
+          (JsString("statusHtml"), tojson(statusHtml(check))),
           (JsString("errorMessage"), tojson(check.getErrorMessage)),
           (JsString("createdAt"), if (check.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(check.getCreatedAt)) else tojson("")),
           (JsString("checkedAt"), if (getCheckedAt(check) != null) tojson(AppConstants.dateTimeFormat.format(getCheckedAt(check))) else tojson("")),
@@ -240,6 +242,18 @@ object CheckService {
 
   def statusString(check: Check): String = {
     statusMap.find { e => e._1 == check.getStatus } match {
+      case Some(map) => map._2
+      case None => ""
+    }
+  }
+  
+  val statusHtmlMap: List[(String, String)] = List[(String, String)](
+    Status.INITIALIZING.toString -> LanguageUtil.get("check.Status.initializingHtml"),
+    Status.OK.toString -> LanguageUtil.get("check.Status.okHtml"),
+    Status.ERROR.toString -> LanguageUtil.get("check.Status.errorHtml"))
+
+  def statusHtml(check: Check): String = {
+    statusHtmlMap.find { e => e._1 == check.getStatus } match {
       case Some(map) => map._2
       case None => ""
     }

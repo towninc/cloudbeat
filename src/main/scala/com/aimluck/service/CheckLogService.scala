@@ -43,69 +43,69 @@ object CheckLogService {
 
       def writes(checkLog: CheckLog): JsValue = {
         JsObject(List(
-            (JsString(Constants.KEY_ID), tojson(if(checkLog.getKey != null) KeyFactory.keyToString(checkLog.getKey) else null)),
-            (JsString("name"),  tojson(checkLog.getName)),
-            (JsString("url"),  tojson(checkLog.getUrl)),
-            (JsString("status"), tojson(checkLog.getStatus)),
-            (JsString("statusString"), tojson(statusString(checkLog))),
-            (JsString("statusMap"), BasicHelper.jsonFromStringPairs(statusMap)),
-            (JsString("errorMessage"),  tojson(checkLog.getErrorMessage)),
-            (JsString("createdAt"), if(checkLog.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(checkLog.getCreatedAt)) else tojson(""))
-          ))
+          (JsString(Constants.KEY_ID), tojson(if (checkLog.getKey != null) KeyFactory.keyToString(checkLog.getKey) else null)),
+          (JsString("name"), tojson(checkLog.getName)),
+          (JsString("url"), tojson(checkLog.getUrl)),
+          (JsString("status"), tojson(checkLog.getStatus)),
+          (JsString("statusString"), tojson(statusString(checkLog))),
+          (JsString("statusHtml"), tojson(statusHtml(checkLog))),
+          (JsString("statusMap"), BasicHelper.jsonFromStringPairs(statusMap)),
+          (JsString("errorMessage"), tojson(checkLog.getErrorMessage)),
+          (JsString("createdAt"), if (checkLog.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(checkLog.getCreatedAt)) else tojson(""))))
       }
     }
   }
 
-  def fetchOne( id:String, _userData:Option[UserData] ):Option[CheckLog] = {
-    val m:CheckLogMeta = CheckLogMeta.get
+  def fetchOne(id: String, _userData: Option[UserData]): Option[CheckLog] = {
+    val m: CheckLogMeta = CheckLogMeta.get
     try {
       val key = KeyFactory.stringToKey(id)
       _userData match {
-        case Some(userData) =>{
-            Datastore.query(m).filter(m.key.equal(key))
+        case Some(userData) => {
+          Datastore.query(m).filter(m.key.equal(key))
             .filter(m.userDataRef.equal(userData.getKey)).asSingle match {
-              case v:CheckLog => Some(v)
+              case v: CheckLog => Some(v)
               case null => None
             }
-          }
+        }
         case None => {
-            Datastore.query(m).filter(m.key.equal(key)).asSingle match {
-              case v:CheckLog => Some(v)
-              case null => None
-            }
+          Datastore.query(m).filter(m.key.equal(key)).asSingle match {
+            case v: CheckLog => Some(v)
+            case null => None
           }
+        }
       }
 
     } catch {
-      case e:Exception => {
-          logger.severe(e.getMessage)
-          logger.severe(e.getStackTraceString)
-          None
-        }
+      case e: Exception => {
+        logger.severe(e.getMessage)
+        logger.severe(e.getStackTraceString)
+        None
+      }
     }
   }
 
-  def fetchAll(_userData:Option[UserData]):List[CheckLog] = {
-    val m:CheckLogMeta = CheckLogMeta.get
+  def fetchAll(_userData: Option[UserData]): List[CheckLog] = {
+    val m: CheckLogMeta = CheckLogMeta.get
     _userData match {
       case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey)).limit(100).asList.toList
       case None => Datastore.query(m).asList.toList
     }
   }
 
-  def createNew():CheckLog = {
-    val result:CheckLog = new CheckLog
+  def createNew(): CheckLog = {
+    val result: CheckLog = new CheckLog
     result.setName("")
     result.setStatus("")
     result.setErrorMessage("")
     result
   }
 
-  def saveWithUserData(model:CheckLog, userData:UserData):Key = {
-    val key:Key = model.getKey
+  def saveWithUserData(model: CheckLog, userData: UserData): Key = {
+    val key: Key = model.getKey
 
-    val now:Date = new Date
-    if(model.getCreatedAt == null){
+    val now: Date = new Date
+    if (model.getCreatedAt == null) {
       model.setCreatedAt(now)
     }
     model.setUpdatedAt(now)
@@ -114,18 +114,29 @@ object CheckLogService {
     Datastore.put(userData, model).apply(1)
   }
 
-  def delete(checkLog:CheckLog){
+  def delete(checkLog: CheckLog) {
     Datastore.delete(checkLog.getKey)
   }
 
-  val statusMap:List[(String, String)] = List[(String, String)](
+  val statusMap: List[(String, String)] = List[(String, String)](
     Status.STARTED.toString -> LanguageUtil.get("checkLog.Status.started"),
     Status.RECOVERY.toString -> LanguageUtil.get("checkLog.Status.recovery"),
-    Status.DOWN.toString -> LanguageUtil.get("checkLog.Status.down")
-  )
+    Status.DOWN.toString -> LanguageUtil.get("checkLog.Status.down"))
 
-  def statusString(checkLog:CheckLog):String = {
-    statusMap.find{e => e._1 == checkLog.getStatus} match {
+  def statusString(checkLog: CheckLog): String = {
+    statusMap.find { e => e._1 == checkLog.getStatus } match {
+      case Some(map) => map._2
+      case None => ""
+    }
+  }
+
+  val statusHtmlMap: List[(String, String)] = List[(String, String)](
+    Status.STARTED.toString -> LanguageUtil.get("checkLog.Status.startedHtml"),
+    Status.RECOVERY.toString -> LanguageUtil.get("checkLog.Status.recoveryHtml"),
+    Status.DOWN.toString -> LanguageUtil.get("checkLog.Status.downHtml"))
+
+  def statusHtml(checkLog: CheckLog): String = {
+    statusHtmlMap.find { e => e._1 == checkLog.getStatus } match {
       case Some(map) => map._2
       case None => ""
     }
