@@ -15,6 +15,7 @@ import java.util.logging.Logger
 import org.dotme.liquidtpl.Constants
 import org.dotme.liquidtpl.LanguageUtil
 import com.aimluck.lib.util.AppConstants
+import com.aimluck.lib.util.ServletUtils
 
 class RegisterController extends AbstractFormController {
   final val PASS_LENGTH = 6
@@ -56,7 +57,8 @@ class RegisterController extends AbstractFormController {
         user.setUserId(userId.toString)
         user.setKey(Datastore.createKey(classOf[UserData], userId))
         UserDataService.save(user)
-        MailUtil.sendRegisterMail(mail, password)
+        val baseUrl:String = ServletUtils.getBaseUrl(request);
+        MailUtil.sendRegisterMail(mail, password, baseUrl)
         val userService = UserServiceFactory.getUserService
       }
       case _ =>
