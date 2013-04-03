@@ -286,6 +286,7 @@ object CheckService {
 
   def clearCheckCache(check: Check): Unit = {
     val key = getCheckCacheKey(check)
+    SummaryService.clearCheckCache(check.getUserId)
     memcacheService.delete(key)
   }
 

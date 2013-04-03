@@ -3,6 +3,10 @@ import org.slim3.controller.Navigation
 import org.slim3.datastore.Datastore
 import com.aimluck.service.UserDataService
 import com.aimluck.service.CheckService
+import scala.xml.NodeSeq
+import com.aimluck.service.SummaryService
+import scala.xml.Text
+import scala.xml.Node
 
 class DashboardController extends AbstractUserBaseActionController {
   override def getTemplateName: String = {
@@ -23,6 +27,19 @@ class DashboardController extends AbstractUserBaseActionController {
         return redirect("/check/form")
       }
     }
+  }
 
+  override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
+    UserDataService.fetchOne(this.sessionScope("userId")) match {
+      case Some(userData) => {
+        val checkCount = SummaryService.getCheckCount(userData.getUserIdString)
+        val errorCount = SummaryService.getErrorCount(userData.getUserIdString)
+        super.replacerMap + ("checkCount" -> { e => Text(checkCount.toString) },
+          "errorCount" -> { e => Text(errorCount.toString) })
+      }
+      case None => {
+        super.contentReplacerMap
+      }
+    }
   }
 }

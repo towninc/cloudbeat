@@ -164,4 +164,8 @@ public class UserData {
 	public void setPassword(String password) {
 		this.password = Encrypter.getHash(password, Encrypter.ALG_SHA512);
 	}
+
+	public String getUserIdString() {
+		return Long.toString(this.key.getId());
+	}
 }
