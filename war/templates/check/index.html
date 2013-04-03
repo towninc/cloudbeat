@@ -61,7 +61,7 @@
 </div> <!-- /row -->
 <script id="checkItem" type="text/x-jquery-tmpl">
     <tr>
-        <td ><a href="javascript:void();" onclick="$('#checkItem-error-message-tr-${id}').toggle();" id="error-message">${name}</a></td>
+        <td ><a href="javascript:void(0)" onclick="$('#checkItem-error-message-tr-${id}').toggle();" id="error-message">${name}</a></td>
         <td><a href="${url}" target="_blank">${url}</a></td>
         <td>{{if active=='true'}}<liquidtpl:text key="check.isActive"/>{{else}}<liquidtpl:text key="check.isInactive"/>{{/if}}</td>
         <td>${statusString} </td>
