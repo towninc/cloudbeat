@@ -1,7 +1,120 @@
-<div class="box_grayLinewhite mt5">
-    <h4 style="display:none;" id="addTitle"><liquidtpl:text key="check"/> <liquidtpl:text key="add"/></h4>
-    <h4 style="display:none;" id="editTitle"><liquidtpl:text key="check"/> <liquidtpl:text key="edit"/></h4>
-    <script type="text/javascript">
+<div class="span9">
+	<h1 class="page-title">
+		<i class="icon-th-large"></i>Web監視登録
+	</h1>
+	<div class="row">
+		<div class="span9">
+			<div class="widget">
+				<!-- /widget-header -->
+				<div class="widget-content">
+					<form action="/check/form" id="checkForm" style="display: none;" class="form-horizontal">
+						<fieldset>
+							<div class="control-group">
+								<label class="control-label"><liquidtpl:text key="check.name"/> <strong class="fcRed">(*)</strong></label>
+								<div class="controls">
+            						<input id="nameField" name="name" class="input-xxlarge" />
+            						<div id="nameError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+								</div>
+								<!-- /controls -->
+							</div>
+							<div class="control-group">
+								<label class="control-label"><liquidtpl:text key="check.url"/> <strong class="fcRed">(*)</strong></label>
+								<div class="controls">
+            						<input id="urlField" name="url" class="input-xxlarge" />
+            						<div id="urlError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+								</div>
+								<!-- /controls -->
+							</div>
+							<div class="control-group">
+								<label class="control-label"><liquidtpl:text key="check.formParams"/></label>
+								<div class="controls">
+            						<textarea id="formParamsField" name="formParams" class="input-xxlarge" ></textarea>
+            						<div id="formParamsError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+            						<p class="help-block"><liquidtpl:text key="check.formParamsMessage"/></p>
+								</div>
+								<!-- /controls -->
+							</div>
+							<div class="control-group">
+								<label class="control-label"><liquidtpl:text key="check.preloadUrl"/></label>
+								<div class="controls">
+            						<input id="preloadUrlField" name="preloadUrl" class="input-xxlarge" />
+            						<div id="preloadUrlError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+            						<p class="help-block"><liquidtpl:text key="check.preloadUrlMessage"/></p>
+								</div>
+								<!-- /controls -->
+							</div>
+							<div class="control-group">
+								<label class="control-label"><liquidtpl:text key="check.assertText"/></label>
+								<div class="controls">
+            						<input id="assertTextField" name="assertText" class="input-xxlarge" />
+            						<div id="assertTextError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+            						<p class="help-block"><liquidtpl:text key="check.assertTextMessage"/></p>
+								</div>
+								<!-- /controls -->
+							</div>
+							<div class="control-group">
+								<label class="control-label"><liquidtpl:text key="check.xPath"/></label>
+								<div class="controls">
+            						<input id="xPathField" name="xPath" class="input-xxlarge" />
+            						<div id="assertTextError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+            						<p class="help-block"><liquidtpl:text key="check.xPathMessage"/></p>
+								</div>
+								<!-- /controls -->
+							</div>
+							<div class="control-group">
+								<label class="control-label"><liquidtpl:text key="check.recipients"/></label>
+								<div class="controls">
+            						<textarea id="recipientsField" name="recipients" class="input-xxlarge" rows="5"></textarea>
+            						<div id="recipientsError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+            						<p class="help-block"><liquidtpl:text key="check.recipientsMessage"/></p>
+								</div>
+								<!-- /controls -->
+							</div>
+							<div class="control-group">
+								<label class="control-label"><liquidtpl:text key="check.failThreshold"/></label>
+								<div class="controls">
+						            <div>
+						              <input id="failThresholdField" name="failThreshold" size="3" class="input-small" />
+						              <liquidtpl:text key="check.failThresholdSuffix"/>
+						            </div>
+						            <div id="failThresholdError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+					            </div>
+								<!-- /controls -->
+							</div>				  
+        					<hr/>
+        					<div class="control-group">
+								<label class="control-label"><liquidtpl:text key="check.description"/></label>
+								<div class="controls">
+            						<textarea id="descriptionField" name="description" class="span6" rows="5"></textarea>
+            						<div id="descriptionError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+								</div>
+								<!-- /controls -->
+							</div>
+							<div class="control-group">
+								<label class="control-label"><liquidtpl:text key="check.active"/><strong class="fcRed">(*)</strong></label>
+								<div class="controls">
+						            <div>
+						            	<label class="radio" for="activeField1"><input type="radio" id="activeField1" name="active" value="true" checked="checked" /><liquidtpl:text key="check.isActive"/></label>
+						            	<label class="radio" for="activeField2"><input type="radio" id="activeField2" name="active" value="false" /><liquidtpl:text key="check.isInactive"/></label>
+						            </div>
+						            <div id="activeError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+								</div>
+								<!-- /controls -->
+							</div>
+							<!-- /control-group -->
+							<div class="form-actions">
+								<button type="submit" class="btn btn-warning btn-large">登録</button>
+							</div>
+						</fieldset>						
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /widget-content -->
+</div>
+<!-- /widget -->
+<script type="text/javascript">
         //<![CDATA[
 
         $(function(){
@@ -9,7 +122,6 @@
             $.initForm("checkForm", "/check/json", null, function(jsonData){
                 var values = jsonData.values;
                 $.setFormValues( "checkForm", jsonData );
-
                 //recipients
                 var recipients = values.recipients;
                 if(recipients != null){
@@ -23,70 +135,4 @@
             });
         });
         //]]>
-    </script>
-    <form action="/check/form" id="checkForm" style="display: none;">
-        <div class="ma5">
-            <label class="bold"><liquidtpl:text key="check.name"/> <strong class="fcRed">(*)</strong></label>
-            <span id="nameError" class="warningMessageOne" style="display:none;" />
-            <input id="nameField" name="name" class="w99" />
-        </div>
-        <div class="ma5">
-            <label class="bold"><liquidtpl:text key="check.url"/> <strong class="fcRed">(*)</strong></label>
-            <span id="urlError" class="warningMessageOne" style="display:none;" />
-            <input id="urlField" name="url" class="w99" />
-        </div>
-        <div class="ma5">
-            <label class="bold"><liquidtpl:text key="check.formParams"/></label>
-            <span id="formParamsError" class="warningMessageOne" style="display:none;" />
-            <textarea id="formParamsField" name="formParams" class="w99" ></textarea>
-            <div class="small"><liquidtpl:text key="check.formParamsMessage"/></div>
-        </div>
-        <div class="ma5">
-            <label class="bold"><liquidtpl:text key="check.preloadUrl"/></label>
-            <span id="preloadUrlError" class="warningMessageOne" style="display:none;" />
-            <input id="preloadUrlField" name="preloadUrl" class="w99" />
-            <div class="small"><liquidtpl:text key="check.preloadUrlMessage"/></div>
-        </div>
-        <div class="ma5">
-            <label class="bold"><liquidtpl:text key="check.assertText"/></label>
-            <span id="assertTextError" class="warningMessageOne" style="display:none;" />
-            <input id="assertTextField" name="assertText" class="w99" />
-            <div class="small"><liquidtpl:text key="check.assertTextMessage"/></div>
-        </div>
-        <div class="ma5">
-            <label class="bold"><liquidtpl:text key="check.xPath"/></label>
-            <span id="xPathError" class="warningMessageOne" style="display:none;" />
-            <input id="xPathField" name="xPath" class="w99" />
-            <div class="small"><liquidtpl:text key="check.xPathMessage"/></div>
-        </div>
-        <div class="ma5">
-            <label class="bold"><liquidtpl:text key="check.recipients"/></label>
-            <span id="recipientsError" class="warningMessageOne" style="display:none;" />
-            <textarea id="recipientsField" name="recipients" class="w99" rows="5"></textarea>
-            <div class="small"><liquidtpl:text key="check.recipientsMessage"/></div>
-        </div>
-        <div class="ma5">
-            <label class="bold"><liquidtpl:text key="check.failThreshold"/></label>
-            <span id="failThresholdError" class="warningMessageOne" style="display:none;" />
-            <div>
-              <liquidtpl:text key="check.failThresholdPrefix"/>
-              <input id="failThresholdField" name="failThreshold" size="3" />
-              <liquidtpl:text key="check.failThresholdSuffix"/>
-            </div>
-        </div>
-        <hr/>
-        <div class="ma5">
-            <label class="bold"><liquidtpl:text key="check.description"/></label>
-            <span id="descriptionError" class="warningMessageOne" style="display:none;" />
-            <textarea id="descriptionField" name="description" class="w99" rows="20"></textarea>
-        </div>
-        <div class="ma5">
-            <label class="bold"><liquidtpl:text key="check.active"/><strong class="fcRed">(*)</strong></label>
-            <span id="activeError" class="warningMessageOne" style="display:none;" />
-            <div>
-            <input type="radio" id="activeField1" name="active" value="true" checked="checked" /><label for="activeField1"><liquidtpl:text key="check.isActive"/></label>
-            <input type="radio" id="activeField2" name="active" value="false" /><label for="activeField2"><liquidtpl:text key="check.isInactive"/></label>
-            </div>
-        </div>
-    </form>
-</div>
+</script>

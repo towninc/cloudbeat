@@ -15,4 +15,5 @@
         <property name="com.google.gdata.DisableCookieHandler" value="true"/> 
     </system-properties>
     -->
+    <threadsafe>true</threadsafe>
 </appengine-web-app>

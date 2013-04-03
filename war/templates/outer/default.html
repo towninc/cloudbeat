@@ -45,7 +45,7 @@
 					</li>
 					<li class="dropdown">
 						<a data-toggle="dropdown" class="dropdown-toggle " href="#">
-							aipotest@aimluck.com <b class="caret"></b>							
+							<liquidtpl:userEmail/><b class="caret"></b>							
 						</a>
 						<ul class="dropdown-menu">
 							<li>
@@ -67,40 +67,31 @@
 		<div class="row">
 			<div class="span3">
 				<ul id="main-nav" class="nav nav-tabs nav-stacked">
-					<li class="active">
-						<a href="./">
+					<li>
+						<a href="/dashboard">
 							<i class="icon-home"></i>
 							ダッシュボード		
 						</a>
 					</li>
 					<li>
-						<a href="./plans.html">
+						<a href="/check/">
+							<i class="icon-th-list"></i>
+							Web監視一覧	
+						</a>
+					</li>
+					<li>
+						<a href="/log/">
 							<i class="icon-th-list"></i>
 							ログ		
 						</a>
 					</li>
-					<li>
-						<a href="./faq.html">
-							<i class="icon-pushpin"></i>
-							FAQ	
-						</a>
-					</li>
-					<li>
-						<a href="/check/form">
-							<i class="icon-user"></i>
-							<liquidtpl:text key="check.form"/>	
-						</a>
-					</li>					
 				</ul>	
 				<hr />
 				<div class="sidebar-extra">
 				</div> <!-- .sidebar-extra -->
 				<br />
-			</div> <!-- /span3 -->
-			
-				
-						 <liquidtpl:content/>
-					
+			</div> <!-- /span3 -->							
+						 <liquidtpl:content/>					
 		</div> <!-- /row -->
 	</div> <!-- /container -->
 </div> <!-- /content -->
@@ -111,10 +102,21 @@
 		</hr>
 	</div> <!-- /container -->
 </div> <!-- /footer -->
-<!-- Le javascript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-
+<script type="text/javascript">
+    //<![CDATA[
+    $(function(){
+        $('#main-nav li').each(function(){
+        	var menuLink = $(this).find('a').attr('href');
+        	$(this).removeClass('active');
+        	if(menuLink){
+        		if(menuLink == location.pathname) {
+        			$(this).addClass('active');
+        		}
+        	}
+        });
+    });
+    //]]>
+</script>
   </body>
 </html>
    

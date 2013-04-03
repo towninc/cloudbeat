@@ -8,6 +8,6 @@ class IndexController extends Controller {
 
   @throws(classOf[Exception])
   override def run(): Navigation = {
-    return redirect("/check/index")
+    return redirect("/dashboard")
   }
 }
