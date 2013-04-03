@@ -7,7 +7,6 @@
     });
     //]]>
 </script>
-<h4><liquidtpl:text key="checkLog"/></h4>
 <div class="span9">
 	<h1 class="page-title">
 		<i class="icon-home"></i>
@@ -38,7 +37,7 @@
   <tr class="selectable">
     <td>${name}</td>
     <td class='thin'>${url}</td>
-    <td class="thin{{if status=='D'}} noticeMessage{{else status=='R'}} confirmMessage{{/if}}">${statusString}</td>
+    <td class="thin{{if status=='D'}} noticeMessage{{else status=='R'}} confirmMessage{{/if}}">{{html statusHtml}}</td>
     <td class="thin">${createdAt}</td>
   </tr>
 </script>
