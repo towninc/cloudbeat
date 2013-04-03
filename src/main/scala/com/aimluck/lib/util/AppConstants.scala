@@ -22,7 +22,7 @@ object AppConstants {
   val VALIDATE_LONGTEXT_LENGTH = 10000
 
   // settings for check-alive
-  val DEFAULT_SENDER="yusuke.takase.al@gmail.com"
+  val DEFAULT_SENDER="app@aimluck.com"
   val DEFAULT_TIMEOUT_SECONDS = 120
   val DATA_LIMIT_RECIPIENTS_PER_CHECK = 10
   val DATA_LIMIT_THRESHOLD = 60
