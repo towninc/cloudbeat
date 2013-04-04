@@ -22,7 +22,7 @@ class RegisterController extends AbstractFormController {
 
   override val logger = Logger.getLogger(classOf[RegisterController].getName)
 
-  override def redirectUri: String = "/login";
+  override def redirectUri: String = "/user/registerfinish";
 
   override def getTemplateName: String = {
     "register"
