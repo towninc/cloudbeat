@@ -5,20 +5,23 @@
 
 package com.aimluck.service
 
-import com.aimluck.meta.CheckLogMeta
-import com.aimluck.model.Check
-import com.aimluck.model.CheckLog
+import java.util.logging.Logger
+import java.util.Date
+
+import scala.collection.JavaConversions._
+
+import org.dotme.liquidtpl.helper.BasicHelper
+import org.dotme.liquidtpl.Constants
+import org.dotme.liquidtpl.LanguageUtil
+import org.slim3.datastore.Datastore
+
 import com.aimluck.lib.util.AppConstants
+import com.aimluck.meta.CheckLogMeta
+import com.aimluck.model.CheckLog
 import com.aimluck.model.UserData
 import com.google.appengine.api.datastore.Key
 import com.google.appengine.api.datastore.KeyFactory
-import java.util.Date
-import java.util.logging.Logger
-import org.dotme.liquidtpl.Constants
-import org.dotme.liquidtpl.LanguageUtil
-import org.dotme.liquidtpl.helper.BasicHelper
-import org.slim3.datastore.Datastore
-import scala.collection.JavaConversions._
+
 import sjson.json.DefaultProtocol
 import sjson.json.Format
 import sjson.json.JsonSerialization
@@ -109,6 +112,10 @@ object CheckLogService {
       model.setCreatedAt(now)
     }
     model.setUpdatedAt(now)
+
+    if (model.getCreatedAtDate() == null) {
+      model.setCreatedAtDate(AppConstants.dayCountFormat.format(model.getCreatedAt()))
+    }
 
     model.getUserDataRef.setModel(userData)
     Datastore.putWithoutTx(userData, model).apply(1)

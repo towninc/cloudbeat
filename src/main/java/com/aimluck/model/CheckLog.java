@@ -33,6 +33,10 @@ public class CheckLog implements Serializable {
     private Date createdAt;
     @Attribute(name = "uA")
     private Date updatedAt;
+    @Attribute(name = "cAD")
+	private String createdAtDate;
+    @Attribute(name="l")
+	private Boolean login = false;
 
     /**
      * Returns the key.
@@ -213,4 +217,20 @@ public class CheckLog implements Serializable {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+	public String getCreatedAtDate() {
+		return createdAtDate;
+	}
+
+	public void setCreatedAtDate(String createdAtDate) {
+		this.createdAtDate = createdAtDate;
+	}
+
+	public Boolean getLogin() {
+		return login;
+	}
+
+	public void setLogin(Boolean login) {
+		this.login = login;
+	}
 }

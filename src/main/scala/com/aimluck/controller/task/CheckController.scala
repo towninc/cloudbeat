@@ -27,6 +27,7 @@ class CheckController extends Controller {
         val checkLog = CheckLogService.createNew
         checkLog.setName(check.getName)
         checkLog.setUrl(check.getUrl)
+        checkLog.setLogin(check.getLogin())
         val buf: StringBuilder = new StringBuilder
 
         val checkSummary: String = """

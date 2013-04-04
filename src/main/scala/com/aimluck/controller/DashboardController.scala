@@ -34,8 +34,12 @@ class DashboardController extends AbstractUserBaseActionController {
       case Some(userData) => {
         val checkCount = SummaryService.getCheckCount(userData.getUserIdString)
         val errorCount = SummaryService.getErrorCount(userData.getUserIdString)
+        val checkLoginCount = SummaryService.getCheckLoginCount(userData.getUserIdString)
+        val errorLoginCount = SummaryService.getErrorLoginCount(userData.getUserIdString)
         super.replacerMap + ("checkCount" -> { e => Text(checkCount.toString) },
-          "errorCount" -> { e => Text(errorCount.toString) })
+          "errorCount" -> { e => Text(errorCount.toString) },
+          "checkLoginCount" -> { e => Text(checkLoginCount.toString) },
+          "errorLoginCount" -> { e => Text(errorLoginCount.toString) })
       }
       case None => {
         super.contentReplacerMap
