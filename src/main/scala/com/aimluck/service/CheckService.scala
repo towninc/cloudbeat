@@ -259,7 +259,7 @@ object CheckService {
     val formParams = model.getFormParams();
     model.setLogin(formParams != null && formParams != "")
     
-    val result = Datastore.putWithoutTx(userData, model).apply(1)
+    val result = Datastore.putWithoutTx(model).apply(0)
     clearCheckKeysCache()
     clearCheckCache(model)
     result

@@ -23,12 +23,12 @@ import com.aimluck.lib.util.AppConstants
 import com.aimluck.service.RepublishService
 
 class ResendController extends AbstractFormController {
-   final val PASS_LENGTH = 6
+  final val PASS_LENGTH = 6
 
   override val logger = Logger.getLogger(classOf[ResendController].getName)
 
   override def redirectUri: String = "/user/resendfinish";
-                                      
+
   override def getTemplateName: String = {
     "resend"
   }
@@ -51,23 +51,21 @@ class ResendController extends AbstractFormController {
 
   override def update: Boolean = {
     val mail = asString("email")
-    
+
     UserDataService.fetchByEmail(mail) match {
       case Some(user) => {
-        val userId=user.getUserId();
-         val republish =RepublishService.createRepublish(mail,userId);
-         val key =  Datastore.keyToString(republish.getKey());
-         val baseUrl=ServletUtils.getBaseUrl(request);
-         MailUtil.sendResendMail(mail, key ,baseUrl)
-        
+        val userId = user.getUserId();
+        val republish = RepublishService.createRepublish(mail, userId);
+        val key = Datastore.keyToString(republish.getKey());
+        val baseUrl = ServletUtils.getBaseUrl(request);
+        MailUtil.sendResendMail(mail, key, baseUrl)
+
       }
-       case None => {
-       
+      case None => {
+
       }
     }
     !existsError
   }
-  
-  
-  
+
 }

@@ -95,8 +95,8 @@ object CheckLogService {
       case None => Datastore.query(m).asList.toList
     }
   }
-  
-    def fetchWithLimit(_userData: Option[UserData], limit: Integer): List[CheckLog] = {
+
+  def fetchWithLimit(_userData: Option[UserData], limit: Integer): List[CheckLog] = {
     val m: CheckLogMeta = CheckLogMeta.get
     _userData match {
       case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey)).sort(m.updatedAt.desc).limit(limit).asList.toList
@@ -127,7 +127,7 @@ object CheckLogService {
     }
 
     model.getUserDataRef.setModel(userData)
-    Datastore.putWithoutTx(userData, model).apply(1)
+    Datastore.putWithoutTx(model).apply(0)
   }
 
   def delete(checkLog: CheckLog) {

@@ -19,6 +19,7 @@
 			    var $tr=$("#checkItem-error-message-tr-"+checkId);
 			    $tr.toggle();
 			});
+			$('#checkListContainer').show();	
         });
         
         $.initList( "loginCheckList", "checkItem", true, "/check/json", {"pageType":"login", "limit":"10"}, function(jsonData){
@@ -38,6 +39,7 @@
 			    var $tr=$("#checkItem-error-message-tr-"+checkId);
 			    $tr.toggle();
 			});
+			$('#loginListContainer').show();	
         });
         
         $.initList( "checkLogList", "checkLogItem", false, "/log/json",  {"limit":"10"}, null, null, null, function(){
@@ -82,7 +84,7 @@
 				</div> <!-- /stat-container -->
 				
 				<!-- ページ監視リスト -->
-				<div class="widget widget-table">
+				<div id="checkListContainer" class="widget widget-table hide">
 					<div class="widget-header">
 						<i class="icon-th-list"></i>
 						<h3>ページ監視一覧</h3>
@@ -107,7 +109,7 @@
 				<!-- /ページ監視リスト -->
 				
 				<!-- ログイン監視リスト -->
-				<div class="widget widget-table">
+				<div id="loginListContainer" class="widget widget-table hide">
 					<div class="widget-header">
 						<i class="icon-th-list"></i>
 						<h3>ログイン監視一覧</h3>

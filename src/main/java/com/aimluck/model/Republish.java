@@ -8,7 +8,7 @@ import org.slim3.datastore.Model;
 import com.aimluck.lib.util.Encrypter;
 import com.google.appengine.api.datastore.Key;
 
-@Model(kind = "uD", schemaVersion = 1, schemaVersionName = "sV")
+@Model(kind = "rep", schemaVersion = 1, schemaVersionName = "sV")
 public class Republish {
 	private static final long serialVersionUID = 1L;
 
