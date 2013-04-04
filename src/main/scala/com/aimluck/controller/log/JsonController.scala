@@ -19,10 +19,14 @@ class JsonController extends AbstractJsonDataController {
     import com.aimluck.service.CheckLogService.CheckLogProtocol._
     val startDate: Date = new Date
     UserDataService.fetchOne(this.sessionScope("userId")) match {
-      case Some(userData) =>
-        JsonSerialization.tojson(CheckLogService.fetchAll(Some(userData)).sortWith { (x, y) =>
-          x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0
-        })
+      case Some(userData) => {
+    	  this.param("limit") match{
+    	  	case "10" => JsonSerialization.tojson(CheckLogService.fetchWithLimit(Some(userData), Integer.valueOf(this.param("limit"))).sortWith { (x, y) =>
+          x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
+        	case null => JsonSerialization.tojson(CheckLogService.fetchAll(Some(userData)).sortWith { (x, y) =>
+          x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
+          }
+      }
       case None =>
         addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.sessionError"))
         null
