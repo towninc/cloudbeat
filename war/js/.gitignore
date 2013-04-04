@@ -1,3 +1,4 @@
+/charts
 /bootstrap.js
 /bootstrap.min.js
 /excanvas.min.js
@@ -6,3 +7,5 @@
 /jquery.flot.orderBars.js
 /jquery.flot.pie.js
 /jquery.flot.resize.js
+/jquery-1.9.1.min.js
+/Application.js

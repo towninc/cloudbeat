@@ -12,7 +12,7 @@
 							<div class="control-group">
 								<label class="control-label"><liquidtpl:text key="check.name"/> <strong class="fcRed">(*)</strong></label>
 								<div class="controls">
-            						<input id="nameField" name="name" class="input-xlarge" />
+            						<input type="text" id="nameField" name="name" class="input-xlarge" />
             						<div id="nameError" class="alert alert-danger" style="margin-top:5px; display:none;" />
 								</div>
 								<!-- /controls -->
@@ -20,7 +20,7 @@
 							<div class="control-group">
 								<label class="control-label"><liquidtpl:text key="check.url"/> <strong class="fcRed">(*)</strong></label>
 								<div class="controls">
-            						<input id="urlField" name="url" class="input-xlarge" />
+            						<input type="url" id="urlField" name="url" class="input-xlarge" />
             						<div id="urlError" class="alert alert-danger" style="margin-top:5px; display:none;" />
 								</div>
 								<!-- /controls -->
@@ -37,7 +37,7 @@
 							<div class="control-group">
 								<label class="control-label"><liquidtpl:text key="check.preloadUrl"/></label>
 								<div class="controls">
-            						<input id="preloadUrlField" name="preloadUrl" class="input-xlarge" />
+            						<input type="text" id="preloadUrlField" name="preloadUrl" class="input-xlarge" />
             						<div id="preloadUrlError" class="alert alert-danger" style="margin-top:5px; display:none;" />
             						<p class="help-block"><liquidtpl:text key="check.preloadUrlMessage"/></p>
 								</div>
@@ -46,7 +46,7 @@
 							<div class="control-group">
 								<label class="control-label"><liquidtpl:text key="check.assertText"/></label>
 								<div class="controls">
-            						<input id="assertTextField" name="assertText" class="input-xlarge" />
+            						<input type="text" id="assertTextField" name="assertText" class="input-xlarge" />
             						<div id="assertTextError" class="alert alert-danger" style="margin-top:5px; display:none;" />
             						<p class="help-block"><liquidtpl:text key="check.assertTextMessage"/></p>
 								</div>
@@ -55,7 +55,7 @@
 							<div class="control-group">
 								<label class="control-label"><liquidtpl:text key="check.xPath"/></label>
 								<div class="controls">
-            						<input id="xPathField" name="xPath" class="input-xlarge" />
+            						<input type="text" id="xPathField" name="xPath" class="input-xlarge" />
             						<div id="assertTextError" class="alert alert-danger" style="margin-top:5px; display:none;" />
             						<p class="help-block"><liquidtpl:text key="check.xPathMessage"/></p>
 								</div>
@@ -74,7 +74,7 @@
 								<label class="control-label"><liquidtpl:text key="check.failThreshold"/></label>
 								<div class="controls">
 						            <div>
-						              <input id="failThresholdField" name="failThreshold" size="3" class="input-small" />
+						              <input type="number" min="1" id="failThresholdField" name="failThreshold" size="3" class="input-small" />
 						              <liquidtpl:text key="check.failThresholdSuffix"/>
 						            </div>
 						            <div id="failThresholdError" class="alert alert-danger" style="margin-top:5px; display:none;" />

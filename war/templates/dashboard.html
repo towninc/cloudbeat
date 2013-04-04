@@ -72,8 +72,8 @@
         <td><a href="${url}" target="_blank">${url}</a></td>
         <td>{{if active=='true'}}<span class="label label-success"><liquidtpl:text key="check.isActive"/></span>{{else}}<span class="label"><liquidtpl:text key="check.isInactive"/></span>{{/if}}</td>
         <td>{{html statusHtml}}</td>
-        <td class="action-td"><a href="/check/form?id=${id}" class="btn btn-small btn-warning"><i style="margin: 5px 0;" class="icon-pencil" title="Edit"></i></a>
-        <a href="/check/delete?id=${id}" onclick="return confirm('${deleteConfirm}');" class="btn btn-small"><i style="margin: 5px 0;" class="icon-remove" title="Remove"></i></a></td>
+        <td class="action-td"><a href="/check/form?id=${id}" class="btn btn-small btn-warning"><i class="icon-pencil" title="Edit"></i></a>
+        <a href="/check/delete?id=${id}" onclick="return confirm('${deleteConfirm}');" class="btn btn-small"><i class="icon-remove" title="Remove"></i></a></td>
     </tr>
     <tr id="checkItem-error-message-tr-${id}" class="selectable error-message-tr" style="display:none;">
         <td colspan="5">
