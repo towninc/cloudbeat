@@ -19,7 +19,9 @@
 			    var $tr=$("#checkItem-error-message-tr-"+checkId);
 			    $tr.toggle();
 			});
-			$('#checkListContainer').show();	
+			if(size > 0){
+				$('#checkListContainer').show();
+			}
         });
         
         $.initList( "loginCheckList", "checkItem", true, "/check/json", {"pageType":"login", "limit":"10"}, function(jsonData){
@@ -39,7 +41,10 @@
 			    var $tr=$("#checkItem-error-message-tr-"+checkId);
 			    $tr.toggle();
 			});
-			$('#loginListContainer').show();	
+			
+			if(size > 0){
+				$('#loginListContainer').show();	
+			}
         });
         
         $.initList( "checkLogList", "checkLogItem", false, "/log/json",  {"limit":"10"}, null, null, null, function(){
