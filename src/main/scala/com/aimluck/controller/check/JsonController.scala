@@ -23,12 +23,20 @@ class JsonController extends AbstractJsonDataController {
       case Some(userData) => {
         this.param("pageType") match{
           case "page" => {
-        	  JsonSerialization.tojson(CheckService.fetchPageAll(Some(userData)).sortWith { (x, y) =>
-          		x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
+        	  this.param("limit") match{
+        	  	case "10" => JsonSerialization.tojson(CheckService.fetchPageWithLimit(Some(userData), Integer.valueOf(this.param("limit"))).sortWith { (x, y) =>
+          			x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
+        	  	case null => JsonSerialization.tojson(CheckService.fetchPageAll(Some(userData)).sortWith { (x, y) =>
+          			x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
+        	  }
           }
           case "login" => {
-        	  JsonSerialization.tojson(CheckService.fetchLoginAll(Some(userData)).sortWith { (x, y) =>
-          		x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
+               this.param("limit") match{
+        	  	case "10" => JsonSerialization.tojson(CheckService.fetchLoginWithLimit(Some(userData), Integer.valueOf(this.param("limit"))).sortWith { (x, y) =>
+          			x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
+        	  	case null => JsonSerialization.tojson(CheckService.fetchLoginAll(Some(userData)).sortWith { (x, y) =>
+          			x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
+        	  }
           }
           case null =>
           	addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.sessionError"))

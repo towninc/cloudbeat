@@ -1,3 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<datastore-indexes autoGenerate="true">
+<datastore-indexes autoGenerate="false">
+	<!-- Used 4 times in query history -->
+	<datastore-index kind="c" ancestor="false" source="auto">
+		<property name="l" direction="asc" />
+		<property name="uDR" direction="asc" />
+		<property name="uA" direction="asc" />
+	</datastore-index>
+
+	<!-- Used 5 times in query history -->
+	<datastore-index kind="c" ancestor="false" source="auto">
+		<property name="l" direction="asc" />
+		<property name="uDR" direction="asc" />
+		<property name="uA" direction="desc" />
+	</datastore-index>
+
+	<!-- Used 1 time in query history -->
+	<datastore-index kind="cL" ancestor="false" source="auto">
+		<property name="uDR" direction="asc" />
+		<property name="uA" direction="desc" />
+	</datastore-index>
 </datastore-indexes>

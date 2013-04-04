@@ -163,10 +163,27 @@ object CheckService {
     val m: CheckMeta = CheckMeta.get
     _userData match {
       case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey), m.login.equal(true)).asList.toList
-      case None => Datastore.query(m).asList.toList
+      case None => Datastore.query(m).filter(m.login.equal(true)).asList.toList
     }
   }
 
+    def fetchPageWithLimit(_userData: Option[UserData], limit: Integer): List[Check] = {
+    val m: CheckMeta = CheckMeta.get
+    _userData match {
+      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey) ,m.login.equal(false)).sort(m.updatedAt.desc).limit(limit).asList.toList
+      case None => Datastore.query(m).filter(m.login.equal(false)).limit(limit).sort(m.updatedAt.desc).asList.toList
+    }
+  }
+    
+  def fetchLoginWithLimit(_userData: Option[UserData], limit: Integer): List[Check] = {
+    val m: CheckMeta = CheckMeta.get
+    _userData match {
+      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey), m.login.equal(true)).sort(m.updatedAt.desc).limit(limit).asList.toList
+      case None => Datastore.query(m).filter(m.login.equal(true)).limit(limit).sort(m.updatedAt.desc).asList.toList
+    }
+  }
+
+  
   def countAll(_userData: Option[UserData]): Int = {
     val m: CheckMeta = CheckMeta.get
     _userData match {

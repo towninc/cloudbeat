@@ -95,6 +95,14 @@ object CheckLogService {
       case None => Datastore.query(m).asList.toList
     }
   }
+  
+    def fetchWithLimit(_userData: Option[UserData], limit: Integer): List[CheckLog] = {
+    val m: CheckLogMeta = CheckLogMeta.get
+    _userData match {
+      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey)).sort(m.updatedAt.desc).limit(limit).asList.toList
+      case None => Datastore.query(m).sort(m.updatedAt.desc).limit(limit).asList.toList
+    }
+  }
 
   def createNew(): CheckLog = {
     val result: CheckLog = new CheckLog
