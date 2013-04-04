@@ -151,6 +151,7 @@
                 
                 if($('#isLogin').val() == 'true'){
                 	$('.loginControl').show();
+                	$('#checkForm').attr("action", "/check/loginForm")
                 } else {
                 	$('.loginControl').hide();
                 	$('.loginControl input[type="text"]').val('');

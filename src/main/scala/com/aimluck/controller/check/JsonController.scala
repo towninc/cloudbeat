@@ -20,10 +20,21 @@ class JsonController extends AbstractJsonDataController {
     import com.aimluck.service.CheckService.CheckListProtocol._
     val startDate: Date = new Date
     UserDataService.fetchOne(this.sessionScope("userId")) match {
-      case Some(userData) =>
-        JsonSerialization.tojson(CheckService.fetchAll(Some(userData)).sortWith { (x, y) =>
-          x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0
-        })
+      case Some(userData) => {
+        this.param("pageType") match{
+          case "page" => {
+        	  JsonSerialization.tojson(CheckService.fetchPageAll(Some(userData)).sortWith { (x, y) =>
+          		x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
+          }
+          case "login" => {
+        	  JsonSerialization.tojson(CheckService.fetchLoginAll(Some(userData)).sortWith { (x, y) =>
+          		x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
+          }
+          case null =>
+          	addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.sessionError"))
+          null
+        }
+      }
       case None =>
         addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.sessionError"))
         null

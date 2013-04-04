@@ -150,6 +150,22 @@ object CheckService {
       case None => Datastore.query(m).asList.toList
     }
   }
+  
+  def fetchPageAll(_userData: Option[UserData]): List[Check] = {
+    val m: CheckMeta = CheckMeta.get
+    _userData match {
+      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey) ,m.login.equal(false)).asList.toList
+      case None => Datastore.query(m).asList.toList
+    }
+  }
+    
+  def fetchLoginAll(_userData: Option[UserData]): List[Check] = {
+    val m: CheckMeta = CheckMeta.get
+    _userData match {
+      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey), m.login.equal(true)).asList.toList
+      case None => Datastore.query(m).asList.toList
+    }
+  }
 
   def countAll(_userData: Option[UserData]): Int = {
     val m: CheckMeta = CheckMeta.get

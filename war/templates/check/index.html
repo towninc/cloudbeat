@@ -2,7 +2,7 @@
 <script type="text/javascript">
     //<![CDATA[
     $(function(){
-        $.initList( "checkList", "checkItem", true, "/check/json", null, function(jsonData){
+        $.initList( "checkList", "checkItem", true, "/check/json", {"pageType":$('#pageType').val()}, function(jsonData){
             var values = jsonData.values;
             var size = values.length;
             for(var i = 0; i < size; i++){
@@ -26,20 +26,29 @@
         });
     });
     
+    $.formLink = function(){
+    	if(typeof $('#pageType').val() != null && $('#pageType').val() == "page"){
+	    	location.href='/check/form';
+    	}else{
+    		location.href='/check/loginForm';
+    	}
+    }
+    
     //]]>
 </script>
+<liquidtpl:pageType/>
 <div class="span9">
 				<h1 class="page-title">
 					<i class="icon-th-list"></i>
-					<span>Web監視一覧</span>					
+					<span><liquidtpl:pageTypeString/>監視一覧</span>					
 				</h1>
 				<div id="buttonWrapper" style='margin-bottom: 10px;'>
-					<button onclick="location.href='/check/form';" class="btn btn-warning btn-large">Web監視登録</button>											
+					<button onclick="$.formLink();" class="btn btn-warning btn-large"><liquidtpl:pageTypeString/>監視登録</button>											
 				</div>
 				<div id="checkListContainer" class="widget widget-table hide">
 					<div class="widget-header">
 						<i class="icon-th-list"></i>
-						<h3><liquidtpl:text key="check.list"/></h3>
+						<h3><liquidtpl:pageTypeString/>監視一覧</h3>
 					</div> <!-- /widget-header -->
 					<div class="widget-content">
 						<table  class="table table-striped table-bordered">
