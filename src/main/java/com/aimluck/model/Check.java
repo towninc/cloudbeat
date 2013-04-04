@@ -54,6 +54,8 @@ public class Check implements Serializable {
 	private int failCount;
 	@Attribute(name = "fT")
 	private int failThreshold;
+	@Attribute(name="l")
+	private Boolean login = false;
 
 	/**
 	 * Returns the key.
@@ -354,4 +356,13 @@ public class Check implements Serializable {
 		return null;
 	}
 
+	public Boolean getLogin() {
+		return login;
+	}
+
+	public void setLogin(Boolean login) {
+		this.login = login;
+	}
+
+	
 }
