@@ -114,7 +114,8 @@ object CheckLogService {
     model.setUpdatedAt(now)
 
     if (model.getCreatedAtDate() == null) {
-      model.setCreatedAtDate(AppConstants.dayCountFormat.format(model.getCreatedAt()))
+      model.setCreatedAtDate(AppConstants.dayCountFormatWithTimeZone(AppConstants.timeZone)
+        .format(model.getCreatedAt()))
     }
 
     model.getUserDataRef.setModel(userData)

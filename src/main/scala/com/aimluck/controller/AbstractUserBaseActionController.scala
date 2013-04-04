@@ -17,8 +17,10 @@ abstract class AbstractUserBaseActionController extends AbstractActionController
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
         val errorCount = SummaryService.getErrorCount(userData.getUserIdString)
+        val errorLoginCount = SummaryService.getErrorLoginCount(userData.getUserIdString)
         super.contentReplacerMap + ("userEmail" -> { e => Text(userData.getEmail()) },
-          "errorCount" -> { e => if (errorCount > 0) { <span class="label label-important pull-right">{errorCount}</span> } else { Text("") } })
+          "errorCount" -> { e => if (errorCount > 0) { <span class="label label-important pull-right">{ errorCount }</span> } else { Text("") } },
+          "errorLoginCount" -> { e => if (errorLoginCount > 0) { <span class="label label-important pull-right">{ errorLoginCount }</span> } else { Text("") } })
       }
       case None => {
         super.contentReplacerMap

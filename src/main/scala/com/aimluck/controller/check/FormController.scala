@@ -17,6 +17,8 @@ import com.aimluck.controller.AbstractUserBaseFormController
 import scala.xml.NodeSeq
 import scala.xml.Node
 import scala.xml.Text
+import org.slim3.controller.Navigation
+import com.google.appengine.api.datastore.KeyFactory
 
 class FormController extends AbstractUserBaseFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
@@ -27,6 +29,8 @@ class FormController extends AbstractUserBaseFormController {
     "form"
   }
 
+  val isLoginController = false;
+  
   override def validate: Boolean = {
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
@@ -46,7 +50,7 @@ class FormController extends AbstractUserBaseFormController {
 
         //formParams
         val formParams = request.getParameter("formParams")
-        val isLogin: Boolean =  request.getParameter("isLogin").toBoolean
+        val isLogin: Boolean = request.getParameter("isLogin").toBoolean
         if ((isLogin && formParams.size <= 0) || formParams.size > AppConstants.VALIDATE_STRING_LENGTH) {
           addError("formParams", LanguageUtil.get("error.stringLength", Some(Array(
             LanguageUtil.get("check.formParams"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
@@ -54,7 +58,7 @@ class FormController extends AbstractUserBaseFormController {
 
         //preloadUrl
         val preloadUrl = request.getParameter("preloadUrl")
-        if (url.size > AppConstants.VALIDATE_STRING_LENGTH) {
+        if (preloadUrl.size > AppConstants.VALIDATE_STRING_LENGTH) {
           addError("preloadUrl", LanguageUtil.get("error.stringLength", Some(Array(
             LanguageUtil.get("check.preloadUrl"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
         }
@@ -192,6 +196,21 @@ class FormController extends AbstractUserBaseFormController {
 
     }
     !existsError
+  }
+
+  @throws(classOf[Exception])
+  override protected def run(): Navigation = {
+    val id = request.getParameter(Constants.KEY_ID)
+    CheckService.fetchOne(id, None) match {
+      case Some(v) => {
+        if (v.getLogin() && (!isLoginController)) {
+          redirect("/check/loginForm?id=%s".format(KeyFactory.keyToString(v.getKey())))
+        } else {
+          super.run()
+        }
+      }
+      case None => super.run()
+    }
   }
 
   override def replacerMap: Map[String, ((Node) => NodeSeq)] = {

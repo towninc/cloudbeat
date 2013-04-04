@@ -33,9 +33,9 @@ class DashboardController extends AbstractUserBaseActionController {
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
         val checkCount = SummaryService.getCheckCount(userData.getUserIdString)
-        val errorCount = SummaryService.getErrorCount(userData.getUserIdString)
+        val errorCount = SummaryService.getErrorTodayCount(userData.getUserIdString)
         val checkLoginCount = SummaryService.getCheckLoginCount(userData.getUserIdString)
-        val errorLoginCount = SummaryService.getErrorLoginCount(userData.getUserIdString)
+        val errorLoginCount = SummaryService.getErrorTodayLoginCount(userData.getUserIdString)
         super.replacerMap + ("checkCount" -> { e => Text(checkCount.toString) },
           "errorCount" -> { e => Text(errorCount.toString) },
           "checkLoginCount" -> { e => Text(checkLoginCount.toString) },
