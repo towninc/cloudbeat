@@ -6,8 +6,8 @@
 	<packaging>war</packaging>
 	<version>1</version>
 	<properties>
-		<slim3.version>1.0.12</slim3.version>
-		<appengine.version>1.5.1</appengine.version>
+		<slim3.version>1.0.16</slim3.version>
+		<appengine.version>1.7.5</appengine.version>
 		<generated.src>.apt_generated</generated.src>
 		<generated.war>war</generated.war>
 		<!-- Scala -->
@@ -34,12 +34,28 @@
 			<name>Scala-Tools Dependencies Repository for Releases</name>
 			<url>http://scala-tools.org/repo-releases</url>
 		</repository>
+		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>maven.seasar.org</id>
 			<name>The Seasar Foundation Maven2 Repository</name>
 			<url>https://www.seasar.org/maven/maven2</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<url>http://repo1.maven.org/maven2</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -118,12 +134,16 @@
 		</dependency>
 		<dependency>
 			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-local-runtime</artifactId>
+			<artifactId>appengine-testing</artifactId>
 			<version>${appengine.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> <groupId>com.google.appengine</groupId> <artifactId>appengine-testing</artifactId> 
-			<version>${appengine.version}</version> <scope>test</scope> </dependency> -->
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-stubs</artifactId>
+			<version>${appengine.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.slim3</groupId>
 			<artifactId>slim3-gen</artifactId>

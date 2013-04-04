@@ -1,5 +1,6 @@
-#Wed Apr 03 16:23:39 JST 2013
+#Wed Apr 03 18:30:08 JST 2013
 eclipse.preferences.version=1
+encoding//war/templates/log/index.html=UTF-8
 encoding//war/templates/login.html=UTF-8
 encoding//war/templates/user/register.html=UTF-8
 encoding//war/templates/user/resend.html=UTF-8
