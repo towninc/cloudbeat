@@ -14,6 +14,9 @@ import sjson.json.JsonSerialization._
 import sjson.json.DefaultProtocol._
 import scala.collection.JavaConversions._
 import com.aimluck.controller.AbstractUserBaseFormController
+import scala.xml.NodeSeq
+import scala.xml.Node
+import scala.xml.Text
 
 class FormController extends AbstractUserBaseFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
@@ -43,7 +46,8 @@ class FormController extends AbstractUserBaseFormController {
 
         //formParams
         val formParams = request.getParameter("formParams")
-        if (formParams.size > AppConstants.VALIDATE_STRING_LENGTH) {
+        val isLogin: Boolean =  request.getParameter("isLogin").toBoolean
+        if ((isLogin && formParams.size <= 0) || formParams.size > AppConstants.VALIDATE_STRING_LENGTH) {
           addError("formParams", LanguageUtil.get("error.stringLength", Some(Array(
             LanguageUtil.get("check.formParams"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
         }
@@ -188,5 +192,10 @@ class FormController extends AbstractUserBaseFormController {
 
     }
     !existsError
+  }
+
+  override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
+    super.replacerMap + ("isLogin" -> { e => <input type="hidden" id="isLogin" name="isLogin" value="false"/> },
+      "formTitle" -> { e => Text("ページ監視登録") })
   }
 }

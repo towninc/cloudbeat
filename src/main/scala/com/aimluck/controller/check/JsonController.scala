@@ -11,6 +11,7 @@ import org.dotme.liquidtpl.LanguageUtil
 import org.dotme.liquidtpl.controller.AbstractJsonDataController
 import sjson.json.JsonSerialization
 import sjson.json.JsonSerialization._
+import scala.collection.JavaConversions._
 
 class JsonController extends AbstractJsonDataController {
   Logger.getLogger(classOf[JsonController].getName)
@@ -69,7 +70,9 @@ class JsonController extends AbstractJsonDataController {
             }
           }
         } else {
-          tojson(CheckService.createNew)
+          val newCheck = CheckService.createNew
+          newCheck.setRecipients(seqAsJavaList(List(userData.getEmail())))
+          tojson(newCheck)
         }
       case None =>
         addError(Constants.KEY_GLOBAL_ERROR,
