@@ -40,6 +40,8 @@ class RegisterController extends AbstractFormController {
         LanguageUtil.get("mail"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
     } else if (!MailUtil.validate(mail)) {
       addError("email", LanguageUtil.get("error.mailIncorrect"))
+    } else if (!MailUtil.validate2(mail)) {
+      addError("email", "社内メールをご利用ください")
     }
     !existsError
   }
