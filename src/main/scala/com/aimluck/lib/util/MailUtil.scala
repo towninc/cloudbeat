@@ -48,7 +48,7 @@ object MailUtil {
         "以下のURLから再発行を完了してください。" + CL +
         url + CL * 3 +
         "--" + CL +
-        "cloudbeat")
+        LanguageUtil.get("title"))
       ms.send(msg) // メール送信を実行
       println(msg.getTextBody())
     } catch {
