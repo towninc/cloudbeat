@@ -114,7 +114,7 @@ object UserDataService {
       logger.warning("Duplicate user Id. Data has NOT saved")
       throw new DuplicateDataException
     } else {
-      Datastore.put(model)
+      Datastore.putWithoutTx(model)
     }
   }
 

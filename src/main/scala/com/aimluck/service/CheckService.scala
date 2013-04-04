@@ -222,7 +222,7 @@ object CheckService {
     }
     model.setUpdatedAt(now)
     model.getUserDataRef.setModel(userData)
-    val result = Datastore.put(userData, model).apply(1)
+    val result = Datastore.putWithoutTx(userData, model).apply(1)
     clearCheckKeysCache()
     clearCheckCache(model)
     result

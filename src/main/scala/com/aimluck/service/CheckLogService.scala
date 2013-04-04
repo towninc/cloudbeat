@@ -111,7 +111,7 @@ object CheckLogService {
     model.setUpdatedAt(now)
 
     model.getUserDataRef.setModel(userData)
-    Datastore.put(userData, model).apply(1)
+    Datastore.putWithoutTx(userData, model).apply(1)
   }
 
   def delete(checkLog: CheckLog) {
