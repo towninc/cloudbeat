@@ -52,7 +52,7 @@ object PlanService {
   def isReachedMaxCheckNumber(user: UserData): Boolean = {
     val maxCheck = getMaxCheckNumber(user)
     if (maxCheck < 0) {
-      true
+      false
     } else {
       val checkCount = SummaryService.getCheckCount(user.getUserId())
       checkCount >= maxCheck
@@ -62,7 +62,7 @@ object PlanService {
   def isOverMaxCheckNumber(user: UserData): Boolean = {
     val maxCheck = getMaxCheckNumber(user)
     if (maxCheck < 0) {
-      true
+      false
     } else {
       val checkCount = SummaryService.getCheckCount(user.getUserId())
       checkCount > maxCheck
@@ -76,7 +76,7 @@ object PlanService {
   def isReachedMaxCheckLoginNumber(user: UserData): Boolean = {
     val maxCheck = getMaxCheckLoginNumber(user)
     if (maxCheck < 0) {
-      true
+      false
     } else {
       val checkCount = SummaryService.getCheckLoginCount(user.getUserId())
       checkCount >= maxCheck
@@ -86,7 +86,7 @@ object PlanService {
   def isOverMaxCheckLoginNumber(user: UserData): Boolean = {
     val maxCheck = getMaxCheckLoginNumber(user)
     if (maxCheck < 0) {
-      true
+      false
     } else {
       val checkCount = SummaryService.getCheckLoginCount(user.getUserId())
       checkCount > maxCheck
