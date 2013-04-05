@@ -23,7 +23,7 @@
 		<filter-class>com.aimluck.filter.BasicAuthFilter</filter-class>
 		<init-param>
 			<param-name>exclude</param-name>
-			<param-value>/login,/logout,/user/*,/cron/*,/task/*,/_ah/*</param-value>
+			<param-value>/,/login,/logout,/user/*,/cron/*,/task/*,/_ah/*</param-value>
 		</init-param>
 	</filter>
 

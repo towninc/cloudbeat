@@ -15,6 +15,5 @@ class IndexController extends Controller {
     }
 
     //ToDo delete this line when landing page is created
-    redirect("/dashboard")
   }
 }
