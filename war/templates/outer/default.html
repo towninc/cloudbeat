@@ -120,6 +120,10 @@
         	if(menuLink){
         		if(menuLink == location.pathname) {
         			$(this).addClass('active');
+        		} else if ((menuLink == "/check/") && (location.pathname.indexOf("/check/form") == 0)) {
+        			$(this).addClass('active');
+        		} else if ((menuLink == "/check/login") && (location.pathname.indexOf("/check/loginForm") == 0)) {
+        			$(this).addClass('active');
         		}
         	}
         });
