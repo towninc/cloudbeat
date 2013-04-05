@@ -21,7 +21,7 @@ class ResendcompleteController extends AbstractActionController {
         UserDataService.fetchOne(userId) match {
           case Some(user)=>{
             val password = SecureUtil.randomPassword(PASS_LENGTH);
-            user.setPassword(password)
+            user.setRawPassword(password)
             UserDataService.save(user)
             val baseUrl: String = ServletUtils.getBaseUrl(request);
             val mail = republish.getMail();

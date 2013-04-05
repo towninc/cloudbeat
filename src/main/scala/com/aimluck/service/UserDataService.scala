@@ -22,6 +22,7 @@ import sjson.json.Format
 import sjson.json.JsonSerialization
 import org.dotme.liquidtpl.lib.memcache.ReverseCounterLogService
 import com.aimluck.lib.util.Encrypter
+import com.aimluck.lib.util.AppConstants
 
 object UserDataService {
   val logger = Logger.getLogger(UserDataService.getClass.getName)
@@ -79,6 +80,7 @@ object UserDataService {
 
   def createNew(): UserData = {
     val result: UserData = new UserData
+    result.setPlanName(AppConstants.PLAN_MICRO)
     result
   }
 

@@ -23,6 +23,8 @@ public class UserData {
 	private String email;
 	@Attribute(name = "p")
 	private String password;
+	@Attribute(name = "pN")
+	private String planName;
 	@Attribute(name = "iA")
 	private boolean isAdmin;
 	@Attribute(name = "cA")
@@ -48,7 +50,7 @@ public class UserData {
 
 	/**
 	 * 
-	 * @return Google Account userId
+	 * @return userId
 	 */
 	public String getUserId() {
 		return userId;
@@ -161,11 +163,19 @@ public class UserData {
 		return password;
 	}
 
-	public void setPassword(String password) {
-		this.password = Encrypter.getHash(password, Encrypter.ALG_SHA512);
+	public void setRawPassword(String rawPassword) {
+		this.password = Encrypter.getHash(rawPassword, Encrypter.ALG_SHA512);
 	}
 
-	public String getUserIdString() {
-		return Long.toString(this.key.getId());
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPlanName() {
+		return planName;
+	}
+
+	public void setPlanName(String planName) {
+		this.planName = planName;
 	}
 }

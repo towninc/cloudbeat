@@ -41,7 +41,7 @@ class RegisterController extends AbstractFormController {
     } else if (!MailUtil.validate(mail)) {
       addError("email", LanguageUtil.get("error.mailIncorrect"))
     } else if (!MailUtil.validate2(mail)) {
-      addError("email", "社内メールをご利用ください")
+      addError("email", "フリーメールでの登録はできません")
     }
     !existsError
   }
@@ -53,7 +53,7 @@ class RegisterController extends AbstractFormController {
       case None => {
         val user = UserDataService.createNew
         user.setEmail(mail)
-        user.setPassword(password)
+        user.setRawPassword(password)
         user.setCreatedAt(new Date)
         val userId = UserDataService.createUserId
         user.setUserId(userId.toString)

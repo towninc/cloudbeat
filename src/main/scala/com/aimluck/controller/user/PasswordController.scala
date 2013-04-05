@@ -67,7 +67,7 @@ class PasswordController extends AbstractUserBaseFormController {
             if(newPassword!=confirmPassword){
             	addError("confirmpassword", "新しいパスワードと異なります。新しいパスワードと同じパスワードをご入力下さい。");
             }else{
-            	userData.setPassword(newPassword)
+            	userData.setRawPassword(newPassword)
             	UserDataService.save(userData)
             }
        

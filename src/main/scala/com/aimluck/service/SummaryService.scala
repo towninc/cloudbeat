@@ -83,6 +83,7 @@ object SummaryService {
         case _ => {
           val count: Integer = Datastore.query(m)
             .filter(m.userDataRef.equal(key))
+            .filter(m.active.equal(true))
             .filter(m.login.equal(false)).limit(1000).count();
           memcacheService.put(key, count)
           count
@@ -109,6 +110,7 @@ object SummaryService {
         case _ => {
           val count: Integer = Datastore.query(m)
             .filter(m.userDataRef.equal(key))
+            .filter(m.active.equal(true))
             .filter(m.login.equal(false))
             .filter(m.status.equal(CheckService.Status.ERROR.toString)).limit(1000).count();
           memcacheService.put(key, count)
@@ -166,6 +168,7 @@ object SummaryService {
         case _ => {
           val count: Integer = Datastore.query(m)
             .filter(m.userDataRef.equal(key))
+            .filter(m.active.equal(true))
             .filter(m.login.equal(true)).limit(1000).count();
           memcacheService.put(key, count)
           count
@@ -192,6 +195,7 @@ object SummaryService {
         case _ => {
           val count: Integer = Datastore.query(m)
             .filter(m.userDataRef.equal(key))
+            .filter(m.active.equal(true))
             .filter(m.login.equal(true))
             .filter(m.status.equal(CheckService.Status.ERROR.toString)).limit(1000).count();
           memcacheService.put(key, count)

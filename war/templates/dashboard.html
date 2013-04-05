@@ -182,7 +182,7 @@
 <script id="checkLogItem" type="text/x-jquery-tmpl">
   <tr class="selectable">
     <td>${name}</td>
-    <td class='thin'>${url}</td>
+    <td class='thin'><a href="${url}" target="_blank">${url}</a></td>
     <td class="thin{{if status=='D'}} noticeMessage{{else status=='R'}} confirmMessage{{/if}}">{{html statusHtml}}</td>
     <td class="thin">${createdAt}</td>
   </tr>

@@ -83,8 +83,8 @@ object MailUtil {
       case _ => false
     }
   }
-  
-    def validate2(mail: String) = {
+
+  def validate2(mail: String) = {
       mail match {
       	case AppConstants.BANNED_DOMAIN_REGEX(_1,_2) => {
       	 false 

@@ -32,10 +32,10 @@ class DashboardController extends AbstractUserBaseActionController {
   override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
-        val checkCount = SummaryService.getCheckCount(userData.getUserIdString)
-        val errorCount = SummaryService.getErrorTodayCount(userData.getUserIdString)
-        val checkLoginCount = SummaryService.getCheckLoginCount(userData.getUserIdString)
-        val errorLoginCount = SummaryService.getErrorTodayLoginCount(userData.getUserIdString)
+        val checkCount = SummaryService.getCheckCount(userData.getUserId)
+        val errorCount = SummaryService.getErrorTodayCount(userData.getUserId)
+        val checkLoginCount = SummaryService.getCheckLoginCount(userData.getUserId)
+        val errorLoginCount = SummaryService.getErrorTodayLoginCount(userData.getUserId)
         super.replacerMap + ("checkCount" -> { e => Text(checkCount.toString) },
           "errorCount" -> { e => Text(errorCount.toString) },
           "checkLoginCount" -> { e => Text(checkLoginCount.toString) },

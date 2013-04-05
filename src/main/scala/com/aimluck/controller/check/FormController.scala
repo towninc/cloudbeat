@@ -19,6 +19,7 @@ import scala.xml.Node
 import scala.xml.Text
 import org.slim3.controller.Navigation
 import com.google.appengine.api.datastore.KeyFactory
+import com.aimluck.service.PlanService
 
 class FormController extends AbstractUserBaseFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
@@ -30,7 +31,7 @@ class FormController extends AbstractUserBaseFormController {
   }
 
   val isLoginController = false;
-  
+
   override def validate: Boolean = {
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
@@ -148,7 +149,43 @@ class FormController extends AbstractUserBaseFormController {
             }
           }
 
-          if (check != null) {
+          // overSizeCheck
+          val isLogin: Boolean = request.getParameter("isLogin").toBoolean
+          val isOverCapacity: Boolean =
+            if (id == null) {
+              //Activeが増える
+              if (isLogin) {
+                PlanService.isReachedMaxCheckLoginNumber(userData)
+              } else {
+                PlanService.isReachedMaxCheckNumber(userData)
+              }
+            } else {
+              val isActivated = request.getParameter("active").toBoolean
+              if (isActivated) {
+                if (check.getActive() != true) { //Activeが増える
+                  if (isLogin) {
+                    PlanService.isReachedMaxCheckLoginNumber(userData)
+                  } else {
+                    PlanService.isReachedMaxCheckNumber(userData)
+                  }
+                } else {
+                  if (isLogin) { //Activeが増えない
+                    PlanService.isOverMaxCheckLoginNumber(userData)
+                  } else {
+                    PlanService.isOverMaxCheckNumber(userData)
+                  }
+                }
+              } else {
+                false
+              }
+            }
+
+          if (isOverCapacity) {
+            addError(Constants.KEY_GLOBAL_ERROR,
+              "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format(if (isLogin) { "ログイン" } else { "ページ" }))
+          }
+
+          if (!isOverCapacity && (check != null)) {
             //Name
             check.setName(request.getParameter("name"))
             //Url
