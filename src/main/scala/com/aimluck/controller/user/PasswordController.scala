@@ -35,8 +35,8 @@ class PasswordController extends AbstractUserBaseFormController {
         	addError("password", LanguageUtil.get("error.required", Some(Array(
         			LanguageUtil.get("password")))));
         }
-        if (newPassword.size <= 5  ||newPassword.size >= 11 ) {
-        	   addError("newpassword","パスワードは6文字以上10文字以内で入力してください。");
+        if (newPassword.size <= 5  ||newPassword.size > 20 ) {
+        	   addError("newpassword","パスワードは6文字以上20文字以内で入力してください。");
          }
         if (confirmPassword.size <= 0) {
             	 addError("confirmpassword", LanguageUtil.get("error.required", Some(Array(
