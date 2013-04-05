@@ -77,14 +77,14 @@
 					<li>
 						<a href="/check/">
 							<i class="icon-th-list"></i>
-							ページ監視一覧	
+							ページ監視	
 							<liquidtpl:errorCount/>
 						</a>
 					</li>
 					<li>
 						<a href="/check/login">
 							<i class="icon-th-list"></i>
-							ログイン監視一覧	
+							ログイン監視	
 							<liquidtpl:errorLoginCount/>
 						</a>
 					</li>
@@ -116,6 +116,7 @@
         $('#main-nav li').each(function(){
         	var menuLink = $(this).find('a').attr('href');
         	$(this).removeClass('active');
+        	
         	if(menuLink){
         		if(menuLink == location.pathname) {
         			$(this).addClass('active');
