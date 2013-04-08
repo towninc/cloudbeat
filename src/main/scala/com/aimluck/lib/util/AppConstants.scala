@@ -41,11 +41,13 @@ object AppConstants {
   val RESULTS_PER_PAGE: Int = 100
 
   val PLAN_MAP = Map[String, PlanBean](
-    "micro" -> PlanBean("Micro", 1, 1, 0),
-    "starter" -> PlanBean("Starter", 5, 5, 525),
-    "business" -> PlanBean("Business", 10, 10, 1050),
+    "free" -> PlanBean("Free", 0, 0, 0),
+    "micro" -> PlanBean("Micro", 5, 5, 525),
+    "starter" -> PlanBean("Starter", 10, 10, 1050),
+    "business" -> PlanBean("Business", 20, 20, 2100),
     "unlimited" -> PlanBean("Unlimited", -1, -1, -1))
 
+  val PLAN_FREE: String = "free"
   val PLAN_MICRO: String = "micro"
   val PLAN_STARTER: String = "starter"
   val PLAN_BUSINESS: String = "business"

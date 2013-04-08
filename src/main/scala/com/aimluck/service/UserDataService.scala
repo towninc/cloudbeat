@@ -80,7 +80,7 @@ object UserDataService {
 
   def createNew(): UserData = {
     val result: UserData = new UserData
-    result.setPlanName(AppConstants.PLAN_MICRO)
+    result.setPlanName(AppConstants.PLAN_FREE)
     result
   }
 

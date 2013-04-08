@@ -24,12 +24,12 @@ object PlanService {
     def onPlanNotFound: PlanBean = {
       UserDataService.fetchOne(user.getUserId()) match {
         case Some(userData) => {
-          userData.setPlanName(AppConstants.PLAN_MICRO)
+          userData.setPlanName(AppConstants.PLAN_FREE)
           UserDataService.save(userData)
         }
         case None =>
       }
-      AppConstants.PLAN_MAP.apply(AppConstants.PLAN_MICRO)
+      AppConstants.PLAN_MAP.apply(AppConstants.PLAN_FREE)
     }
 
     user.getPlanName() match {
