@@ -1,7 +1,6 @@
 package com.aimluck.controller.log;
 
 import com.aimluck.service.CheckLogService
-
 import com.aimluck.service.UserDataService
 import dispatch.json.JsValue
 import java.util.Date
@@ -11,26 +10,28 @@ import org.dotme.liquidtpl.LanguageUtil
 import org.dotme.liquidtpl.controller.AbstractJsonDataController
 import sjson.json.JsonSerialization
 import sjson.json.JsonSerialization._
+import com.aimluck.controller.AbstractJsonController
+import com.aimluck.model.Check
+import com.aimluck.model.CheckLog
 
-class JsonController extends AbstractJsonDataController {
+class JsonController extends AbstractJsonController {
   Logger.getLogger(classOf[JsonController].getName)
 
   override def getList: JsValue = {
     import com.aimluck.service.CheckLogService.CheckLogProtocol._
     val startDate: Date = new Date
-    UserDataService.fetchOne(this.sessionScope("userId")) match {
+    val sort = (x: CheckLog, y: CheckLog) =>
+      x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0
+
+    JsonSerialization.tojson(UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
-    	  this.param("limit") match{
-    	  	case "10" => JsonSerialization.tojson(CheckLogService.fetchWithLimit(Some(userData), Integer.valueOf(this.param("limit"))).sortWith { (x, y) =>
-          x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
-        	case null => JsonSerialization.tojson(CheckLogService.fetchAll(Some(userData)).sortWith { (x, y) =>
-          x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0})
-          }
+        CheckLogService.fetch(Some(userData), this.param("limit")).sortWith(sort)
       }
-      case None =>
+      case None => {
         addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.sessionError"))
-        null
-    }
+        Nil
+      }
+    })
   }
 
   override def getDetail(id: String): JsValue = {

@@ -150,15 +150,25 @@ object CheckService {
       case None => Datastore.query(m).asList.toList
     }
   }
-  
+
+  def fetchPage(_userData: Option[UserData], limit: Option[Int]) = limit match {
+    case Some(limit) => fetchPageWithLimit(_userData, limit)
+    case None => fetchPageAll(_userData)
+  }
+
+  def fetchLogin(_userData: Option[UserData], limit: Option[Int]) = limit match {
+    case Some(limit) => fetchLoginWithLimit(_userData, limit)
+    case None => fetchLoginAll(_userData)
+  }
+
   def fetchPageAll(_userData: Option[UserData]): List[Check] = {
     val m: CheckMeta = CheckMeta.get
     _userData match {
-      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey) ,m.login.equal(false)).asList.toList
+      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey), m.login.equal(false)).asList.toList
       case None => Datastore.query(m).asList.toList
     }
   }
-    
+
   def fetchLoginAll(_userData: Option[UserData]): List[Check] = {
     val m: CheckMeta = CheckMeta.get
     _userData match {
@@ -167,15 +177,15 @@ object CheckService {
     }
   }
 
-    def fetchPageWithLimit(_userData: Option[UserData], limit: Integer): List[Check] = {
+  def fetchPageWithLimit(_userData: Option[UserData], limit: Int): List[Check] = {
     val m: CheckMeta = CheckMeta.get
     _userData match {
-      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey) ,m.login.equal(false)).sort(m.updatedAt.desc).limit(limit).asList.toList
+      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey), m.login.equal(false)).sort(m.updatedAt.desc).limit(limit).asList.toList
       case None => Datastore.query(m).filter(m.login.equal(false)).limit(limit).sort(m.updatedAt.desc).asList.toList
     }
   }
-    
-  def fetchLoginWithLimit(_userData: Option[UserData], limit: Integer): List[Check] = {
+
+  def fetchLoginWithLimit(_userData: Option[UserData], limit: Int): List[Check] = {
     val m: CheckMeta = CheckMeta.get
     _userData match {
       case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey), m.login.equal(true)).sort(m.updatedAt.desc).limit(limit).asList.toList
@@ -183,7 +193,6 @@ object CheckService {
     }
   }
 
-  
   def countAll(_userData: Option[UserData]): Int = {
     val m: CheckMeta = CheckMeta.get
     _userData match {
@@ -255,10 +264,10 @@ object CheckService {
     }
     model.setUpdatedAt(now)
     model.getUserDataRef.setModel(userData)
-    
+
     val formParams = model.getFormParams();
     model.setLogin(formParams != null && formParams != "")
-    
+
     val result = Datastore.putWithoutTx(model).apply(0)
     clearCheckKeysCache()
     clearCheckCache(model)
@@ -283,7 +292,7 @@ object CheckService {
       case None => ""
     }
   }
-  
+
   val statusHtmlMap: List[(String, String)] = List[(String, String)](
     Status.INITIALIZING.toString -> LanguageUtil.get("check.Status.initializingHtml"),
     Status.OK.toString -> LanguageUtil.get("check.Status.okHtml"),

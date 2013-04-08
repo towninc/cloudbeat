@@ -3,7 +3,7 @@
 <script type="text/javascript">
     //<![CDATA[
     $(function(){
-        $.initList( "pageCheckList", "checkItem", true, "/check/json", {"pageType":"page", "limit":"10"}, function(jsonData){
+        $.initList( "pageCheckList", "checkItem", true, "/check/json", {"pageType":"page", "limit":"5"}, function(jsonData){
             var values = jsonData.values;
             var size = values.length;
             for(var i = 0; i < size; i++){
@@ -25,7 +25,7 @@
 			}
         });
         
-        $.initList( "loginCheckList", "checkItem", true, "/check/json", {"pageType":"login", "limit":"10"}, function(jsonData){
+        $.initList( "loginCheckList", "checkItem", true, "/check/json", {"pageType":"login", "limit":"5"}, function(jsonData){
             var values = jsonData.values;
             var size = values.length;
             for(var i = 0; i < size; i++){
@@ -48,7 +48,7 @@
 			}
         });
         
-        $.initList( "checkLogList", "checkLogItem", false, "/log/json",  {"limit":"10"}, null, null, null, function(){
+        $.initList( "checkLogList", "checkLogItem", false, "/log/json",  {"limit":"5"}, null, null, null, function(){
         	$('#checkLogListContainer').show();	
         });
         
