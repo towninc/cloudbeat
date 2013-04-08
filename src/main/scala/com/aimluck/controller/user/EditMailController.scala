@@ -60,14 +60,14 @@ class EditMailController extends AbstractUserBaseFormController {
   override def update: Boolean = {
     val email = asString("email")
     val userId: String = sessionScope("userId")
-    (UserDataService.fetchOne(userId), UserDataService.fetchByEmail(email)) match {
-      case (Some(userData), None) => {
+    UserDataService.fetchOne(userId) match {
+      case Some(userData) => {
         val republish = RepublishService.createRepublish(email, userId)
         val key = Datastore.keyToString(republish.getKey())
         val baseUrl = ServletUtils.getBaseUrl(request)
         MailUtil.sendEditMail(email, key, baseUrl)
       }
-      case _ =>
+      case None =>
         addError(Constants.KEY_GLOBAL_ERROR,
           LanguageUtil.get("error.sessionError"))
 

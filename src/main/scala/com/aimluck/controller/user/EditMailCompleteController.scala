@@ -17,9 +17,15 @@ class EditMailCompleteController extends AbstractUserBaseActionController {
       user <- UserDataService.fetchOne(republish.getUserId())
     } yield (republish, user)) match {
       case Some((republish, user)) => {
-        user.setEmail(republish.getMail())
-        UserDataService.save(user)
-        "editMailComplete"
+        val email = republish.getMail()
+        UserDataService.fetchByEmail(email) match {
+          case None => {
+            user.setEmail(email)
+            UserDataService.save(user)
+            "editMailComplete"
+          }
+          case _ => "editMailError"
+        }
       }
       case None =>
         "editMailError"
