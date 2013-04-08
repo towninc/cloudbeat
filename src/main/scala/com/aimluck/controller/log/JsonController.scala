@@ -10,11 +10,11 @@ import org.dotme.liquidtpl.LanguageUtil
 import org.dotme.liquidtpl.controller.AbstractJsonDataController
 import sjson.json.JsonSerialization
 import sjson.json.JsonSerialization._
-import com.aimluck.controller.AbstractJsonController
 import com.aimluck.model.Check
 import com.aimluck.model.CheckLog
+import com.aimluck.controller.AbstractBaseJsonController
 
-class JsonController extends AbstractJsonController {
+class JsonController extends AbstractBaseJsonController {
   Logger.getLogger(classOf[JsonController].getName)
 
   override def getList: JsValue = {

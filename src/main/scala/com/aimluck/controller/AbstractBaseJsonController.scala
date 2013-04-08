@@ -9,7 +9,7 @@ import com.aimluck.service.UserDataService
 import com.aimluck.service.SummaryService
 import org.dotme.liquidtpl.controller.AbstractJsonDataController
 
-abstract class AbstractJsonController extends AbstractJsonDataController {
+trait AbstractBaseJsonController extends AbstractJsonDataController {
   implicit def stringToIntOption(str: String) = {
     try {
       Some(str.toInt)

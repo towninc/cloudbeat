@@ -1,22 +1,22 @@
 package com.aimluck.controller.check;
 
+import java.util.logging.Logger
+import java.util.Date
+import scala.collection.JavaConversions._
+import org.dotme.liquidtpl.controller.AbstractJsonDataController
+import org.dotme.liquidtpl.Constants
+import org.dotme.liquidtpl.LanguageUtil
+import com.aimluck.model.Check
 import com.aimluck.service.CheckService
 import com.aimluck.service.UserDataService
 import dispatch.json.JsValue
-import java.util.Date
-import java.util.logging.Logger
-import org.dotme.liquidtpl.Constants
-import org.dotme.liquidtpl.LanguageUtil
-import org.dotme.liquidtpl.controller.AbstractJsonDataController
-import sjson.json.JsonSerialization
 import sjson.json.JsonSerialization._
-import scala.collection.JavaConversions._
-import com.aimluck.model.Check
-import com.aimluck.controller.AbstractJsonController
+import sjson.json.JsonSerialization
+import com.aimluck.controller.AbstractBaseJsonController
 
-class JsonController extends AbstractJsonController {
+class JsonController extends AbstractBaseJsonController {
   Logger.getLogger(classOf[JsonController].getName)
-  
+
   override def getList: JsValue = {
     import com.aimluck.service.CheckService.CheckListProtocol._
     val startDate: Date = new Date
@@ -29,7 +29,7 @@ class JsonController extends AbstractJsonController {
     } yield (userData, pageType)) match {
       case Some((userData, "page")) =>
         CheckService.fetchPage(Some(userData), this.param("limit")).sortWith(sort)
-      case Some((userData, "login")) => 
+      case Some((userData, "login")) =>
         CheckService.fetchLogin(Some(userData), this.param("limit")).sortWith(sort)
       case _ => {
         addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.sessionError"))
