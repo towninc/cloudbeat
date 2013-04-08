@@ -17,7 +17,7 @@ import sjson.json.DefaultProtocol._
 
 //FIXME Case Classで実装して一般化する
 class MenuController extends AbstractJsonController {
-  def getJson:JsValue = {
+  override def getJson:JsValue = {
     val PATH:String = "path"
     val NAME:String = "name"
     val TEXT:String = "text"
