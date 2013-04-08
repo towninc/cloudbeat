@@ -44,6 +44,10 @@ class EditMailController extends AbstractUserBaseFormController {
         } else if (!MailUtil.validate2(email)) {
           addError("email", "フリーメールでの登録はできません")
         }
+        UserDataService.fetchByEmail(email) match {
+          case Some(_) => addError("email", LanguageUtil.get("error.mailUsed"))
+          case None =>
+        }
       }
       case None =>
         addError(Constants.KEY_GLOBAL_ERROR,
@@ -56,14 +60,14 @@ class EditMailController extends AbstractUserBaseFormController {
   override def update: Boolean = {
     val email = asString("email")
     val userId: String = sessionScope("userId")
-    UserDataService.fetchOne(userId) match {
-      case Some(userData) => {
+    (UserDataService.fetchOne(userId), UserDataService.fetchByEmail(email)) match {
+      case (Some(userData), None) => {
         val republish = RepublishService.createRepublish(email, userId)
         val key = Datastore.keyToString(republish.getKey())
         val baseUrl = ServletUtils.getBaseUrl(request)
         MailUtil.sendEditMail(email, key, baseUrl)
       }
-      case None =>
+      case _ =>
         addError(Constants.KEY_GLOBAL_ERROR,
           LanguageUtil.get("error.sessionError"))
 
