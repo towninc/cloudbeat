@@ -5,35 +5,26 @@
 	});
 	//]]>
 </script>
-<div id="login-container">
-	
-	
-	<div id="login-header">
+<div class="account-container stacked">
+	<div class="content clearfix">
 		
 		<h3>登録</h3>
-		
-	</div> <!-- /login-header -->
-	
-	<div id="login-content" class="clearfix">
 	
 	<form id="registerForm" action="/user/register">
-				<fieldset>
-					<div class="control-group">
-						<label class="control-label" for="email">メールアドレス</label>
-						<div class="controls">
-							<input type="email" class="" name="email" id="email" placeholder="メールアドレス"/>
-						</div>
-						<div id="emailError" class="alert alert-danger" style="display:none; margin:0 0 10px 0">
-						</div>
-					</div>
-				</fieldset>
-			
-				<div class="pull-right">
-					<button type="submit" class="btn btn-warning btn-large">
-						登録
-					</button>
+			<div class="login-fields">
+				<div class="field">
+					<label for="email">メールアドレス</label>
+					<input type="email" class="login username-field" name="email" id="email" placeholder="メールアドレス"/>
+									<div id="emailError" class="alert alert-danger" style="display:none; margin:5px 0 10px 0">					</div>
 				</div>
-			</form>
+			</div>
+			
+			<div class="login-actions" style="margin-bottom:0">
+				<button type="submit" class="button btn btn-warning btn-large">
+					登録
+				</button>
+			</div>
+		</form>
 			
 		</div> <!-- /login-content -->
 	

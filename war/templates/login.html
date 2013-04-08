@@ -5,40 +5,35 @@
 	});
 	//]]>
 </script>
-<div id="login-container">
-	<div id="login-header">
-		<h3>ログイン</h3>
-	</div> <!-- /login-header -->
-	<div id="login-content" class="clearfix">
-	<form id="loginForm" action="/login">
-				<fieldset>
-					<div class="control-group">
-						<label class="control-label" for="email">メールアドレス</label>
-						<div class="controls">
-							<input type="email" class="" name="email" id="email" placeholder="メールアドレス"/>
-						</div>
-						<div id="emailError" class="alert alert-danger" style="display:none; margin:0 0 10px 0">
-						</div>
+<div class="account-container stacked">
+	<div class="content clearfix">
+		<form id="loginForm" action="/login">
+			<h2>ログイン</h2>	
+			<div class="login-fields">
+				<div class="field">
+					<label for="email">メールアドレス</label>
+					<input type="email" class="login username-field" name="email" id="email" placeholder="メールアドレス"/>
+					<div id="emailError" class="alert alert-danger" style="display:none; margin:5px 0 10px 0">
 					</div>
-					<div class="control-group">
-						<label class="control-label" for="password">パスワード</label>
-						<div class="controls">
-							<input type="password" class="" name="password" id="password" placeholder="パスワード"/>
-						</div>
-						<div id="passwordError" class="alert alert-danger" style="display:none; margin:0 0 10px 0">
-						</div>
-					</div>
-				</fieldset>
-			
-				<div class="pull-right">
-					<button type="submit" class="btn btn-warning btn-large">
-						ログイン
-					</button>
 				</div>
-			</form>
-		</div> <!-- /login-content -->
-		<div id="login-extra">
-			<p><a href="/user/register">アカウント登録がまだの方はこちら</a></p>
-			<p><a href="/user/resend">パスワードを忘れた場合はこちら</a></p>
-		</div> <!-- /login-extra -->
+				<div class="field">
+					<label class="field" for="password">パスワード</label>
+					<input type="password" class="login password-field" name="password" id="password" placeholder="パスワード"/>
+					<div id="passwordError" class="alert alert-danger" style="display:none; margin:5px 0 10px 0">
+					</div>
+				</div>
+			</div>
+			<div class="login-actions" style="margin-bottom:0">
+				<button type="submit" class="button btn btn-warning btn-large">
+					ログイン
+				</button>
+			</div>
+		</form>
+	</div> <!-- /login-content -->
 </div> <!-- /login-wrapper -->
+
+<div class="login-extra">
+	<p><a href="/user/register">アカウント登録がまだの方はこちら</a></p>
+	<p><a href="/user/resend">パスワードを忘れた場合はこちら</a></p>
+</div> <!-- /login-extra -->
+
