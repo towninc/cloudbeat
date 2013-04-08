@@ -17,9 +17,14 @@ class EditMailCompleteController extends AbstractUserBaseActionController {
       user <- UserDataService.fetchOne(republish.getUserId())
     } yield (republish, user)) match {
       case Some((republish, user)) => {
-        user.setEmail(republish.getMail())
-        UserDataService.save(user)
-        "editMailComplete"
+        if (sessionScope("userId") != null && sessionScope("userId").equals(user.getUserId())) {
+          user.setEmail(republish.getMail())
+          UserDataService.save(user)
+          "editMailComplete"
+        } else {
+          sessionScope("userId", null)
+          "redirect"
+        }
       }
       case None =>
         "editMailError"
@@ -27,4 +32,5 @@ class EditMailCompleteController extends AbstractUserBaseActionController {
 
   override def getOuterTemplateName: String =
     "outer/default"
+
 }
