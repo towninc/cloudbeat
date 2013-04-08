@@ -2,6 +2,13 @@
 <script type="text/javascript">
     //<![CDATA[
     $(function(){
+    	if(typeof $('#pageType').val() != null && $('#pageType').val() == "page"){
+			$("#page_icon").css("display","");
+			$("#login_icon").css("display","none");
+    	}else{
+			$("#page_icon").css("display","none");
+			$("#login_icon").css("display","");
+    	}
         $.initList( "checkList", "checkItem", true, "/check/json", {"pageType":$('#pageType').val()}, function(jsonData){
             var values = jsonData.values;
             var size = values.length;
@@ -43,7 +50,8 @@
 	</div>
 	<div id="checkListContainer" class="widget widget-table hide">
 		<div class="widget-header">
-			<i class="icon-th-list"></i>
+			<i id="page_icon" class="icon-file"></i>
+			<i id="login_icon" class="icon-file-alt"></i>
 			<h3><liquidtpl:pageTypeString/>監視</h3>
 		</div> <!-- /widget-header -->
 		<div class="widget-content">
