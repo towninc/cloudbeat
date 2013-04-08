@@ -16,68 +16,70 @@ import java.text.DateFormat
 
 object MailUtil {
   val validatePat = """(^[a-zA-Z0-9!#$%&'_`/=~\\.\\*\\+\\-\\?\\^\\{\\|\\}]+@[a-zA-Z0-9][a-zA-Z0-9\\-]*[\\.[a-zA-Z0-9\\-]+]*$)""".r
-  def sendRegisterMail(mail: String, password: String, baseUrl: String) {
-    val CL = System.getProperty("line.separator")
+  val CL = System.getProperty("line.separator")
+
+  def sendMail(email: String, title: String, body: String) {
     val ms = MailServiceFactory.getMailService // MailServiceを取得
-    val url =baseUrl+"/login"
     try {
       val msg = new MailService.Message()
-      msg.setSubject("[" + LanguageUtil.get("title") + "] ご登録について")
-      msg.setTo(mail)
+      msg.setSubject(title)
+      msg.setTo(email)
       msg.setSender(AppConstants.DEFAULT_SENDER)
-      msg.setTextBody("ご登録ありがとうございます。" + CL +
-        "アカウントの作成が完了したことをお知らせします。" + CL +
-        "メールアドレス：　%s".format(mail) + CL +
-        "パスワード：　%s".format(password) + CL * 3 +
-        "--" + CL +
-        LanguageUtil.get("title") + CL +
-        url)
+      msg.setTextBody(body)
       ms.send(msg) // メール送信を実行
       println(msg.getTextBody())
     } catch {
       case e: Exception =>
     }
   }
-   def sendResendMail(mail: String, key: String, baseUrl:String) {
-    val CL = System.getProperty("line.separator")
-    val ms = MailServiceFactory.getMailService // MailServiceを取得
-     val url =baseUrl+"/user/resendcomplete?republishKey="+key
-    try {
-      val msg = new MailService.Message()
-      msg.setSubject("[" + LanguageUtil.get("title") + "] パスワード再発行について")
-      msg.setTo(mail)
-      msg.setSender(AppConstants.DEFAULT_SENDER)
-      msg.setTextBody(
-        "以下のURLから再発行を完了してください。" + CL +
-        url + CL * 3 +
-        "--" + CL +
-        LanguageUtil.get("title"))
-      ms.send(msg) // メール送信を実行
-      println(msg.getTextBody())
-    } catch {
-      case e: Exception =>
-    }
+
+  def sendRegisterMail(email: String, password: String, baseUrl: String) {
+    val url = baseUrl + "/login"
+    val title = "[" + LanguageUtil.get("title") + "] ご登録について"
+    val body = "ご登録ありがとうございます。" + CL +
+      "アカウントの作成が完了したことをお知らせします。" + CL +
+      "メールアドレス：　%s".format(email) + CL +
+      "パスワード：　%s".format(password) + CL * 3 +
+      "--" + CL +
+      LanguageUtil.get("title") + CL +
+      url
+
+    sendMail(email, title, body)
   }
-   def sendResendCompleteMail(mail: String, password: String, baseUrl:String) {
-    val CL = System.getProperty("line.separator")
-    val ms = MailServiceFactory.getMailService // MailServiceを取得
-     val url = baseUrl+ "/login"
-    try {
-      val msg = new MailService.Message()
-      msg.setSubject("[" + LanguageUtil.get("title") + "] パスワード再発行について")
-      msg.setTo(mail)
-      msg.setSender(AppConstants.DEFAULT_SENDER)
-      msg.setTextBody(
-        "パスワードの再発行が完了したことをお知らせします。" + CL +
-        "パスワード：　%s".format(password)  + CL * 3 +
-        "--" + CL +
-        LanguageUtil.get("title")+CL+
-         url)
-      ms.send(msg) // メール送信を実行
-      println(msg.getTextBody())
-    } catch {
-      case e: Exception =>
-    }
+
+  def sendResendMail(email: String, key: String, baseUrl: String) {
+    val url = baseUrl + "/user/resendcomplete?republishKey=" + key
+    val title = "[" + LanguageUtil.get("title") + "] パスワード再発行について"
+    val body = "以下のURLから再発行を完了してください。" + CL +
+      url + CL * 3 +
+      "--" + CL +
+      LanguageUtil.get("title")
+
+    sendMail(email, title, body)
+  }
+
+  def sendResendCompleteMail(email: String, password: String, baseUrl: String) {
+    val url = baseUrl + "/login"
+    val title = "[" + LanguageUtil.get("title") + "] パスワード再発行について"
+    val body = "パスワードの再発行が完了したことをお知らせします。" + CL +
+      "パスワード：　%s".format(password) + CL * 3 +
+      "--" + CL +
+      LanguageUtil.get("title") + CL +
+      url
+
+    sendMail(email, title, body)
+  }
+
+  def sendEditMail(email: String, key: String, baseUrl: String) {
+    val url = baseUrl + "/user/editMailComplete?republishKey=" + key
+    val title = "[" + LanguageUtil.get("title") + "] メールアドレスの変更について"
+    val body = "ご利用ありがとうございます。" + CL +
+      "以下のURLから、メールアドレスの変更を完了できます。" + CL +
+      url + CL * 3 +
+      "--" + CL +
+      LanguageUtil.get("title")
+
+    sendMail(email, title, body)
   }
    
    def sendInquiryMail(mail: String, inquiry:String) {
@@ -118,11 +120,11 @@ object MailUtil {
   }
 
   def validate2(mail: String) = {
-      mail match {
-      	case AppConstants.BANNED_DOMAIN_REGEX(_1,_2) => {
-      	 false 
-      	}
-      	case _ => true
+    mail match {
+      case AppConstants.BANNED_DOMAIN_REGEX(_1, _2) => {
+        false
+      }
+      case _ => true
     }
   }
 }
