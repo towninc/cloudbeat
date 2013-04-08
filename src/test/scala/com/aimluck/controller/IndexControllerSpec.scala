@@ -16,7 +16,7 @@ object IndexControllerSpec extends org.specs.Specification {
       controller mustNotBe null
     }
     "redirect" >> {
-      tester.isRedirect mustBe true
+      tester.isRedirect mustBe false
     }
     doAfter{ tester.tearDown}
 

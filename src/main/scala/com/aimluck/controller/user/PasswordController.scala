@@ -15,6 +15,9 @@ import sjson.json.DefaultProtocol._
 import scala.collection.JavaConversions._
 import com.aimluck.controller.AbstractUserBaseFormController
 import com.aimluck.lib.util.Encrypter;
+import scala.xml.NodeSeq
+import scala.xml.Text
+import scala.xml.Node
 
 class PasswordController extends AbstractUserBaseFormController {
   override val logger = Logger.getLogger(classOf[PasswordController].getName)
@@ -28,23 +31,21 @@ class PasswordController extends AbstractUserBaseFormController {
   override def validate: Boolean = {
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
-         val password = asString("password")
-         val newPassword=asString("newpassword")
-         val confirmPassword = asString("confirmpassword")
+        val password = asString("password")
+        val newPassword = asString("newpassword")
+        val confirmPassword = asString("confirmpassword")
         if (password.size <= 0) {
-        	addError("password", LanguageUtil.get("error.required", Some(Array(
-        			LanguageUtil.get("password")))));
+          addError("password", LanguageUtil.get("error.required", Some(Array(
+            LanguageUtil.get("password")))));
         }
-        if (newPassword.size <= 5  ||newPassword.size > 20 ) {
-        	   addError("newpassword","パスワードは6文字以上20文字以内で入力してください。");
-         }
+        if (newPassword.size <= 5 || newPassword.size > 20) {
+          addError("newpassword", "パスワードは6文字以上20文字以内で入力してください。");
+        }
         if (confirmPassword.size <= 0) {
-            	 addError("confirmpassword", LanguageUtil.get("error.required", Some(Array(
-            			 LanguageUtil.get("password")))));
-           }
-      
-        
-    
+          addError("confirmpassword", LanguageUtil.get("error.required", Some(Array(
+            LanguageUtil.get("password")))));
+        }
+
       }
       case None => {
         addError(Constants.KEY_GLOBAL_ERROR,
@@ -57,26 +58,26 @@ class PasswordController extends AbstractUserBaseFormController {
 
   override def update: Boolean = {
     val password = asString("password")
-    val newPassword=asString("newpassword")
+    val newPassword = asString("newpassword")
     val confirmPassword = asString("confirmpassword")
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
-        val email= userData.getEmail()
-         UserDataService.fetchByEmailAndPassword(email, password) match {
-         case Some(user) => {
-            if(newPassword!=confirmPassword){
-            	addError("confirmpassword", "新しいパスワードと異なります。新しいパスワードと同じパスワードをご入力下さい。");
-            }else{
-            	userData.setRawPassword(newPassword)
-            	UserDataService.save(userData)
+        val email = userData.getEmail()
+        UserDataService.fetchByEmailAndPassword(email, password) match {
+          case Some(user) => {
+            if (newPassword != confirmPassword) {
+              addError("confirmpassword", "新しいパスワードと異なります。新しいパスワードと同じパスワードをご入力下さい。");
+            } else {
+              userData.setRawPassword(newPassword)
+              UserDataService.save(userData)
             }
-       
-       	}
-         case None =>{
-    	  addError("password", "現在のパスワードが違います");
-         }
+
+          }
+          case None => {
+            addError("password", "現在のパスワードが違います");
+          }
         }
-        
+
       }
       case None =>
         addError(Constants.KEY_GLOBAL_ERROR,
@@ -84,5 +85,9 @@ class PasswordController extends AbstractUserBaseFormController {
 
     }
     !existsError
+  }
+
+  override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
+    super.replacerMap + ("formTitle" -> { e => Text("パスワード変更") })  
   }
 }

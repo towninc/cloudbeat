@@ -1,4 +1,5 @@
 <!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> -->
+<link href="/css/pages/reports.css" rel="stylesheet"/>
 <script type="text/javascript">
     //<![CDATA[
     $(function(){
@@ -56,111 +57,103 @@
     
     //]]>
 </script>
-<div class="span9">
-				<h1 class="page-title">
-					<i class="icon-home"></i>
-					<span>ダッシュボード</span>					
-				</h1>
-				<div class="stat-container">
-					<div class="stat-holder">						
-						<div class="stat">
-							<span><liquidtpl:errorCount/></span>
-							今日のページエラー数							
-						</div> <!-- /stat -->						
-					</div> <!-- /stat-holder -->
-					<div class="stat-holder">						
-						<div class="stat">							
-							<span><liquidtpl:checkCount/></span>							
-							ページ監視数							
-						</div> <!-- /stat -->						
-					</div> <!-- /stat-holder -->
-					<div class="stat-holder">						
-						<div class="stat">							
-							<span><liquidtpl:errorLoginCount/></span>							
-							今日のログインエラー数							
-						</div> <!-- /stat -->						
-					</div> <!-- /stat-holder -->
-					<div class="stat-holder">						
-						<div class="stat">							
-							<span><liquidtpl:checkLoginCount/></span>							
-							ログイン監視数							
-						</div> <!-- /stat -->						
-					</div> <!-- /stat-holder -->
-				</div> <!-- /stat-container -->
+<div class="span12">
+	<div class="widget big-stats-container stacked">
+    			<div class="widget-content">
+      		<div id="big_stats" class="cf">
+				<div class="stat">								
+					<h4>今日のページエラー数</h4>
+					<span class="value"><liquidtpl:errorCount/></span>								
+				</div> <!-- .stat -->
 				
-				<!-- ページ監視リスト -->
-				<div id="checkListContainer" class="widget widget-table hide">
-					<div class="widget-header">
-						<i class="icon-th-list"></i>
-						<h3>ページ監視</h3>
-					</div> <!-- /widget-header -->
-					<div class="widget-content">
-						<table  class="table table-striped table-bordered">
-							<thead>
-								<tr>
-									<th>タイトル</th>
-									<th class="w30">URL</th>
-									<th>有効・無効</th>
-									<th>ステータス</th>
-									<th>編集</th>
-								</tr>
-							</thead>
-							<tbody id="pageCheckList">
-							</tbody>
-			
-						</table>
-					</div> <!-- /widget-content -->
-				</div> <!-- /widget -->
-				<!-- /ページ監視リスト -->
+				<div class="stat">								
+					<h4>ページ監視数</h4>
+					<span class="value"><liquidtpl:checkCount/></span>								
+				</div> <!-- .stat -->
 				
-				<!-- ログイン監視リスト -->
-				<div id="loginListContainer" class="widget widget-table hide">
-					<div class="widget-header">
-						<i class="icon-th-list"></i>
-						<h3>ログイン監視</h3>
-					</div> <!-- /widget-header -->
-					<div class="widget-content">
-						<table  class="table table-striped table-bordered">
-							<thead>
-								<tr>
-									<th>タイトル</th>
-									<th class="w30">URL</th>
-									<th>有効・無効</th>
-									<th>ステータス</th>
-									<th>編集</th>
-								</tr>
-							</thead>
-							<tbody id="loginCheckList">
-							</tbody>
-			
-						</table>
-					</div> <!-- /widget-content -->
-				</div> <!-- /widget -->
-				<!-- /ログイン監視リスト -->
+				<div class="stat">								
+					<h4>今日のログインエラー数</h4>
+					<span class="value"><liquidtpl:errorLoginCount/></span>								
+				</div> <!-- .stat -->
 				
-				<!-- ログリスト -->
-				<div id="checkLogListContainer" class="widget widget-table hide">
-					<div class="widget-header">
-						<i class="icon-th-list"></i>
-							<h3>ログ</h3>
-						</div> <!-- /widget-header -->
-					<div class="widget-content">
-						<table  class="table table-striped table-bordered">
-							<thead>
-								<tr>
-									<th><liquidtpl:text key="checkLog.name"/></th>
-    								<th class="w30">監視ページのURL</th>
-    								<th class='thin'><liquidtpl:text key="checkLog.status"/></th>
-    								<th></th>
-								</tr>
-							</thead>
-							<tbody id="checkLogList">
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<!-- /ログリスト -->
-				
+				<div class="stat">								
+					<h4>ログイン監視数</h4>
+					<span class="value"><liquidtpl:checkLoginCount/></span>								
+				</div> <!-- .stat -->
+			</div>
+		</div> <!-- /widget-content -->
+	</div>
+	<!-- ページ監視リスト -->
+	<div id="checkListContainer" class="widget widget-table hide">
+		<div class="widget-header">
+			<i class="icon-th-list"></i>
+			<h3>ページ監視</h3>
+		</div> <!-- /widget-header -->
+		<div class="widget-content">
+			<table  class="table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>タイトル</th>
+						<th class="w30">URL</th>
+						<th>有効・無効</th>
+						<th>ステータス</th>
+						<th>編集</th>
+					</tr>
+				</thead>
+				<tbody id="pageCheckList">
+				</tbody>
+
+			</table>
+		</div> <!-- /widget-content -->
+	</div> <!-- /widget -->
+	<!-- /ページ監視リスト -->
+	<!-- ログイン監視リスト -->
+	<div id="loginListContainer" class="widget widget-table hide">
+		<div class="widget-header">
+			<i class="icon-th-list"></i>
+			<h3>ログイン監視</h3>
+		</div> <!-- /widget-header -->
+		<div class="widget-content">
+			<table  class="table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>タイトル</th>
+						<th class="w30">URL</th>
+						<th>有効・無効</th>
+						<th>ステータス</th>
+						<th>編集</th>
+					</tr>
+				</thead>
+				<tbody id="loginCheckList">
+				</tbody>
+
+			</table>
+		</div> <!-- /widget-content -->
+	</div> <!-- /widget -->
+	<!-- /ログイン監視リスト -->
+	
+	<!-- ログリスト -->
+	<div id="checkLogListContainer" class="widget widget-table hide">
+		<div class="widget-header">
+			<i class="icon-th-list"></i>
+				<h3>ログ</h3>
+			</div> <!-- /widget-header -->
+		<div class="widget-content">
+			<table  class="table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th><liquidtpl:text key="checkLog.name"/></th>
+ 								<th class="w30">監視ページのURL</th>
+ 								<th class='thin'><liquidtpl:text key="checkLog.status"/></th>
+ 								<th></th>
+					</tr>
+				</thead>
+				<tbody id="checkLogList">
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<!-- /ログリスト -->
 </div> <!-- /row -->
 <script id="checkItem" type="text/x-jquery-tmpl">
     <tr>
