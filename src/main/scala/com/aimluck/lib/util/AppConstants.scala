@@ -18,8 +18,9 @@ object AppConstants {
   val CONFIG_FOLDER = "contents"
   val CONFIG_FILE = "app"
   val SYSTEM_TIME_ZONE: TimeZone = TimeZone.getTimeZone("GMT-8:00")
-  
-  val SUPPORT_MAIL = "aimluck.tester@gmail.com"
+
+  val SUPPORT_MAIL = "support@aimluck.com"
+  val SUPPORT_MAIL2 = "takase@aimluck.com"
 
   // settings for validate
   val VALIDATE_STRING_LENGTH = 100
