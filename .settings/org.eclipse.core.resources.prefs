@@ -1,8 +1,16 @@
-#Wed Apr 03 18:30:08 JST 2013
+#Mon Apr 08 16:20:47 JST 2013
 eclipse.preferences.version=1
+encoding//war/templates/check/form.html=UTF-8
 encoding//war/templates/log/index.html=UTF-8
 encoding//war/templates/login.html=UTF-8
+encoding//war/templates/user/editMail.html=UTF-8
+encoding//war/templates/user/editMailComplete.html=UTF-8
+encoding//war/templates/user/editMailError.html=UTF-8
+encoding//war/templates/user/editMailFinish.html=UTF-8
+encoding//war/templates/user/password.html=UTF-8
+encoding//war/templates/user/passwordfinish.html=UTF-8
 encoding//war/templates/user/register.html=UTF-8
+encoding//war/templates/user/registerfinish.html=UTF-8
 encoding//war/templates/user/resend.html=UTF-8
 encoding//war/templates/user/resendcomplete.html=UTF-8
 encoding//war/templates/user/resenderror.html=UTF-8
