@@ -2,7 +2,7 @@
 <cronentries>
 	<cron>
 		<url>/cron/check</url>
-		<schedule>every 5 minutes</schedule>
+		<schedule>every 1 minutes</schedule>
 	</cron>
 	<cron>
 		<url>/_ah/sessioncleanup?clear</url>
