@@ -15,20 +15,13 @@ class PlanController extends AbstractUserBaseActionController {
   }
 
   @throws(classOf[Exception])
-  override def run(): Navigation = {
+  override def run(): Navigation =
     UserDataService.fetchOne(this.sessionScope("userId")) match {
-      case Some(userData) => {
-        if (CheckService.countAll(Some(userData)) > 0) {
-          super.run()
-        } else {
-          return redirect("/check/form")
-        }
-      }
-      case None => {
+      case Some(userData) =>
+        super.run()
+      case None =>
         return redirect("/check/form")
-      }
     }
-  }
 
   override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
     UserDataService.fetchOne(this.sessionScope("userId")) match {

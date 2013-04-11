@@ -12,9 +12,9 @@ import sjson.json.JsonSerialization
 import sjson.json.JsonSerialization._
 import com.aimluck.model.Check
 import com.aimluck.model.CheckLog
-import com.aimluck.controller.AbstractBaseJsonController
+import com.aimluck.lib.util.BaseUtil
 
-class JsonController extends AbstractBaseJsonController {
+class JsonController extends AbstractJsonDataController with BaseUtil {
   Logger.getLogger(classOf[JsonController].getName)
 
   override def getList: JsValue = {

@@ -12,9 +12,9 @@ import com.aimluck.service.UserDataService
 import dispatch.json.JsValue
 import sjson.json.JsonSerialization._
 import sjson.json.JsonSerialization
-import com.aimluck.controller.AbstractBaseJsonController
+import com.aimluck.lib.util.BaseUtil
 
-class JsonController extends AbstractBaseJsonController {
+class JsonController extends AbstractJsonDataController with BaseUtil {
   Logger.getLogger(classOf[JsonController].getName)
 
   override def getList: JsValue = {

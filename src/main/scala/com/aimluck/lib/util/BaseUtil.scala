@@ -1,4 +1,4 @@
-package com.aimluck.controller
+package com.aimluck.lib.util
 
 import scala.xml.Node
 import scala.xml.NodeSeq
@@ -9,7 +9,7 @@ import com.aimluck.service.UserDataService
 import com.aimluck.service.SummaryService
 import org.dotme.liquidtpl.controller.AbstractJsonDataController
 
-trait AbstractBaseJsonController extends AbstractJsonDataController {
+trait BaseUtil {
   implicit def stringToIntOption(str: String) = {
     try {
       Some(str.toInt)

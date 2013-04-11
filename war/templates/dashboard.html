@@ -1,96 +1,122 @@
 <!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> -->
-<link href="/css/pages/reports.css" rel="stylesheet"/>
+<link href="/css/pages/reports.css" rel="stylesheet" />
 <script type="text/javascript">
-    //<![CDATA[
-    $(function(){
-        $.initList( "pageCheckList", "checkItem", true, "/check/json", {"pageType":"page", "limit":"5"}, function(jsonData){
-            var values = jsonData.values;
-            var size = values.length;
-            for(var i = 0; i < size; i++){
-                var text = values[i].errorMessage;
-                text = text.replace(/\r\n/g, "<br />");
-                text = text.replace(/(\n|\r)/g, "<br />");
-                values[i].errorMessageWrap = text;
-            }
-            $.setListValues("pageCheckList", "checkItem", true, jsonData);
-            
-			$("#error-message").click(function(e){
-			    var $this=$(this);
-				var	checkId=$this.data("checkId");
-			    var $tr=$("#checkItem-error-message-tr-"+checkId);
-			    $tr.toggle();
+//<![CDATA[      
+	$(function() {
+		$.initList("pageCheckList", "checkItem", true, "/check/json", {
+			"pageType" : "page",
+			"limit" : "5"
+		}, function(jsonData) {
+			var values = jsonData.values;
+			var size = values.length;
+			for ( var i = 0; i < size; i++) {
+				var text = values[i].errorMessage;
+				text = text.replace(/\r\n/g, "<br />");
+				text = text.replace(/(\n|\r)/g, "<br />");
+				values[i].errorMessageWrap = text;
+			}
+			$.setListValues("pageCheckList", "checkItem", true, jsonData);
+
+			$("#error-message").click(function(e) {
+				var $this = $(this);
+				var checkId = $this.data("checkId");
+				var $tr = $("#checkItem-error-message-tr-" + checkId);
+				$tr.toggle();
 			});
-			if(size > 0){
+			if (size > 0) {
 				$('#checkListContainer').show();
 			}
-        });
-        
-        $.initList( "loginCheckList", "checkItem", true, "/check/json", {"pageType":"login", "limit":"5"}, function(jsonData){
-            var values = jsonData.values;
-            var size = values.length;
-            for(var i = 0; i < size; i++){
-                var text = values[i].errorMessage;
-                text = text.replace(/\r\n/g, "<br />");
-                text = text.replace(/(\n|\r)/g, "<br />");
-                values[i].errorMessageWrap = text;
-            }
-            $.setListValues("loginCheckList", "checkItem", true, jsonData);
-            
-			$("#error-message").click(function(e){
-			    var $this=$(this);
-				var	checkId=$this.data("checkId");
-			    var $tr=$("#checkItem-error-message-tr-"+checkId);
-			    $tr.toggle();
-			});
-			
-			if(size > 0){
-				$('#loginListContainer').show();	
+		});
+
+		$.initList("loginCheckList", "checkItem", true, "/check/json", {
+			"pageType" : "login",
+			"limit" : "5"
+		}, function(jsonData) {
+			var values = jsonData.values;
+			var size = values.length;
+			for ( var i = 0; i < size; i++) {
+				var text = values[i].errorMessage;
+				text = text.replace(/\r\n/g, "<br />");
+				text = text.replace(/(\n|\r)/g, "<br />");
+				values[i].errorMessageWrap = text;
 			}
-        });
-        
-        $.initList( "checkLogList", "checkLogItem", false, "/log/json",  {"limit":"5"}, null, null, null, function(){
-        	$('#checkLogListContainer').show();	
-        });
-        
-        
-    });
-    
-    //]]>
+			$.setListValues("loginCheckList", "checkItem", true, jsonData);
+
+			$("#error-message").click(function(e) {
+				var $this = $(this);
+				var checkId = $this.data("checkId");
+				var $tr = $("#checkItem-error-message-tr-" + checkId);
+				$tr.toggle();
+			});
+
+			if (size > 0) {
+				$('#loginListContainer').show();
+			}
+		});
+
+		$.initList("checkLogList", "checkLogItem", false, "/log/json", {
+			"limit" : "5"
+		}, null, null, null, function() {
+			$('#checkLogListContainer').show();
+		});
+
+	});
+	
+	$.formLink = function(_this) {
+		switch (_this.id) {
+			case "applyPlan":
+				location.href = "/plan"
+				break
+			case "registerPageCheck":
+				location.href = "/check/form"
+				break
+			case "registerLoginCheck":
+				location.href = "/check/loginForm"
+		}
+	}
+	//]]>
 </script>
 <div class="span12">
+	<liquidtpl:unusedMessage />
 	<div class="widget big-stats-container stacked">
-    			<div class="widget-content">
-      		<div id="big_stats" class="cf">
-				<div class="stat">								
+		<div class="widget-content">
+			<div id="big_stats" class="cf">
+				<div class="stat">
 					<h4>今日のページエラー数</h4>
-					<span class="value"><liquidtpl:errorCount/></span>								
-				</div> <!-- .stat -->
-				
-				<div class="stat">								
+					<span class="value"><liquidtpl:errorCount /></span>
+				</div>
+				<!-- .stat -->
+
+				<div class="stat">
 					<h4>ページ監視数</h4>
-					<span class="value"><liquidtpl:checkCount/></span>								
-				</div> <!-- .stat -->
-				
-				<div class="stat">								
+					<span class="value"><liquidtpl:checkCount /></span>
+				</div>
+				<!-- .stat -->
+
+				<div class="stat">
 					<h4>今日のログインエラー数</h4>
-					<span class="value"><liquidtpl:errorLoginCount/></span>								
-				</div> <!-- .stat -->
-				
-				<div class="stat">								
+					<span class="value"><liquidtpl:errorLoginCount /></span>
+				</div>
+				<!-- .stat -->
+
+				<div class="stat">
 					<h4>ログイン監視数</h4>
-					<span class="value"><liquidtpl:checkLoginCount/></span>								
-				</div> <!-- .stat -->
+					<span class="value"><liquidtpl:checkLoginCount /></span>
+				</div>
+				<!-- .stat -->
 			</div>
-		</div> <!-- /widget-content -->
+		</div>
+		<!-- /widget-content -->
 	</div>
 	<!-- ページ監視リスト -->
 	<div id="checkListContainer" class="widget widget-table hide">
 		<div class="widget-header">
 			<i class="icon-file"></i>
 			<h3>ページ監視</h3>
-		</div> <!-- /widget-header -->
+		</div>
+		<!-- /widget-header -->
 		<div class="widget-content">
-			<table  class="table table-striped table-bordered">
+			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
 						<th>タイトル</th>
@@ -104,17 +130,20 @@
 				</tbody>
 
 			</table>
-		</div> <!-- /widget-content -->
-	</div> <!-- /widget -->
+		</div>
+		<!-- /widget-content -->
+	</div>
+	<!-- /widget -->
 	<!-- /ページ監視リスト -->
 	<!-- ログイン監視リスト -->
 	<div id="loginListContainer" class="widget widget-table hide">
 		<div class="widget-header">
 			<i class="icon-file-alt"></i>
 			<h3>ログイン監視</h3>
-		</div> <!-- /widget-header -->
+		</div>
+		<!-- /widget-header -->
 		<div class="widget-content">
-			<table  class="table table-striped table-bordered">
+			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
 						<th>タイトル</th>
@@ -128,24 +157,27 @@
 				</tbody>
 
 			</table>
-		</div> <!-- /widget-content -->
-	</div> <!-- /widget -->
+		</div>
+		<!-- /widget-content -->
+	</div>
+	<!-- /widget -->
 	<!-- /ログイン監視リスト -->
-	
+
 	<!-- ログリスト -->
 	<div id="checkLogListContainer" class="widget widget-table hide">
 		<div class="widget-header">
 			<i class="icon-th-list"></i>
-				<h3>ログ</h3>
-			</div> <!-- /widget-header -->
+			<h3>ログ</h3>
+		</div>
+		<!-- /widget-header -->
 		<div class="widget-content">
-			<table  class="table table-striped table-bordered">
+			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
-						<th><liquidtpl:text key="checkLog.name"/></th>
- 								<th class="w30">監視ページのURL</th>
- 								<th class='thin'><liquidtpl:text key="checkLog.status"/></th>
- 								<th></th>
+						<th><liquidtpl:text key="checkLog.name" /></th>
+						<th class="w30">監視ページのURL</th>
+						<th class='thin'><liquidtpl:text key="checkLog.status" /></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody id="checkLogList">
@@ -154,7 +186,8 @@
 		</div>
 	</div>
 	<!-- /ログリスト -->
-</div> <!-- /row -->
+</div>
+<!-- /row -->
 <script id="checkItem" type="text/x-jquery-tmpl">
     <tr>
         <td ><a href="javascript:void(0)" onclick="$('#checkItem-error-message-tr-${id}').toggle();" id="error-message">${name}</a></td>
