@@ -20,12 +20,9 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
   override def getList: JsValue = {
     import com.aimluck.service.CheckLogService.CheckLogProtocol._
     val startDate: Date = new Date
-    val sort = (x: CheckLog, y: CheckLog) =>
-      x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0
-
     JsonSerialization.tojson(UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
-        CheckLogService.fetch(Some(userData), this.param("limit")).sortWith(sort)
+        CheckLogService.fetch(Some(userData), this.param("limit"))
       }
       case None => {
         addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.sessionError"))

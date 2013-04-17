@@ -96,7 +96,7 @@ object CheckLogService {
   def fetchAll(_userData: Option[UserData]): List[CheckLog] = {
     val m: CheckLogMeta = CheckLogMeta.get
     _userData match {
-      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey)).limit(100).asList.toList
+      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey)).sort(m.updatedAt.desc).limit(100).asList.toList
       case None => Datastore.query(m).asList.toList
     }
   }
