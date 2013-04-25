@@ -12,6 +12,8 @@ import java.io.FileInputStream
 import javax.servlet.ServletContext
 import java.util.logging.Logger
 import java.security.cert.X509Certificate
+import javax.naming.ldap.LdapName
+import com.aimluck.lib.util.TextUtil
 
 class CertTestController extends Controller {
   val logger = Logger.getLogger(classOf[CertTestController].getName)
@@ -31,8 +33,10 @@ class CertTestController extends Controller {
     soc.startHandshake
     val session = soc.getSession
     val certs = session.getPeerCertificates
-    certs.map(cert => 
-      logger.warning(cert.asInstanceOf[X509Certificate].getNotAfter.toString))
+    certs.map(cert => {
+      logger.warning(cert.asInstanceOf[X509Certificate].getNotAfter.toString)
+    })
+
     null
   }
 }
