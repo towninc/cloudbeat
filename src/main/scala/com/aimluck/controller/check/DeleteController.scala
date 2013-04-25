@@ -19,16 +19,21 @@ class DeleteController extends Controller {
 
   @throws(classOf[Exception])
   override protected def run():Navigation = {
+    var isLogin = false;
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
         val id:String = request.getParameter(Constants.KEY_ID);
         CheckService.fetchOne(id, Some(userData)) match{
           case Some(check) =>
             CheckService.delete(check)
+            isLogin = check.getLogin()
           case None =>
         }
       case None =>
     }
-    return redirect("/check/index")
+    if(isLogin)
+    	return redirect("/check/login")
+    else
+    	return redirect("/check/index")
   }
 }
