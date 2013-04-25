@@ -24,10 +24,29 @@ import sjson.json.JsonSerialization
 import com.aimluck.model.CertCheckLog
 import com.aimluck.meta.CertCheckLogMeta
 
-
 object CertCheckLogService {
   val logger = Logger.getLogger(CertCheckLogService.getClass.getName)
   private val meta = CertCheckLogMeta.get
+
+  object CertCheckLogListProtocol extends DefaultProtocol {
+    import dispatch.json._
+    import JsonSerialization._
+
+    implicit object CheckFormat extends Format[CertCheckLog] {
+      override def reads(json: JsValue): CertCheckLog = json match {
+        case _ => throw new IllegalArgumentException
+      }
+
+      def writes(log: CertCheckLog): JsValue =
+        JsObject(List(
+          (JsString(Constants.KEY_ID), tojson(if (log.getKey != null) KeyFactory.keyToString(log.getKey) else null)),
+          (JsString("name"), tojson(log.getName)),
+          (JsString("url"), tojson(log.getUrl)),
+          (JsString("limit"), tojson(AppConstants.dateTimeFormat.format(log.getLimitDate))),
+          (JsString("period"), tojson(log.getPeriod.toString))))
+    }
+  }
+
   def createNew = {
     val result: CertCheckLog = new CertCheckLog
     result.setName("")
@@ -35,7 +54,12 @@ object CertCheckLogService {
     result
   }
 
-  def fetchFromUrl(url: String)= try {
+  def fetchAll(userData: Option[UserData]) = userData match {
+    case Some(userData) => Datastore.query(meta).filter(meta.userDataRef equal userData.getKey).sort("p").asList.toList
+    case None => Datastore.query(meta).asList.toList
+  }
+
+  def fetchFromUrl(url: String) = try {
     Option(Datastore.query(meta).filter(meta.url equal url).asSingle)
   } catch {
     case _ => None
