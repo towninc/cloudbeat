@@ -116,7 +116,7 @@ class FormController extends AbstractUserBaseFormController {
           val failThreshold = request.getParameter("failThreshold").toInt
           if ((failThreshold < 0) || (failThreshold > AppConstants.DATA_LIMIT_THRESHOLD)) {
             addError("failThreshold", LanguageUtil.get("error.invaldValue", Some(Array(
-              LanguageUtil.get("check.failThreshold"), "1", AppConstants.DATA_LIMIT_THRESHOLD.toString))));
+              LanguageUtil.get("check.failThreshold"), "6", AppConstants.DATA_LIMIT_THRESHOLD.toString))));
           }
         } catch {
           case e: NumberFormatException => {
@@ -124,6 +124,25 @@ class FormController extends AbstractUserBaseFormController {
               Some(Array(LanguageUtil.get("stepMail.failThreshold")))));
           }
         }
+        
+        //ssl
+        try {
+          val ssl = request.getParameter("ssl").toBoolean
+        } catch {
+          case e: NumberFormatException => {
+            addError("ssl", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("check.ssl")))));
+          }
+        }
+        
+        //dom
+        try {
+          val dom = request.getParameter("dom").toBoolean
+        } catch {
+          case e: NumberFormatException => {
+            addError("dom", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("check.dom")))));
+          }
+        }
+        
       }
       case None => {
         addError(Constants.KEY_GLOBAL_ERROR,
@@ -218,10 +237,15 @@ class FormController extends AbstractUserBaseFormController {
             }
             check.setStatus(CheckService.Status.INITIALIZING.toString)
             check.setErrorMessage(LanguageUtil.get("check.StatusMessage.initializing"))
+            //ssl
+            check.setCheckSSL(request.getParameter("ssl").toBoolean)
+            //dom
+            check.setCheckDomain(request.getParameter("dom").toBoolean)
             //failThreshold
             check.setFailThreshold(request.getParameter("failThreshold").toInt)
             check.setFailCount(0)
             CheckService.saveWithUserData(check, userData)
+            
           }
         } catch {
           case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"));

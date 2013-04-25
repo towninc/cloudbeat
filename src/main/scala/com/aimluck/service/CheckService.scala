@@ -68,6 +68,8 @@ object CheckService {
           (JsString("checkedAt"), if (getCheckedAt(check) != null) tojson(AppConstants.dateTimeFormat.format(getCheckedAt(check))) else tojson("")),
           (JsString("failCount"), tojson(check.getFailCount)),
           (JsString("failThreshold"), tojson(check.getFailThreshold)),
+          (JsString("ssl"), if(check.getCheckSSL != null)tojson(check.getCheckSSL.toString) else tojson("false")),
+          (JsString("dom"), if(check.getCheckDomain != null)tojson(check.getCheckDomain.toString) else tojson("false")),
           (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("check"), check.getName)))))))
       }
     }

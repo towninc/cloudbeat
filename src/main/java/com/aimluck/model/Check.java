@@ -56,7 +56,12 @@ public class Check implements Serializable {
 	private int failThreshold;
 	@Attribute(name="l")
 	private Boolean login = false;
-
+	@Attribute(name="cSSL")
+	private Boolean checkSSL = false;
+	@Attribute(name="cDom")
+	private Boolean checkDomain = false;
+	
+	
 	/**
 	 * Returns the key.
 	 * 
@@ -362,6 +367,22 @@ public class Check implements Serializable {
 
 	public void setLogin(Boolean login) {
 		this.login = login;
+	}
+
+	public Boolean getCheckSSL() {
+		return checkSSL;
+	}
+
+	public void setCheckSSL(Boolean checkSSL) {
+		this.checkSSL = checkSSL;
+	}
+
+	public Boolean getCheckDomain() {
+		return checkDomain;
+	}
+
+	public void setCheckDomain(Boolean checkDomain) {
+		this.checkDomain = checkDomain;
 	}
 
 	
