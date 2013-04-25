@@ -14,6 +14,13 @@ import com.aimluck.lib.util.XmlUtil
 import com.aimluck.service.CheckService
 import com.aimluck.service.CheckLogService
 import scala.collection.JavaConversions._
+import com.aimluck.model.SendMailLog
+import com.aimluck.service.SendMailLogService
+import com.google.appengine.api.taskqueue.QueueFactory
+import com.google.appengine.api.taskqueue.TaskOptions.Builder
+import org.slim3.datastore.Datastore
+import com.google.appengine.api.taskqueue.TaskOptions.Method
+import com.aimluck.model.CheckLog
 
 class CheckController extends Controller {
   val logger = Logger.getLogger(classOf[CheckController].getName)
@@ -25,6 +32,7 @@ class CheckController extends Controller {
       case Some(check) =>
         val dateString = AppConstants.dateTimeFormat.format(new Date)
         val checkLog = CheckLogService.createNew
+        checkLog.setKey(Datastore.allocateId(classOf[CheckLog]))
         checkLog.setName(check.getName)
         checkLog.setUrl(check.getUrl)
         checkLog.setLogin(check.getLogin())
@@ -48,7 +56,7 @@ class CheckController extends Controller {
           //            buf.append(Constants.LINE_SEPARATOR)
           //          }
 
-          val (assertResult, textList) = XmlUtil.assertText(check.getPreloadUrl,check.getUrl, check.getFormParams,check.getAssertText, check.getXPath, check.getTimeOut)
+          val (assertResult, textList) = XmlUtil.assertText(check.getPreloadUrl, check.getUrl, check.getFormParams, check.getAssertText, check.getXPath, check.getTimeOut)
           if (assertResult) {
             buf.append(LanguageUtil.get("check.StatusMessage.ok"))
             buf.append(Constants.LINE_SEPARATOR)
@@ -142,20 +150,33 @@ class CheckController extends Controller {
           // send mail
           val ms = MailServiceFactory.getMailService // MailServiceを取得
           check.getRecipients.foreach { address =>
-            try {
+            {
               val msg = new MailService.Message()
-              msg.setSubject("[%s] Status updated: %s is %s".format(
-                LanguageUtil.get("title"),
-                check.getName,
-                CheckLogService.statusString(checkLog)))
-              msg.setTo(address)
-              msg.setSender(AppConstants.DEFAULT_SENDER)
-              msg.setTextBody(checkLog.getErrorMessage)
-              ms.send(msg) // メール送信を実行
-            } catch {
-              case e: Exception =>
-                logger.severe(e.getMessage)
-                logger.severe(e.getStackTraceString)
+              try {
+                msg.setSubject("[%s] Status updated: %s is %s".format(
+                  LanguageUtil.get("title"),
+                  check.getName,
+                  CheckLogService.statusString(checkLog)))
+                msg.setTo(address)
+                msg.setSender(AppConstants.DEFAULT_SENDER)
+                msg.setTextBody(checkLog.getErrorMessage)
+                ms.send(msg) // メール送信を実行
+              } catch {
+                case e: Exception => {
+                  logger.severe(e.getMessage)
+                  logger.severe(e.getStackTraceString)
+                  // 失敗時にログをDatastoreに保存してリトライ
+                  SendMailLogService.createNew(address, msg, check, checkLog, e.getMessage)
+                  QueueFactory.getQueue("message").add(
+                    Builder
+                      .withUrl("/system/resend")
+                      .param("address", address)
+                      .param("checkKey", Datastore.keyToString(check.getKey))
+                      .param("checkLogKey", Datastore.keyToString(checkLog.getKey))
+                      .etaMillis(5 * 1000)
+                      .method(Method.POST));
+                }
+              }
             }
           }
           CheckLogService.saveWithUserData(checkLog, check.getUserDataRef.getModel)

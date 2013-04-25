@@ -151,6 +151,13 @@ object CheckService {
     }
   }
 
+  def fetchWithKey(key: Key) = try {
+    val m: CheckMeta = CheckMeta.get
+    Option(Datastore.query(m).filter(m.key equal key).asSingle)
+  } catch {
+    case e: Exception => None
+  }
+
   def fetchPage(_userData: Option[UserData], limit: Option[Int]) = limit match {
     case Some(limit) => fetchPageWithLimit(_userData, limit)
     case None => fetchPageAll(_userData)

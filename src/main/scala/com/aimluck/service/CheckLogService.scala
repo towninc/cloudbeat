@@ -87,8 +87,8 @@ object CheckLogService {
       }
     }
   }
-  
-  def fetch (_userData: Option[UserData], limit: Option[Int]) = limit match {
+
+  def fetch(_userData: Option[UserData], limit: Option[Int]) = limit match {
     case Some(limit) => fetchWithLimit(_userData, limit)
     case None => fetchAll(_userData)
   }
@@ -99,6 +99,13 @@ object CheckLogService {
       case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey)).sort(m.updatedAt.desc).limit(100).asList.toList
       case None => Datastore.query(m).asList.toList
     }
+  }
+
+  def fetchWithKey(key: Key) = try {
+    val m: CheckLogMeta = CheckLogMeta.get
+    Option(Datastore.query(m).filter(m.key equal key).asSingle)
+  } catch {
+    case e: Exception => None
   }
 
   def fetchWithLimit(_userData: Option[UserData], limit: Int): List[CheckLog] = {
