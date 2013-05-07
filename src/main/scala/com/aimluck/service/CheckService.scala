@@ -45,8 +45,10 @@ object CheckService {
       override def reads(json: JsValue): Check = json match {
         case _ => throw new IllegalArgumentException
       }
-
+      
+      
       def writes(check: Check): JsValue = {
+
         JsObject(List(
           (JsString(Constants.KEY_ID), tojson(if (check.getKey != null) KeyFactory.keyToString(check.getKey) else null)),
           (JsString("name"), tojson(check.getName)),
