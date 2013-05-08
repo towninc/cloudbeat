@@ -25,12 +25,17 @@ import com.google.appengine.api.memcache.MemcacheService
 import com.google.appengine.api.memcache.MemcacheServiceFactory
 
 object CertCheckService {
+  val logger = Logger.getLogger(CheckService.getClass.getName);
+  val CHECKED_AT_NAMESPACE: String = "com.aimluck.service.CertCheckService.CertCheckedAt"
+  val CHECK_KEYS_NAMESPACE: String = "com.aimluck.service.CertCheckService.CertCheckKeys"
+  val CHECK_CACHE_NAMESPACE: String = "com.aimluck.service.CertCheckService.CertCheck"
+  val memcacheService = MemcacheServiceFactory.getMemcacheService();
   
-    val logger = Logger.getLogger(CheckService.getClass.getName);
-    val CHECKED_AT_NAMESPACE: String = "com.aimluck.service.CertCheckService.CertCheckedAt"
-    val CHECK_KEYS_NAMESPACE: String = "com.aimluck.service.CertCheckService.CertCheckKeys"
-    val CHECK_CACHE_NAMESPACE: String = "com.aimluck.service.CertCheckService.CertCheck"
-    val memcacheService = MemcacheServiceFactory.getMemcacheService();
+  //object Status extends Enumeration {
+	//val INITIALIZING = Value("I")
+    //val OK = Value("O")
+    //val ERROR = Value("E")
+  //}
   
   object CertCheckProtocol extends DefaultProtocol {
     import dispatch.json._

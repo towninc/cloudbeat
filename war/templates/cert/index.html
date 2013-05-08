@@ -18,14 +18,26 @@
         });
     });
     
+    $.formLink = function(){
+    	if(typeof $('#pageType').val() != null && $('#pageType').val() == "cert"){
+	    	location.href='/cert/form';
+    	}else{
+    		location.href='/cert/loginForm';
+    	}
+    }
+    
     //]]>
 </script>
+<liquidtpl:pageType/>
 <div class="span12">
+	<div id="buttonWrapper" style='margin-bottom: 10px;'>
+		<button onclick="$.formLink();" class="btn btn-primary btn-large"><liquidtpl:pageTypeString/>監視登録</button>											
+	</div>
 	<div id="checkListContainer" class="widget widget-table hide">
 		<div class="widget-header">
 			<i id="page_icon" class="icon-file"></i>
 			<i id="login_icon" class="icon-file-alt"></i>
-			<h3>SSL監視</h3>
+			<h3><liquidtpl:pageTypeString/>監視</h3>
 		</div> <!-- /widget-header -->
 		<div class="widget-content">
 			<table  class="table table-striped table-bordered">

@@ -14,8 +14,10 @@ class IndexController extends AbstractUserBaseActionController {
 
   override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
     UserDataService.fetchOne(this.sessionScope("userId")) match {
-      case Some(userData) =>
-        super.replacerMap
+      case Some(userData) => {
+        super.replacerMap + ("pageTypeString" -> { e => Text("SSL") },
+          "pageType" -> { e =>  <input id="pageType" type='hidden' value='cert'/>  })
+      }
       case None =>
         super.contentReplacerMap
     }
