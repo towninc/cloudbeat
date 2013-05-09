@@ -263,10 +263,6 @@ class FormController extends AbstractUserBaseFormController {
             }
             check.setStatus(CheckService.Status.INITIALIZING.toString)
             check.setErrorMessage(LanguageUtil.get("check.StatusMessage.initializing"))
-            //ssl
-            check.setCheckSSL(request.getParameter("ssl").toBoolean)
-            //dom
-            check.setCheckDomain(request.getParameter("dom").toBoolean)
             //failThreshold
             check.setFailThreshold(request.getParameter("failThreshold").toInt)
             check.setFailCount(0)
