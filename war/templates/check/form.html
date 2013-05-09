@@ -140,7 +140,11 @@
 					</div>
 					<!-- /control-group -->
 					<div class="form-actions">
-						<button type="submit" class="btn btn-primary btn-large">登録</button>
+						<button onclick="$('#kind').val('submit')" type="submit" class="btn btn-primary btn-large">登録</button>
+						&nbsp;&nbsp;&nbsp;
+						<button onclick="$('#kind').val('check')" type="submit" class="btn btn-large">接続チェック</button>
+						<div id="checkError" class="alert alert-danger" style="margin-top:5px; display:none;"></div>
+						<input type="hidden" id="kind" name="kind" value="" />
 					</div>
 					<liquidtpl:isLogin/>
 				</fieldset>						
