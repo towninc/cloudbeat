@@ -1,0 +1,110 @@
+<div class="span12">
+	<div class="widget">
+		<div class="widget-header">
+			<i class="icon-file"></i>
+			<h3><liquidtpl:formTitle/></h3>
+		</div> <!-- /widget-header -->
+		<div class="widget-content">
+			<form action="/domain/form" id="checkForm" style="display: none;" class="form-horizontal">
+				<div id="grobalError" class="alert alert-error alert-block hide"></div>
+				<fieldset>
+				<!--
+				<div class="tabbable">
+					<ul class="nav nav-tabs">
+					  <li class="active">
+					    <a id="tab1" href="#tabContent1" data-toggle="tab">基本項目</a>
+					  </li>
+					  <li>
+					  	<a id="tab2" href="#tabContent2" data-toggle="tab">オプション項目</a>
+					  </li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="tabContent1">	
+						-->					
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="domain.name"/> <strong class="fcRed">(*)</strong></label>
+									<div class="controls">
+	            						<input type="text" id="nameField" name="name" class="input-xlarge" />
+	            						<div id="nameError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+									</div>
+									<!-- /controls -->
+								</div>
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="domain.domainName"/> <strong class="fcRed">(*)</strong></label>
+									<div class="controls">
+	            						<input type="text" id="domainNameField" name="domainName" class="input-xlarge" />
+	            						<div id="domainNameError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+									</div>
+									<!-- /controls -->
+								</div>
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="domain.recipients"/></label>
+									<div class="controls">
+	            						<textarea id="recipientsField" name="recipients" class="input-xlarge" rows="5"></textarea>
+	            						<div id="recipientsError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+	            						<p class="help-block"><liquidtpl:text key="domain.recipientsMessage"/></p>
+									</div>
+									<!-- /controls -->
+								</div>
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="domain.active"/><strong class="fcRed">(*)</strong></label>
+									<div class="controls">
+							            <div>
+							            	<label class="radio" for="activeField1"><input type="radio" id="activeField1" name="active" value="true" checked="checked" /><liquidtpl:text key="domain.isActive"/></label>
+							            	<label class="radio" for="activeField2"><input type="radio" id="activeField2" name="active" value="false" /><liquidtpl:text key="domain.isInactive"/></label>
+							            </div>
+							            <div id="activeError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+									</div>
+									<!-- /controls -->
+								</div>
+								<!-- /description
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="domain.description"/></label>
+									<div class="controls">
+	            						<textarea id="descriptionField" name="description" class="span6" rows="5"></textarea>
+	            						<div id="descriptionError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+									</div>
+								</div>
+								-->
+					<div class="form-actions">
+						<button type="submit" class="btn btn-primary btn-large">登録</button>
+					</div>
+					<liquidtpl:isLogin/>
+				</fieldset>						
+			</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+        //<![CDATA[
+        $(function(){
+            $.checkForm = {};
+            $.initForm("checkForm", "/domain/json", null, function(jsonData){
+                var values = jsonData.values;
+                $.setFormValues( "checkForm", jsonData );
+                //recipients
+                var recipients = values.recipients;
+                if(recipients != null){
+                    var recipientsSize = recipients.length;
+                    var recipientsValue = "";
+                    for(var i = 0; i < recipientsSize; i++){
+                        recipientsValue += recipients[i] + "\n";
+                    }
+                    $("#recipientsField").val(recipientsValue);
+                }
+                
+                if($('#isLogin').val() == 'true'){
+                	$('.loginControl').show();
+                	$('#checkForm').attr("action", "/check/loginForm")
+                } else {
+                	$('.loginControl').hide();
+                	$('.loginControl input[type="text"]').val('');
+                }
+                
+                if($('#idField').val()){
+                	$('.editControl').show();
+                }
+            });
+        });
+        //]]>
+</script>

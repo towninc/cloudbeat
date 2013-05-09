@@ -101,6 +101,12 @@
 									<span>SSL監視</span>
 								</a>	    
 							</li>
+							<li class="">
+								<a href="/domain/">
+									<i class="icon-file-alt"></i>
+									<span>ドメイン監視</span>
+								</a>
+							</li>
 							<li class="dropdown">					
 								<a href="/log/">
 									<i class="icon-th-list"></i>
@@ -151,6 +157,8 @@
 		        		} else if ((menuLink == "/check/login") && (location.pathname.indexOf("/check/loginForm") == 0)) {
 		        			$(this).addClass('active');
 		        		} else if ((menuLink == "/cert/") && (location.pathname.indexOf("/cert/form") == 0)) {
+		        			$(this).addClass('active');
+		        		} else if ((menuLink == "/domain/") && (location.pathname.indexOf("/domain/form") == 0)) {
 		        			$(this).addClass('active');
 		        		}
 		        	}

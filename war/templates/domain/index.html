@@ -1,0 +1,68 @@
+<!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> -->
+<script type="text/javascript">
+    //<![CDATA[
+    $(function(){
+        $.initList( "checkList", "checkItem", true, "/domain/json", {}, function(jsonData) {
+            $.setListValues("checkList", "checkItem", false, jsonData, function() {
+            },
+            function(){
+            	$('#checkListContainer').show();
+            });
+            
+			$("#error-message").click(function(e){
+			    var $this = $(this);
+				var	checkId = $this.data("checkId");
+			    var $tr = $("#checkItem-error-message-tr-" + checkId);
+			    $tr.toggle();
+			});
+        });
+    });
+    
+    $.formLink = function(){
+    	if(typeof $('#pageType').val() != null && $('#pageType').val() == "domain"){
+	    	location.href='/domain/form';
+    	}else{
+    		location.href='/domain/loginForm';
+    	}
+    }
+    
+    //]]>
+</script>
+<liquidtpl:pageType/>
+<div class="span12">
+	<div id="buttonWrapper" style='margin-bottom: 10px;'>
+		<button onclick="$.formLink();" class="btn btn-primary btn-large"><liquidtpl:pageTypeString/>監視登録</button>											
+	</div>
+	<div id="checkListContainer" class="widget widget-table hide">
+		<div class="widget-header">
+			<i id="page_icon" class="icon-file"></i>
+			<i id="login_icon" class="icon-file-alt"></i>
+			<h3><liquidtpl:pageTypeString/>監視</h3>
+		</div> <!-- /widget-header -->
+		<div class="widget-content">
+			<table  class="table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>ドメイン名</th>
+						<th>残り日数</th>
+						<th>有効期限</th>
+					</tr>
+				</thead>
+				<tbody id="checkList">
+				</tbody>
+			</table>
+		</div> <!-- /widget-content -->
+	</div> <!-- /widget -->
+</div> <!-- /row -->
+<script id="checkItem" type="text/x-jquery-tmpl">
+    <tr>
+        <td>${domainName}</td>
+        <td>${period}日</td>
+        <td>${limitDate}</td>
+    </tr>
+    <tr id="checkItem-error-message-tr-${id}" class="selectable error-message-tr" style="display:none;">
+        <td colspan="5">
+            <textarea id='checkItem-error-message-${id}' class="span8" rows="10" readonly="readonly">{{html errorMessage}}</textarea>
+        </td>
+    </tr>
+</script>
