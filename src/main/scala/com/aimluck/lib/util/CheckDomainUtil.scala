@@ -37,7 +37,7 @@ object CheckDomainUtil {
   }
 
   def check(url: String) =
-    if (url.endsWith("com"))
+    if (url.endsWith("com") || url.endsWith("net"))
       parse(CheckDomainService.checkCom(url))
     else if (url.endsWith("jp"))
       parse(CheckDomainService.checkJp(url))
