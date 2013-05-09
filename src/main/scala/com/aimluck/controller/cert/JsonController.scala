@@ -26,9 +26,54 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
     }) 
   }
 
-  override def getDetail(id: String): JsValue =
-    null
+  override def getDetail(id: String): JsValue = {
+    import com.aimluck.service.CheckService.CheckProtocol._
+    val startDate: Date = new Date
 
-  override def getForm(id: String): JsValue =
-    null
+    UserDataService.fetchOne(this.sessionScope("userId")) match {
+      case Some(userData) =>
+        CheckService.fetchOne(id, Some(userData)) match {
+          case Some(v) => {
+            tojson(v)
+          }
+          case None => {
+            addError(Constants.KEY_GLOBAL_ERROR,
+              LanguageUtil.get("error.dataNotFound"))
+            null
+          }
+        }
+      case None =>
+        addError(Constants.KEY_GLOBAL_ERROR,
+          LanguageUtil.get("error.sessionError"))
+        null
+    }
+  }
+
+   override def getForm(id: String): JsValue = {
+    import com.aimluck.service.CheckService.CheckProtocol._
+    val startDate: Date = new Date
+    UserDataService.fetchOne(this.sessionScope("userId")) match {
+      case Some(userData) =>
+        if ((id != null) && (id.size > 0)) {
+          CheckService.fetchOne(id, Some(userData)) match {
+            case Some(v) => {
+              tojson(v)
+            }
+            case None => {
+              addError(Constants.KEY_GLOBAL_ERROR,
+                LanguageUtil.get("error.dataNotFound"))
+              null
+            }
+          }
+        } else {
+          val newCheck = CheckService.createNew
+          newCheck.setRecipients(seqAsJavaList(List(userData.getEmail())))
+          tojson(newCheck)
+        }
+      case None =>
+        addError(Constants.KEY_GLOBAL_ERROR,
+          LanguageUtil.get("error.sessionError"))
+        null
+    }
+  }
 }

@@ -1,0 +1,181 @@
+<div class="span12">
+	<div class="widget">
+		<div class="widget-header">
+			<i class="icon-file"></i>
+			<h3><liquidtpl:formTitle/></h3>
+		</div> <!-- /widget-header -->
+		<div class="widget-content">
+			<form action="/cert/form" id="checkForm" style="display: none;" class="form-horizontal">
+				<div id="grobalError" class="alert alert-error alert-block hide"></div>
+				<fieldset>
+				<!--
+				<div class="tabbable">
+					<ul class="nav nav-tabs">
+					  <li class="active">
+					    <a id="tab1" href="#tabContent1" data-toggle="tab">基本項目</a>
+					  </li>
+					  <li>
+					  	<a id="tab2" href="#tabContent2" data-toggle="tab">オプション項目</a>
+					  </li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="tabContent1">	
+						-->					
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="cert.name"/> <strong class="fcRed">(*)</strong></label>
+									<div class="controls">
+	            						<input type="text" id="nameField" name="name" class="input-xlarge" />
+	            						<div id="nameError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+									</div>
+									<!-- /controls -->
+								</div>
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="cert.url"/> <strong class="fcRed">(*)</strong></label>
+									<div class="controls">
+	            						<input type="url" id="urlField" name="url" class="input-xlarge" />
+	            						<div id="urlError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+									</div>
+									<!-- /controls -->
+								</div>
+								<div class="control-group loginControl hide">
+									<label class="control-label"><liquidtpl:text key="cert.formParams"/> <strong class="fcRed">(*)</strong></label>
+									<div class="controls">
+	            						<textarea id="formParamsField" name="formParams" class="input-xlarge" ></textarea>
+	            						<div id="formParamsError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+	            						<p class="help-block"><liquidtpl:text key="cert.formParamsMessage"/></p>
+									</div>
+									<!-- /controls -->
+								</div>
+								<div class="control-group loginControl hide">
+									<label class="control-label"><liquidtpl:text key="cert.preloadUrl"/></label>
+									<div class="controls">
+	            						<input type="text" id="preloadUrlField" name="preloadUrl" class="input-xlarge" />
+	            						<div id="preloadUrlError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+	            						<p class="help-block"><liquidtpl:text key="cert.preloadUrlMessage"/></p>
+									</div>
+									<!-- /controls -->
+								</div>
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="cert.recipients"/></label>
+									<div class="controls">
+	            						<textarea id="recipientsField" name="recipients" class="input-xlarge" rows="5"></textarea>
+	            						<div id="recipientsError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+	            						<p class="help-block"><liquidtpl:text key="cert.recipientsMessage"/></p>
+									</div>
+									<!-- /controls -->
+								</div>
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="cert.active"/><strong class="fcRed">(*)</strong></label>
+									<div class="controls">
+							            <div>
+							            	<label class="radio" for="activeField1"><input type="radio" id="activeField1" name="active" value="true" checked="checked" /><liquidtpl:text key="cert.isActive"/></label>
+							            	<label class="radio" for="activeField2"><input type="radio" id="activeField2" name="active" value="false" /><liquidtpl:text key="cert.isInactive"/></label>
+							            </div>
+							            <div id="activeError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+									</div>
+									<!-- /controls -->
+								</div>
+								<!--
+							</div>
+							<div class="tab-pane" id="tabContent2">
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="cert.assertText"/></label>
+									<div class="controls">
+	            						<input type="text" id="assertTextField" name="assertText" class="input-xlarge" />
+	            						<div id="assertTextError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+	            						<p class="help-block"><liquidtpl:text key="cert.assertTextMessage"/></p>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="cert.xPath"/></label>
+									<div class="controls">
+	            						<input type="text" id="xPathField" name="xPath" class="input-xlarge" />
+	            						<div id="assertTextError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+	            						<p class="help-block"><liquidtpl:text key="cert.xPathMessage"/></p>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="cert.failThreshold"/></label>
+									<div class="controls">
+							            <div>
+							              <input type="number" min="1" id="failThresholdField" name="failThreshold" size="3" class="input-small" />
+							              <liquidtpl:text key="cert.failThresholdSuffix"/>
+							            </div>
+							            <div id="failThresholdError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+						            </div>
+								</div>				  
+								<div class="control-group editControl hide">
+									<label class="control-label"><liquidtpl:text key="cert.ssl"/><strong class="fcRed"></strong></label>
+									<div class="controls">
+							            <div>
+							            	<label class="radio" for="sslField1"><input type="radio" id="sslField1" name="ssl" value="true" /><liquidtpl:text key="cert.isActive"/></label>
+							            	<label class="radio" for="sslField2"><input type="radio" id="sslField2" name="ssl" value="false"  checked="checked" /><liquidtpl:text key="cert.isInactive"/></label>
+							            </div>
+							            <div id="sslError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+									</div>
+								</div>
+								<div class="control-group editControl hide">
+									<label class="control-label"><liquidtpl:text key="cert.dom"/><strong class="fcRed"></strong></label>
+									<div class="controls">
+							            <div>
+							            	<label class="radio" for="domField1"><input type="radio" id="domField1" name="dom" value="true" /><liquidtpl:text key="cert.isActive"/></label>
+							            	<label class="radio" for="domField2"><input type="radio" id="domField2" name="dom" value="false" checked="checked"  /><liquidtpl:text key="cert.isInactive"/></label>
+							            </div>
+							            <div id="domError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+									</div>
+								</div>
+								<hr/>
+	        					<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="cert.description"/></label>
+									<div class="controls">
+	            						<textarea id="descriptionField" name="description" class="span6" rows="5"></textarea>
+	            						<div id="descriptionError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					-->
+					<!-- /control-group -->
+					<div class="form-actions">
+						<button type="submit" class="btn btn-primary btn-large">登録</button>
+					</div>
+					<liquidtpl:isLogin/>
+				</fieldset>						
+			</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+        //<![CDATA[
+        $(function(){
+            $.checkForm = {};
+            $.initForm("checkForm", "/cert/json", null, function(jsonData){
+                var values = jsonData.values;
+                $.setFormValues( "checkForm", jsonData );
+                //recipients
+                var recipients = values.recipients;
+                if(recipients != null){
+                    var recipientsSize = recipients.length;
+                    var recipientsValue = "";
+                    for(var i = 0; i < recipientsSize; i++){
+                        recipientsValue += recipients[i] + "\n";
+                    }
+                    $("#recipientsField").val(recipientsValue);
+                }
+                
+                if($('#isLogin').val() == 'true'){
+                	$('.loginControl').show();
+                	$('#checkForm').attr("action", "/check/loginForm")
+                } else {
+                	$('.loginControl').hide();
+                	$('.loginControl input[type="text"]').val('');
+                }
+                
+                if($('#idField').val()){
+                	$('.editControl').show();
+                }
+            });
+        });
+        //]]>
+</script>
