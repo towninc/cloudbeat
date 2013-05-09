@@ -10,11 +10,14 @@
 package com.aimluck.service;
 
 import java.net.*;
+import java.util.logging.Logger;
 import java.io.*;
 
 public class CheckDomainService {
 
   private static String CL = System.getProperty("line.separator");
+  
+  private static Logger logger = Logger.getLogger(CheckDomainService.class.getName());
 
   // jpのみ、whoisを取得。ただし有効期限情報はなし。
   public static String checkJp(String url) {
@@ -53,12 +56,10 @@ public class CheckDomainService {
 
       return sbBuf == null ? "" : sbBuf.toString();
     } catch (UnknownHostException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      logger.warning(e.getMessage());
       return "";
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      logger.warning(e.getMessage());
       return "";
     }
   }
