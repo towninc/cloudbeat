@@ -10,7 +10,7 @@ import org.slim3.datastore.Attribute;
 import org.slim3.datastore.Model;
 import org.slim3.datastore.ModelRef;
 
-@Model(kind = "c", schemaVersion = 1, schemaVersionName = "sV")
+@Model(kind = "cC", schemaVersion = 1, schemaVersionName = "sV")
 public class CertCheck implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -22,8 +22,8 @@ public class CertCheck implements Serializable {
 	private String name;
 	@Attribute(name = "s")
 	private String status;
-	@Attribute(name = "u")
-	private String url;
+	@Attribute(name = "dN")
+	private String domainName;
 	@Attribute(name = "pU")
 	private String preloadUrl;
 	@Attribute(name = "fP")
@@ -181,22 +181,6 @@ public class CertCheck implements Serializable {
 	 */
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getUrl() {
-		return url;
-	}
-
-	/**
-	 * 
-	 * @param url
-	 */
-	public void setUrl(String url) {
-		this.url = url;
 	}
 
 	/**
@@ -405,6 +389,14 @@ public class CertCheck implements Serializable {
 	public void setCheckDomain(Boolean checkDomain) {
 		this.checkDomain = checkDomain;
 	}
+
+  public String getDomainName() {
+    return domainName;
+  }
+
+  public void setDomainName(String domainName) {
+    this.domainName = domainName;
+  }
 
 	
 }

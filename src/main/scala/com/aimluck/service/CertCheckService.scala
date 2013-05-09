@@ -30,13 +30,7 @@ object CertCheckService {
   val CHECK_KEYS_NAMESPACE: String = "com.aimluck.service.CertCheckService.CertCheckKeys"
   val CHECK_CACHE_NAMESPACE: String = "com.aimluck.service.CertCheckService.CertCheck"
   val memcacheService = MemcacheServiceFactory.getMemcacheService();
-  
-  //object Status extends Enumeration {
-	//val INITIALIZING = Value("I")
-    //val OK = Value("O")
-    //val ERROR = Value("E")
-  //}
-  
+
   object CertCheckProtocol extends DefaultProtocol {
     import dispatch.json._
     import JsonSerialization._
@@ -45,14 +39,13 @@ object CertCheckService {
       override def reads(json: JsValue): CertCheck = json match {
         case _ => throw new IllegalArgumentException
       }
-      
-      
+
       def writes(check: CertCheck): JsValue = {
 
         JsObject(List(
           (JsString(Constants.KEY_ID), tojson(if (check.getKey != null) KeyFactory.keyToString(check.getKey) else null)),
           (JsString("name"), tojson(check.getName)),
-          (JsString("url"), tojson(check.getUrl)),
+          (JsString("domainName"), tojson(check.getDomainName)),
           (JsString("formParams"), tojson(check.getFormParams)),
           (JsString("preloadUrl"), tojson(check.getPreloadUrl)),
           (JsString("active"), tojson(check.getActive.toString)),
@@ -60,22 +53,22 @@ object CertCheckService {
           (JsString("xPath"), tojson(check.getXPath)),
           (JsString("timeOut"), tojson(check.getTimeOut)),
           (JsString("description"), tojson(check.getDescription)),
-          (JsString("status"), tojson(check.getStatus)),       
-         //(JsString("statusHtml"), tojson(statusHtml(check))),
-         //(JsString("statusMap"), BasicHelper.jsonFromStringPairs(statusMap)),
+          (JsString("status"), tojson(check.getStatus)),
+          //(JsString("statusHtml"), tojson(statusHtml(check))),
+          //(JsString("statusMap"), BasicHelper.jsonFromStringPairs(statusMap)),
           (JsString("errorMessage"), tojson(check.getErrorMessage)),
           (JsString("recipients"), tojson(check.getRecipients.toList)),
           (JsString("createdAt"), if (check.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(check.getCreatedAt)) else tojson("")),
-         //(JsString("checkedAt"), if (getCheckedAt(check) != null) tojson(AppConstants.dateTimeFormat.format(getCheckedAt(check))) else tojson("")),
+          //(JsString("checkedAt"), if (getCheckedAt(check) != null) tojson(AppConstants.dateTimeFormat.format(getCheckedAt(check))) else tojson("")),
           (JsString("failCount"), tojson(check.getFailCount)),
           (JsString("failThreshold"), tojson(check.getFailThreshold)),
-          (JsString("ssl"), if(check.getCheckSSL != null)tojson(check.getCheckSSL.toString) else tojson("false")),
-          (JsString("dom"), if(check.getCheckDomain != null)tojson(check.getCheckDomain.toString) else tojson("false")),
+          (JsString("ssl"), if (check.getCheckSSL != null) tojson(check.getCheckSSL.toString) else tojson("false")),
+          (JsString("dom"), if (check.getCheckDomain != null) tojson(check.getCheckDomain.toString) else tojson("false")),
           (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("check"), check.getName)))))))
       }
     }
   }
-  
+
   object CertCheckListProtocol extends DefaultProtocol {
     import dispatch.json._
     import JsonSerialization._
@@ -89,7 +82,7 @@ object CertCheckService {
         JsObject(List(
           (JsString(Constants.KEY_ID), tojson(if (check.getKey != null) KeyFactory.keyToString(check.getKey) else null)),
           (JsString("name"), tojson(check.getName)),
-          (JsString("url"), tojson(check.getUrl)),
+          (JsString("domainName"), tojson(check.getDomainName)),
           (JsString("formParams"), tojson(check.getFormParams)),
           (JsString("preloadUrl"), tojson(check.getPreloadUrl)),
           (JsString("active"), tojson(check.getActive.toString)),
@@ -105,8 +98,8 @@ object CertCheckService {
           (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("check"), check.getName)))))))
     }
   }
-  
-    def fetchOne(id: String, _userData: Option[UserData]): Option[CertCheck] = {
+
+  def fetchOne(id: String, _userData: Option[UserData]): Option[CertCheck] = {
     val m: CertCheckMeta = CertCheckMeta.get
     try {
       val key = KeyFactory.stringToKey(id)
@@ -144,26 +137,46 @@ object CertCheckService {
       }
     }
   }
-    
-      def fetchAll(_userData: Option[UserData]): List[CertCheck] = {
+
+  def fetchAll(_userData: Option[UserData]): List[CertCheck] = {
     val m: CertCheckMeta = CertCheckMeta.get
     _userData match {
       case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey)).asList.toList
       case None => Datastore.query(m).asList.toList
     }
   }
-      
-      def fetchWithKey(key: Key) = try {
+
+  def fetchActiveAllKeys(_userData: Option[UserData]): List[Key] = {
+    val m: CertCheckMeta = CertCheckMeta.get
+    _userData match {
+      case Some(userData) => Datastore.query(m)
+        .filter(m.userDataRef.equal(userData.getKey))
+        .filter(m.active.equal(true)).asKeyList().toList
+      case None => try {
+        memcacheService.get(CHECK_KEYS_NAMESPACE).asInstanceOf[List[Key]] match {
+          case null => throw new NullPointerException
+          case keys => {
+            memcacheService.put(CHECK_KEYS_NAMESPACE, keys)
+            keys
+          }
+        }
+      } catch {
+        case _ => Datastore.query(m).filter(m.active.equal(true)).asKeyList.toList
+      }
+    }
+  }
+
+  def fetchWithKey(key: Key) = try {
     val m: CertCheckMeta = CertCheckMeta.get
     Option(Datastore.query(m).filter(m.key equal key).asSingle)
   } catch {
     case e: Exception => None
   }
 
-    def createNew(): CertCheck = {
+  def createNew(): CertCheck = {
     val result: CertCheck = new CertCheck
     result.setName("")
-    result.setUrl("")
+    result.setDomainName("")
     result.setAssertText("")
     result.setXPath("")
     result.setDescription("")
@@ -175,8 +188,8 @@ object CertCheckService {
     result.setFailThreshold(1)
     result
   }
-    
-      def saveWithUserData(model: CertCheck, userData: UserData): Key = {
+
+  def saveWithUserData(model: CertCheck, userData: UserData): Key = {
     val key: Key = model.getKey
 
     val now: Date = new Date
@@ -194,15 +207,15 @@ object CertCheckService {
     clearCertCheckCache(model)
     result
   }
-      
-      def delete(check: CertCheck) {
+
+  def delete(check: CertCheck) {
     val key = getCertCheckCacheKey(check)
     clearCertCheckKeysCache()
     memcacheService.delete(key)
     Datastore.delete(check.getKey)
   }
 
-    def getCertCheckCacheKey(id: String): String = {
+  def getCertCheckCacheKey(id: String): String = {
     "%s_%s".format(CHECK_CACHE_NAMESPACE, id)
   }
 
@@ -219,5 +232,5 @@ object CertCheckService {
   def clearCertCheckKeysCache() {
     memcacheService.delete(CHECK_KEYS_NAMESPACE)
   }
-        
+
 }

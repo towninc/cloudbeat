@@ -17,6 +17,7 @@ import javax.net.ssl.SSLSocket
 import javax.net.ssl.TrustManagerFactory
 import com.aimluck.lib.util.TextUtil
 import com.aimluck.model.CertCheckLog
+import com.aimluck.service.CertCheckService
 
 class CertCheckController extends Controller {
   val logger = Logger.getLogger(classOf[CertCheckController].getName)
@@ -24,9 +25,9 @@ class CertCheckController extends Controller {
   @throws(classOf[Exception])
   override def run(): Navigation = {
     val id = request.getParameter(Constants.KEY_ID)
-    CheckService.fetchOne(id, None) match {
+    CertCheckService.fetchOne(id, None) match {
       case Some(check) => {
-        val host = new URL(check.getUrl).getHost
+        val host = check.getDomainName
         val keyStore = KeyStore.getInstance("JKS")
         val servletContext = this.servletContext
         val stream = servletContext.getResourceAsStream("/cert/cacerts")
@@ -44,15 +45,15 @@ class CertCheckController extends Controller {
         val certs = for {
           cert <- session.getPeerCertificates
           x509cert = cert.asInstanceOf[X509Certificate]
-          if TextUtil.nameFrom(x509cert.getSubjectX500Principal.getName, TextUtil.CN) == host
+          if TextUtil.nameFrom(x509cert.getSubjectX500Principal.getName, TextUtil.CN).endsWith(host)
         } yield x509cert
-        val checkLog = CertCheckLogService.fetchFromUrl(check.getUrl) match {
+        val checkLog = CertCheckLogService.fetchFromDomainName(check.getDomainName) match {
           case Some(checkLog) => checkLog
           case None => {
             val checkLog = CertCheckLogService.createNew
             checkLog.setKey(Datastore.allocateId(classOf[CertCheckLog]))
             checkLog.setName(check.getName)
-            checkLog.setUrl(check.getUrl)
+            checkLog.setDomainName(check.getDomainName)
             checkLog.setLogin(check.getLogin)
             checkLog
           }

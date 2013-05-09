@@ -42,21 +42,13 @@ class FormController extends AbstractUserBaseFormController {
             LanguageUtil.get("cert.name"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
         }
 
-        //Url
-        val url = request.getParameter("url")
-        if (url.size <= 0 || url.size > AppConstants.VALIDATE_STRING_LENGTH) {
-          addError("url", LanguageUtil.get("error.stringLength", Some(Array(
-            LanguageUtil.get("cert.url"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
+        //domain
+        val domName = request.getParameter("domName")
+        if (domName.size <= 0 || domName.size > AppConstants.VALIDATE_STRING_LENGTH) {
+          addError("domName", LanguageUtil.get("error.stringLength", Some(Array(
+            LanguageUtil.get("cert.domName"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
         }
 
-        //Description
-//        val description = request.getParameter("description")
-//        if (description.size > AppConstants.VALIDATE_LONGTEXT_LENGTH) {
-//          addError("description", LanguageUtil.get("error.stringLength.max", Some(Array(
-//            LanguageUtil.get("cert.description"), AppConstants.VALIDATE_LONGTEXT_LENGTH.toString))));
-//        }
-
-        //active
         try {
           val active = request.getParameter("active").toBoolean
         } catch {
@@ -81,39 +73,6 @@ class FormController extends AbstractUserBaseFormController {
             LanguageUtil.get("cert.recipients"),
             AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK.toString))));
         }
-
-        //failThreshold
-//        try {
-//          val failThreshold = request.getParameter("failThreshold").toInt
-//          if ((failThreshold < 0) || (failThreshold > AppConstants.DATA_LIMIT_THRESHOLD)) {
-//            addError("failThreshold", LanguageUtil.get("error.invaldValue", Some(Array(
-//              LanguageUtil.get("cert.failThreshold"), "6", AppConstants.DATA_LIMIT_THRESHOLD.toString))));
-//          }
-//        } catch {
-//          case e: NumberFormatException => {
-//            addError("failThreshold", LanguageUtil.get("error.invaldValue",
-//              Some(Array(LanguageUtil.get("stepMail.failThreshold")))));
-//          }
-//        }
-        
-        //ssl
-//        try {
-//          val ssl = request.getParameter("ssl").toBoolean
-//        } catch {
-//          case e: NumberFormatException => {
-//            addError("ssl", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("cert.ssl")))));
-//          }
-//        }
-        
-        //dom
-//        try {
-//          val dom = request.getParameter("dom").toBoolean
-//        } catch {
-//          case e: NumberFormatException => {
-//            addError("dom", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("cert.dom")))));
-//          }
-//        }
-        
       }
       case None => {
         addError(Constants.KEY_GLOBAL_ERROR,
@@ -179,7 +138,7 @@ class FormController extends AbstractUserBaseFormController {
             //Name
             cert.setName(request.getParameter("name"))
             //Url
-            cert.setUrl(request.getParameter("url"))
+            cert.setDomainName(request.getParameter("domName"))
 
             //formParams
             cert.setFormParams(request.getParameter("formParams"))
@@ -187,13 +146,6 @@ class FormController extends AbstractUserBaseFormController {
             //preloadUrl
             cert.setPreloadUrl(request.getParameter("preloadUrl"))
 
-            //AssertText
-//            cert.setAssertText(request.getParameter("assertText"))
-            //XPath
-//            cert.setXPath(request.getParameter("xPath"))
-            //Description
-//            cert.setDescription(request.getParameter("description"))
-            //active
             cert.setActive(request.getParameter("active").toBoolean)
                       
             //Recipients
@@ -206,15 +158,7 @@ class FormController extends AbstractUserBaseFormController {
             } else {
               cert.setRecipients(seqAsJavaList(List()))
             }
-            //cert.setStatus(CertCheckService.Status.INITIALIZING.toString)
             cert.setErrorMessage(LanguageUtil.get("cert.StatusMessage.initializing"))
-            //ssl
-//            cert.setCheckSSL(request.getParameter("ssl").toBoolean)
-            //dom
-//            cert.setCheckDomain(request.getParameter("dom").toBoolean)
-            //failThreshold
-//            cert.setFailThreshold(request.getParameter("failThreshold").toInt)
-//            cert.setFailCount(0)
             CertCheckService.saveWithUserData(cert, userData)
             
           }

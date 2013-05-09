@@ -8,12 +8,13 @@ import scala.collection.JavaConversions._
 import com.google.appengine.api.datastore.KeyFactory
 import com.google.appengine.api.taskqueue.{ QueueFactory, TaskOptions }
 import TaskOptions.{ Builder, Method }
+import com.aimluck.service.CertCheckService
 
 class CertCheckController extends Controller {
 
   @throws(classOf[Exception])
   override def run(): Navigation = {
-    CheckService.fetchActiveAllKeys(None).foreach {
+    CertCheckService.fetchActiveAllKeys(None).foreach {
       key =>
         QueueFactory.getDefaultQueue
           .add(Builder.withUrl("/task/certCheck")

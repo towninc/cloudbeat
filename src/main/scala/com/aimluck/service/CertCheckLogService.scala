@@ -41,9 +41,9 @@ object CertCheckLogService {
         JsObject(List(
           (JsString(Constants.KEY_ID), tojson(if (log.getKey != null) KeyFactory.keyToString(log.getKey) else null)),
           (JsString("name"), tojson(log.getName)),
-          (JsString("url"), tojson(log.getUrl)),
-          (JsString("limit"), tojson(AppConstants.dateTimeFormat.format(log.getLimitDate))),
-          (JsString("period"), tojson(log.getPeriod.toString))))
+          (JsString("domainName"), tojson(log.getDomainName)),
+          (JsString("limit"), if(log.getLimitDate == null) tojson("") else tojson(AppConstants.dateTimeFormat.format(log.getLimitDate))),
+          (JsString("period"), if(log.getPeriod == null) tojson("") else tojson(log.getPeriod.toString))))
     }
   }
 
@@ -59,8 +59,8 @@ object CertCheckLogService {
     case None => Datastore.query(meta).asList.toList
   }
 
-  def fetchFromUrl(url: String) = try {
-    Option(Datastore.query(meta).filter(meta.url equal url).asSingle)
+  def fetchFromDomainName(domain: String) = try {
+    Option(Datastore.query(meta).filter(meta.domainName equal domain).asSingle)
   } catch {
     case _ => None
   }

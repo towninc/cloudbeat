@@ -17,12 +17,10 @@ public class CertCheckLog implements Serializable {
     private Key key;
     @Attribute(version = true)
     private Long version;
-    @Attribute(name = "cR")
-    private ModelRef<Check> checkRef = new ModelRef<Check>(Check.class);
     @Attribute(name = "n")
     private String name;
-    @Attribute(name = "u")
-    private String url;
+    @Attribute(name = "dN")
+    private String domainName;
     @Attribute(name = "eM", lob = true)
     private String errorMessage;
     @Attribute(name = "uDR")
@@ -108,14 +106,6 @@ public class CertCheckLog implements Serializable {
     }
 
     /**
-     * 
-     * @return
-     */
-    public ModelRef<Check> getCheckRef() {
-        return checkRef;
-    }
-
-    /**
      *
      * @return
      */
@@ -129,22 +119,6 @@ public class CertCheckLog implements Serializable {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getUrl() {
-        return url;
-    }
-
-    /**
-     * 
-     * @param url
-     */
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     /**
@@ -226,5 +200,13 @@ public class CertCheckLog implements Serializable {
 	public void setPeriod(Long period) {
 		this.period = period;
 	}
+
+  public String getDomainName() {
+    return domainName;
+  }
+
+  public void setDomainName(String domainName) {
+    this.domainName = domainName;
+  }
 
 }
