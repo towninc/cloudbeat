@@ -46,24 +46,9 @@ object CertCheckService {
           (JsString(Constants.KEY_ID), tojson(if (check.getKey != null) KeyFactory.keyToString(check.getKey) else null)),
           (JsString("name"), tojson(check.getName)),
           (JsString("domainName"), tojson(check.getDomainName)),
-          (JsString("formParams"), tojson(check.getFormParams)),
-          (JsString("preloadUrl"), tojson(check.getPreloadUrl)),
           (JsString("active"), tojson(check.getActive.toString)),
-          (JsString("assertText"), tojson(check.getAssertText)),
-          (JsString("xPath"), tojson(check.getXPath)),
-          (JsString("timeOut"), tojson(check.getTimeOut)),
-          (JsString("description"), tojson(check.getDescription)),
-          (JsString("status"), tojson(check.getStatus)),
-          //(JsString("statusHtml"), tojson(statusHtml(check))),
-          //(JsString("statusMap"), BasicHelper.jsonFromStringPairs(statusMap)),
-          (JsString("errorMessage"), tojson(check.getErrorMessage)),
           (JsString("recipients"), tojson(check.getRecipients.toList)),
           (JsString("createdAt"), if (check.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(check.getCreatedAt)) else tojson("")),
-          //(JsString("checkedAt"), if (getCheckedAt(check) != null) tojson(AppConstants.dateTimeFormat.format(getCheckedAt(check))) else tojson("")),
-          (JsString("failCount"), tojson(check.getFailCount)),
-          (JsString("failThreshold"), tojson(check.getFailThreshold)),
-          (JsString("ssl"), if (check.getCheckSSL != null) tojson(check.getCheckSSL.toString) else tojson("false")),
-          (JsString("dom"), if (check.getCheckDomain != null) tojson(check.getCheckDomain.toString) else tojson("false")),
           (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("check"), check.getName)))))))
       }
     }
@@ -83,18 +68,9 @@ object CertCheckService {
           (JsString(Constants.KEY_ID), tojson(if (check.getKey != null) KeyFactory.keyToString(check.getKey) else null)),
           (JsString("name"), tojson(check.getName)),
           (JsString("domainName"), tojson(check.getDomainName)),
-          (JsString("formParams"), tojson(check.getFormParams)),
-          (JsString("preloadUrl"), tojson(check.getPreloadUrl)),
           (JsString("active"), tojson(check.getActive.toString)),
-          (JsString("assertText"), tojson(check.getAssertText)),
-          (JsString("xPath"), tojson(check.getXPath)),
-          (JsString("status"), tojson(check.getStatus)),
-          //(JsString("statusHtml"), tojson(statusHtml(check))),
-          (JsString("errorMessage"), tojson(check.getErrorMessage)),
+          (JsString("recipients"), tojson(check.getRecipients.toList)),
           (JsString("createdAt"), if (check.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(check.getCreatedAt)) else tojson("")),
-          //(JsString("checkedAt"), if (getCheckedAt(check) != null) tojson(AppConstants.dateTimeFormat.format(getCheckedAt(check))) else tojson("")),
-          (JsString("failCount"), tojson(check.getFailCount)),
-          (JsString("failThreshold"), tojson(check.getFailThreshold)),
           (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("check"), check.getName)))))))
     }
   }
@@ -177,15 +153,7 @@ object CertCheckService {
     val result: CertCheck = new CertCheck
     result.setName("")
     result.setDomainName("")
-    result.setAssertText("")
-    result.setXPath("")
-    result.setDescription("")
-    //result.setStatus(Status.INITIALIZING.toString)
-    result.setErrorMessage("")
-    result.setTimeOut(AppConstants.DEFAULT_TIMEOUT_SECONDS)
     result.setRecipients(List())
-    result.setFailCount(0)
-    result.setFailThreshold(1)
     result
   }
 
@@ -198,9 +166,6 @@ object CertCheckService {
     }
     model.setUpdatedAt(now)
     model.getUserDataRef.setModel(userData)
-
-    val formParams = model.getFormParams();
-    model.setLogin(formParams != null && formParams != "")
 
     val result = Datastore.putWithoutTx(model).apply(0)
     clearCertCheckKeysCache()
@@ -225,7 +190,7 @@ object CertCheckService {
 
   def clearCertCheckCache(check: CertCheck): Unit = {
     val key = getCertCheckCacheKey(check)
-    SummaryService.clearCheckCache(check.getUserId)
+    SummaryService.clearCheckCache(check.getUserDataRef.getModel.getUserId)
     memcacheService.delete(key)
   }
 

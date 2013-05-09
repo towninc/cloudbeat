@@ -20,52 +20,19 @@ public class CertCheck implements Serializable {
 	private Long version;
 	@Attribute(name = "n")
 	private String name;
-	@Attribute(name = "s")
-	private String status;
 	@Attribute(name = "dN")
 	private String domainName;
-	@Attribute(name = "pU")
-	private String preloadUrl;
-	@Attribute(name = "fP")
-	private String formParams;
-	@Attribute(name = "aT")
-	private String assertText;
-	@Attribute(name = "xP")
-	private String xPath;
-	@Attribute(name = "tO")
-	private int timeOut;
-	@Attribute(name = "a")
-	private Boolean active = true;
-
-
-	@Attribute(name="lD")
-    private Date limitDate;
-    @Attribute(name="p")
-    private Long period;
-	
-	@Attribute(name = "d", lob = true)
-	private String description;
-	@Attribute(name = "eM", lob = true)
-	private String errorMessage;
-	@Attribute(unindexed = true, name = "r")
-	private List<String> recipients;
-	@Attribute(name = "uDR")
-	private ModelRef<UserData> userDataRef = new ModelRef<UserData>(
-			UserData.class);
-	@Attribute(name = "cA")
-	private Date createdAt;
-	@Attribute(name = "uA")
-	private Date updatedAt;
-	@Attribute(name = "fC")
-	private int failCount;
-	@Attribute(name = "fT")
-	private int failThreshold;
-	@Attribute(name="l")
-	private Boolean login = false;
-	@Attribute(name="cSSL")
-	private Boolean checkSSL = false;
-	@Attribute(name="cDom")
-	private Boolean checkDomain = false;
+  @Attribute(unindexed = true, name = "r")
+  private List<String> recipients;
+  @Attribute(name = "a")
+  private Boolean active;
+  @Attribute(name = "uDR")
+  private ModelRef<UserData> userDataRef = new ModelRef<UserData>(
+      UserData.class);
+  @Attribute(name = "cA")
+  private Date createdAt;
+  @Attribute(name = "uA")
+  private Date updatedAt;
 	
 	
 	/**
@@ -136,21 +103,6 @@ public class CertCheck implements Serializable {
 		return true;
 	}
 
-	public Date getLimitDate() {
-		return limitDate;
-	}
-
-	public void setLimitDate(Date limitDate) {
-		this.limitDate = limitDate;
-	}
-	
-	public Long getPeriod() {
-		return period;
-	}
-
-	public void setPeriod(Long period) {
-		this.period = period;
-	}
 	/**
 	 * 
 	 * @return
@@ -167,228 +119,6 @@ public class CertCheck implements Serializable {
 		this.name = name;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public String getStatus() {
-		return status;
-	}
-
-	/**
-	 * 
-	 * @param status
-	 */
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getAssertText() {
-		return assertText;
-	}
-
-	/**
-	 * 
-	 * @param assertText
-	 */
-	public void setAssertText(String assertText) {
-		this.assertText = assertText;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getXPath() {
-		return xPath;
-	}
-
-	/**
-	 * 
-	 * @param xPath
-	 */
-	public void setXPath(String xPath) {
-		this.xPath = xPath;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public int getTimeOut() {
-		return timeOut;
-	}
-
-	/**
-	 * 
-	 * @param timeOut
-	 */
-	public void setTimeOut(int timeOut) {
-		this.timeOut = timeOut;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * 
-	 * @param description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	/**
-	 * 
-	 * @param errorMessage
-	 */
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public ModelRef<UserData> getUserDataRef() {
-		return userDataRef;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public List<String> getRecipients() {
-		return recipients;
-	}
-
-	/**
-	 * 
-	 * @param recipients
-	 */
-	public void setRecipients(List<String> recipients) {
-		this.recipients = recipients;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	/**
-	 * 
-	 * @param createdAt
-	 */
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
-
-	/**
-	 * 
-	 * @param updatedAt
-	 */
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	public void setFailCount(int failCount) {
-		this.failCount = failCount;
-	}
-
-	public int getFailCount() {
-		return failCount;
-	}
-
-	public void setFailThreshold(int failThreshold) {
-		this.failThreshold = failThreshold;
-	}
-
-	public int getFailThreshold() {
-		return failThreshold;
-	}
-
-	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
-
-	public String getPreloadUrl() {
-		return preloadUrl;
-	}
-
-	public void setPreloadUrl(String preloadUrl) {
-		this.preloadUrl = preloadUrl;
-	}
-
-	public String getFormParams() {
-		return formParams;
-	}
-
-	public void setFormParams(String formParams) {
-		this.formParams = formParams;
-	}
-
-	public String getUserId() {
-		if (this.userDataRef != null) {
-			return Long.toString(this.userDataRef.getKey().getId());
-		}
-		return null;
-	}
-
-	public Boolean getLogin() {
-		return login;
-	}
-
-	public void setLogin(Boolean login) {
-		this.login = login;
-	}
-
-	public Boolean getCheckSSL() {
-		return checkSSL;
-	}
-
-	public void setCheckSSL(Boolean checkSSL) {
-		this.checkSSL = checkSSL;
-	}
-
-	public Boolean getCheckDomain() {
-		return checkDomain;
-	}
-
-	public void setCheckDomain(Boolean checkDomain) {
-		this.checkDomain = checkDomain;
-	}
 
   public String getDomainName() {
     return domainName;
@@ -396,6 +126,42 @@ public class CertCheck implements Serializable {
 
   public void setDomainName(String domainName) {
     this.domainName = domainName;
+  }
+
+  public List<String> getRecipients() {
+    return recipients;
+  }
+
+  public void setRecipients(List<String> recipients) {
+    this.recipients = recipients;
+  }
+
+  public Boolean getActive() {
+    return active;
+  }
+
+  public void setActive(Boolean active) {
+    this.active = active;
+  }
+
+  public ModelRef<UserData> getUserDataRef() {
+    return userDataRef;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Date getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(Date updatedAt) {
+    this.updatedAt = updatedAt;
   }
 
 	

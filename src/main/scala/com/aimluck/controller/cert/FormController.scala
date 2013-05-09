@@ -43,7 +43,7 @@ class FormController extends AbstractUserBaseFormController {
         }
 
         //domain
-        val domName = request.getParameter("domName")
+        val domName = request.getParameter("domainName")
         if (domName.size <= 0 || domName.size > AppConstants.VALIDATE_STRING_LENGTH) {
           addError("domName", LanguageUtil.get("error.stringLength", Some(Array(
             LanguageUtil.get("cert.domName"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
@@ -111,7 +111,7 @@ class FormController extends AbstractUserBaseFormController {
             } else {
               val isActivated = request.getParameter("active").toBoolean
               if (isActivated) {
-                if (cert.getActive() != true) { //Activeが増える
+                if (!cert.getActive()) { //Activeが増える
                   if (isLogin) {
                     PlanService.isReachedMaxCheckLoginNumber(userData)
                   } else {
@@ -138,13 +138,7 @@ class FormController extends AbstractUserBaseFormController {
             //Name
             cert.setName(request.getParameter("name"))
             //Url
-            cert.setDomainName(request.getParameter("domName"))
-
-            //formParams
-            cert.setFormParams(request.getParameter("formParams"))
-
-            //preloadUrl
-            cert.setPreloadUrl(request.getParameter("preloadUrl"))
+            cert.setDomainName(request.getParameter("domainName"))
 
             cert.setActive(request.getParameter("active").toBoolean)
                       
@@ -158,7 +152,6 @@ class FormController extends AbstractUserBaseFormController {
             } else {
               cert.setRecipients(seqAsJavaList(List()))
             }
-            cert.setErrorMessage(LanguageUtil.get("cert.StatusMessage.initializing"))
             CertCheckService.saveWithUserData(cert, userData)
             
           }
@@ -172,21 +165,6 @@ class FormController extends AbstractUserBaseFormController {
 
     }
     !existsError
-  }
-
-  @throws(classOf[Exception])
-  override protected def run(): Navigation = {
-    val id = request.getParameter(Constants.KEY_ID)
-    CertCheckService.fetchOne(id, None) match {
-      case Some(v) => {
-        if (v.getLogin() && (!isLoginController)) {
-          redirect("/check/loginForm?id=%s".format(KeyFactory.keyToString(v.getKey())))
-        } else {
-          super.run()
-        }
-      }
-      case None => super.run()
-    }
   }
 
   override def replacerMap: Map[String, ((Node) => NodeSeq)] = {

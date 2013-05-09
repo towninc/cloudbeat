@@ -17,6 +17,8 @@ public class CertCheckLog implements Serializable {
     private Key key;
     @Attribute(version = true)
     private Long version;
+    @Attribute(name = "cR")
+    private ModelRef<CertCheck> checkRef = new ModelRef<CertCheck>(CertCheck.class);
     @Attribute(name = "n")
     private String name;
     @Attribute(name = "dN")
@@ -63,6 +65,14 @@ public class CertCheckLog implements Serializable {
      */
     public Long getVersion() {
         return version;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public ModelRef<CertCheck> getCheckRef() {
+        return checkRef;
     }
 
     /**

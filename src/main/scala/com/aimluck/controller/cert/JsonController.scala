@@ -7,13 +7,13 @@ import org.dotme.liquidtpl.controller.AbstractJsonDataController
 import org.dotme.liquidtpl.Constants
 import org.dotme.liquidtpl.LanguageUtil
 import com.aimluck.model.Check
-import com.aimluck.service.CheckService
 import com.aimluck.service.UserDataService
 import dispatch.json.JsValue
 import sjson.json.JsonSerialization._
 import sjson.json.JsonSerialization
 import com.aimluck.lib.util.BaseUtil
 import com.aimluck.service.CertCheckLogService
+import com.aimluck.service.CertCheckService
 
 class JsonController extends AbstractJsonDataController with BaseUtil {
   Logger.getLogger(classOf[JsonController].getName)
@@ -27,12 +27,12 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
   }
 
   override def getDetail(id: String): JsValue = {
-    import com.aimluck.service.CheckService.CheckProtocol._
+    import com.aimluck.service.CertCheckService.CertCheckProtocol._
     val startDate: Date = new Date
 
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
-        CheckService.fetchOne(id, Some(userData)) match {
+        CertCheckService.fetchOne(id, Some(userData)) match {
           case Some(v) => {
             tojson(v)
           }
@@ -50,12 +50,12 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
   }
 
    override def getForm(id: String): JsValue = {
-    import com.aimluck.service.CheckService.CheckProtocol._
+    import com.aimluck.service.CertCheckService.CertCheckProtocol._
     val startDate: Date = new Date
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) =>
         if ((id != null) && (id.size > 0)) {
-          CheckService.fetchOne(id, Some(userData)) match {
+          CertCheckService.fetchOne(id, Some(userData)) match {
             case Some(v) => {
               tojson(v)
             }
@@ -66,7 +66,7 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
             }
           }
         } else {
-          val newCheck = CheckService.createNew
+          val newCheck = CertCheckService.createNew
           newCheck.setRecipients(seqAsJavaList(List(userData.getEmail())))
           tojson(newCheck)
         }

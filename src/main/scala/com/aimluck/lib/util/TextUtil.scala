@@ -11,9 +11,9 @@ object TextUtil {
   val CN = "CN"
 
   def validateEmail(text: String): Boolean = {
-    val ptnStr = "[^@]+@[^@]+";
-    val ptn = Pattern.compile(ptnStr);
-    val mc = ptn.matcher(text);
+    val ptnStr = "[^@]+@[^@]+"
+    val ptn = Pattern.compile(ptnStr)
+    val mc = ptn.matcher(text)
     mc.matches
   }
 

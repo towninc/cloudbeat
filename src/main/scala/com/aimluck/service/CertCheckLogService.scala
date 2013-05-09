@@ -40,10 +40,11 @@ object CertCheckLogService {
       def writes(log: CertCheckLog): JsValue =
         JsObject(List(
           (JsString(Constants.KEY_ID), tojson(if (log.getKey != null) KeyFactory.keyToString(log.getKey) else null)),
+          (JsString("checkId"), tojson(if (log.getCheckRef.getKey != null) KeyFactory.keyToString(log.getCheckRef.getKey) else null)),
           (JsString("name"), tojson(log.getName)),
           (JsString("domainName"), tojson(log.getDomainName)),
-          (JsString("limit"), if(log.getLimitDate == null) tojson("") else tojson(AppConstants.dateTimeFormat.format(log.getLimitDate))),
-          (JsString("period"), if(log.getPeriod == null) tojson("") else tojson(log.getPeriod.toString))))
+          (JsString("limit"), if (log.getLimitDate == null) tojson("") else tojson(AppConstants.dateTimeFormat.format(log.getLimitDate))),
+          (JsString("period"), if (log.getPeriod == null) tojson("") else tojson(log.getPeriod.toString))))
     }
   }
 
@@ -65,6 +66,12 @@ object CertCheckLogService {
     case _ => None
   }
 
+  def fetchFromCertCheckKey(key: Key) = try {
+    Option(Datastore.query(meta).filter(meta.checkRef equal key).asSingle)
+  } catch {
+    case _ => None
+  }
+
   def saveWithUserData(model: CertCheckLog, userData: UserData) = {
     val key: Key = model.getKey
 
@@ -76,5 +83,9 @@ object CertCheckLogService {
 
     model.getUserDataRef.setModel(userData)
     Datastore.putWithoutTx(model)(0)
+  }
+
+  def delete(checkLog: CertCheckLog) {
+    Datastore.delete(checkLog.getKey)
   }
 }

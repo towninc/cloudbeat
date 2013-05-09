@@ -52,9 +52,9 @@ class CertCheckController extends Controller {
           case None => {
             val checkLog = CertCheckLogService.createNew
             checkLog.setKey(Datastore.allocateId(classOf[CertCheckLog]))
+            checkLog.getCheckRef.setModel(check)
             checkLog.setName(check.getName)
             checkLog.setDomainName(check.getDomainName)
-            checkLog.setLogin(check.getLogin)
             checkLog
           }
         }

@@ -46,6 +46,7 @@
 						<th>ドメイン名</th>
 						<th>残り日数</th>
 						<th>有効期限</th>
+						<th>編集</th>
 					</tr>
 				</thead>
 				<tbody id="checkList">
@@ -59,6 +60,12 @@
         <td>${domainName}</td>
         <td>${period}日</td>
         <td>${limit}</td>
+		<td class="action-td">
+			<a class="btn btn-small btn-warning" href="/cert/form?id=${checkId}"><i title="Edit" class="icon-pencil"></i></a>
+			<a class="btn btn-small" onclick="return confirm('${domainName}の監視を削除してもよろしいですか?');" href="/cert/delete?id=${checkId}">
+				<i title="Remove" class="icon-remove"></i>
+			</a>
+		</td>
     </tr>
     <tr id="checkItem-error-message-tr-${id}" class="selectable error-message-tr" style="display:none;">
         <td colspan="5">
