@@ -89,4 +89,10 @@ object AppConstants {
     dateFormat
   }
 
+  def dateFormat: DateFormat = {
+    val dateFormat: DateFormat = new SimpleDateFormat("yyyy/MM/dd")
+    dateFormat.setTimeZone(AppConstants.timeZone)
+    dateFormat
+  }
+
 }

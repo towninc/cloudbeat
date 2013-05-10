@@ -47,28 +47,18 @@ class CertCheckController extends Controller {
           x509cert = cert.asInstanceOf[X509Certificate]
           if TextUtil.nameFrom(x509cert.getSubjectX500Principal.getName, TextUtil.CN).endsWith(host)
         } yield x509cert
-        val certCheck = CertCheckService.fetchFromDomainName(check.getDomainName) match {
-          case Some(certCheck) => certCheck
-          case None => {
-            val certCheck = CertCheckService.createNew
-            certCheck.setKey(Datastore.allocateId(classOf[CertCheck]))
-            certCheck.setName(check.getName)
-            certCheck.setDomainName(check.getDomainName)
-            certCheck
-          }
-        }
         try {
           if (certs.isEmpty) {
             throw new Exception("No certifications!")
           } else {
             val limit = certs(0).getNotAfter
-            certCheck.setLimitDate(limit)
-            certCheck.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
+            check.setLimitDate(limit)
+            check.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
           }
         } catch {
-          case e: Exception => certCheck.setErrorMessage(e.getMessage)
+          case e: Exception => check.setErrorMessage(e.getMessage)
         } finally {
-          CertCheckService.saveWithUserData(certCheck, check.getUserDataRef.getModel)
+          CertCheckService.saveWithUserData(check, check.getUserDataRef.getModel)
         }
       }
       case None =>

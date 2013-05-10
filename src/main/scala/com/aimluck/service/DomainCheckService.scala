@@ -59,13 +59,13 @@ object DomainCheckService {
           (JsString("name"), tojson(domainCheck.getName)),
           (JsString("domainName"), tojson(domainCheck.getDomainName)),
           (JsString("active"), tojson(domainCheck.getActive.toString)),
-          (JsString("limitDate"), tojson(if(domainCheck.getLimitDate != null) domainCheck.getLimitDate.toString else null)),
+          (JsString("limitDate"), tojson(if(domainCheck.getLimitDate != null) AppConstants.dateTimeFormat.format( domainCheck.getLimitDate) else null)),
           (JsString("period"), tojson(if(domainCheck.getPeriod != null) domainCheck.getPeriod.toString else null)),
           (JsString("description"), tojson(domainCheck.getDescription)),
           (JsString("status"), tojson(domainCheck.getStatus)),
           (JsString("errorMessage"), tojson(domainCheck.getErrorMessage)),
           (JsString("recipients"), tojson(domainCheck.getRecipients.toList)),
-          (JsString("createdAt"), if (domainCheck.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(domainCheck.getCreatedAt)) else tojson("")),
+          (JsString("createdAt"), if (domainCheck.getCreatedAt != null) tojson(AppConstants.dateFormat.format(domainCheck.getCreatedAt)) else tojson("")),
           (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("domainCheck"), domainCheck.getName)))))))
       }
     }
@@ -89,8 +89,8 @@ object DomainCheckService {
           (JsString("name"), tojson(domainCheck.getName)),
           (JsString("domainName"), tojson(domainCheck.getDomainName)),
           (JsString("active"), tojson(domainCheck.getActive.toString)),
-          (JsString("limitDate"), if (domainCheck.getLimitDate != null) tojson(domainCheck.getLimitDate.toString) else tojson("")),
-          (JsString("period"), if (domainCheck.getPeriod != null) tojson(domainCheck.getPeriod.toString) else tojson("")),
+          (JsString("limitDate"), if (domainCheck.getLimitDate != null) tojson( AppConstants.dateFormat.format(domainCheck.getLimitDate)) else tojson("-")),
+          (JsString("period"), if (domainCheck.getPeriod != null) tojson(domainCheck.getPeriod.toString) else tojson("-")),
           (JsString("description"), tojson(domainCheck.getDescription)),
           (JsString("status"), tojson(domainCheck.getStatus)),
           (JsString("errorMessage"), tojson(domainCheck.getErrorMessage)),
@@ -138,6 +138,26 @@ object DomainCheckService {
     }
   }
 
+  def fetchActiveAllKeys(_userData: Option[UserData]): List[Key] = {
+   val m: DomainCheckMeta = DomainCheckMeta.get
+    _userData match {
+      case Some(userData) => Datastore.query(m)
+        .filter(m.userDataRef.equal(userData.getKey))
+        .filter(m.active.equal(true)).asKeyList().toList
+      case None => try {
+        memcacheService.get(DOMAIN_CHECK_KEYS_NAMESPACE).asInstanceOf[List[Key]] match {
+          case null => throw new NullPointerException
+          case keys => {
+            memcacheService.put(DOMAIN_CHECK_KEYS_NAMESPACE, keys)
+            keys
+          }
+        }
+      } catch {
+        case _ => Datastore.query(m).filter(m.active.equal(true)).asKeyList.toList
+      }
+    }
+  }
+
 
   def fetchWithKey(key: Key) = try {
     val m: DomainCheckMeta = DomainCheckMeta.get
@@ -146,6 +166,12 @@ object DomainCheckService {
     case e: Exception => None
   }
 
+   def fetchFromDomainName(domain: String) = try {
+    val m: DomainCheckMeta = DomainCheckMeta.get
+    Option(Datastore.query(m).filter(m.domainName equal domain).asSingle)
+  } catch {
+    case _ => None
+  }
 
   def createNew(): DomainCheck = {
     val result: DomainCheck = new DomainCheck

@@ -5,6 +5,10 @@
 		<schedule>every day 00:00</schedule>
 	</cron>
 	<cron>
+		<url>/cron/domainCheck</url>
+		<schedule>every day 00:00</schedule>
+	</cron>
+	<cron>
 		<url>/cron/check</url>
 		<schedule>every 1 minutes</schedule>
 	</cron>
