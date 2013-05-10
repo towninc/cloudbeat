@@ -2,6 +2,13 @@
 <script type="text/javascript">
     //<![CDATA[
     $(function(){
+    	if(typeof $('#pageType').val() != null && $('#pageType').val() == "page"){
+			$("#page_icon").css("display","");
+			$("#login_icon").css("display","none");
+    	}else{
+			$("#page_icon").css("display","none");
+			$("#login_icon").css("display","");
+    	}
         $.initList( "checkList", "checkItem", true, "/cert/json", {}, function(jsonData) {
             $.setListValues("checkList", "checkItem", false, jsonData, function() {
             },
