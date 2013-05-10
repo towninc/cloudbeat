@@ -10,7 +10,7 @@ import org.slim3.datastore.Attribute;
 import org.slim3.datastore.Model;
 import org.slim3.datastore.ModelRef;
 
-@Model(kind = "dC", schemaVersion = 1, schemaVersionName = "sV")
+@Model(kind = "c", schemaVersion = 1, schemaVersionName = "sV")
 public class DomainCheck implements Serializable {
 
 	@Attribute(primaryKey = true, name = "k")
