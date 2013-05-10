@@ -6,7 +6,7 @@ import scala.collection.JavaConversions._
 import org.dotme.liquidtpl.controller.AbstractJsonDataController
 import org.dotme.liquidtpl.Constants
 import org.dotme.liquidtpl.LanguageUtil
-import com.aimluck.model.Check
+import com.aimluck.model.DomainCheck
 import com.aimluck.service.DomainCheckService
 import com.aimluck.service.UserDataService
 import dispatch.json.JsValue
