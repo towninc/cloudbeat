@@ -15,7 +15,7 @@
             function(){
             	$('#checkListContainer').show();
             });
-            
+
 			$("#error-message").click(function(e){
 			    var $this = $(this);
 				var	checkId = $this.data("checkId");
@@ -24,7 +24,7 @@
 			});
         });
     });
-    
+
     $.formLink = function(){
     	if(typeof $('#pageType').val() != null && $('#pageType').val() == "cert"){
 	    	location.href='/cert/form';
@@ -32,13 +32,13 @@
     		location.href='/cert/loginForm';
     	}
     }
-    
+
     //]]>
 </script>
 <liquidtpl:pageType/>
 <div class="span12">
 	<div id="buttonWrapper" style='margin-bottom: 10px;'>
-		<button onclick="$.formLink();" class="btn btn-primary btn-large"><liquidtpl:pageTypeString/>監視登録</button>											
+		<button onclick="$.formLink();" class="btn btn-primary btn-large"><liquidtpl:pageTypeString/>監視登録</button>
 	</div>
 	<div id="checkListContainer" class="widget widget-table hide">
 		<div class="widget-header">
@@ -65,10 +65,10 @@
     <tr>
         <td>${domainName}</td>
         <td>${period}日</td>
-        <td>${limit}</td>
+        <td>${limitDate}</td>
 		<td class="action-td">
-			<a class="btn btn-small btn-warning" href="/cert/form?id=${checkId}"><i title="Edit" class="icon-pencil"></i></a>
-			<a class="btn btn-small" onclick="return confirm('${domainName}の監視を削除してもよろしいですか?');" href="/cert/delete?id=${checkId}">
+			<a class="btn btn-small btn-warning" href="/cert/form?id=${id}"><i title="Edit" class="icon-pencil"></i></a>
+			<a class="btn btn-small" onclick="return confirm('${domainName}の監視を削除してもよろしいですか?');" href="/cert/delete?id=${id}">
 				<i title="Remove" class="icon-remove"></i>
 			</a>
 		</td>

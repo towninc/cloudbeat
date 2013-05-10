@@ -48,6 +48,8 @@ object CertCheckService {
           (JsString("domainName"), tojson(check.getDomainName)),
           (JsString("active"), tojson(check.getActive.toString)),
           (JsString("recipients"), tojson(check.getRecipients.toList)),
+       	  (JsString("limitDate"), if(check.getLimitDate() != null)tojson( AppConstants.dateTimeFormat.format(check.getLimitDate())) else tojson("-")),
+          (JsString("period"), if(check.getPeriod() != null)tojson(check.getPeriod().toString()) else tojson("-")),
           (JsString("createdAt"), if (check.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(check.getCreatedAt)) else tojson("")),
           (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("check"), check.getName)))))))
       }
@@ -70,6 +72,8 @@ object CertCheckService {
           (JsString("domainName"), tojson(check.getDomainName)),
           (JsString("active"), tojson(check.getActive.toString)),
           (JsString("recipients"), tojson(check.getRecipients.toList)),
+       	  (JsString("limitDate"), if(check.getLimitDate() != null)tojson( AppConstants.dateTimeFormat.format(check.getLimitDate())) else tojson("-")),
+          (JsString("period"), if(check.getPeriod() != null)tojson(check.getPeriod().toString()) else tojson("-")),
           (JsString("createdAt"), if (check.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(check.getCreatedAt)) else tojson("")),
           (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("check"), check.getName)))))))
     }
@@ -149,6 +153,13 @@ object CertCheckService {
     case e: Exception => None
   }
 
+   def fetchFromDomainName(domain: String) = try {
+    val m: CertCheckMeta = CertCheckMeta.get
+    Option(Datastore.query(m).filter(m.domainName equal domain).asSingle)
+  } catch {
+    case _ => None
+  }
+
   def createNew(): CertCheck = {
     val result: CertCheck = new CertCheck
     result.setName("")
@@ -173,6 +184,7 @@ object CertCheckService {
     clearCertCheckCache(model)
     result
   }
+
 
   def delete(check: CertCheck) {
     val key = getCertCheckCacheKey(check)

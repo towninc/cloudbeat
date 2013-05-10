@@ -13,7 +13,6 @@ import dispatch.json.JsValue
 import sjson.json.JsonSerialization._
 import sjson.json.JsonSerialization
 import com.aimluck.lib.util.BaseUtil
-import com.aimluck.service.CertCheckLogService
 
 class JsonController extends AbstractJsonDataController with BaseUtil {
   Logger.getLogger(classOf[JsonController].getName)
@@ -23,7 +22,7 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
     JsonSerialization.tojson(UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => DomainCheckService.fetchAll(Some(userData))
       case None => Nil
-    }) 
+    })
   }
 
   override def getDetail(id: String): JsValue = {

@@ -22,22 +22,27 @@ public class CertCheck implements Serializable {
 	private String name;
 	@Attribute(name = "dN")
 	private String domainName;
-  @Attribute(unindexed = true, name = "r")
-  private List<String> recipients;
-  @Attribute(name = "a")
-  private Boolean active;
-  @Attribute(name = "uDR")
-  private ModelRef<UserData> userDataRef = new ModelRef<UserData>(
-      UserData.class);
-  @Attribute(name = "cA")
-  private Date createdAt;
-  @Attribute(name = "uA")
-  private Date updatedAt;
-	
-	
+    @Attribute(name = "eM", lob = true)
+    private String errorMessage;
+	@Attribute(unindexed = true, name = "r")
+	private List<String> recipients;
+	@Attribute(name = "a")
+	private Boolean active;
+	@Attribute(name = "uDR")
+	private ModelRef<UserData> userDataRef = new ModelRef<UserData>(
+			UserData.class);
+	@Attribute(name = "cA")
+	private Date createdAt;
+	@Attribute(name = "uA")
+	private Date updatedAt;
+	@Attribute(name = "lD")
+	private Date limitDate;
+	@Attribute(name = "p")
+	private Long period;
+
 	/**
 	 * Returns the key.
-	 * 
+	 *
 	 * @return the key
 	 */
 	public Key getKey() {
@@ -46,7 +51,7 @@ public class CertCheck implements Serializable {
 
 	/**
 	 * Sets the key.
-	 * 
+	 *
 	 * @param key
 	 *            the key
 	 */
@@ -56,7 +61,7 @@ public class CertCheck implements Serializable {
 
 	/**
 	 * Returns the version.
-	 * 
+	 *
 	 * @return the version
 	 */
 	public Long getVersion() {
@@ -65,7 +70,7 @@ public class CertCheck implements Serializable {
 
 	/**
 	 * Sets the version.
-	 * 
+	 *
 	 * @param version
 	 *            the version
 	 */
@@ -104,7 +109,7 @@ public class CertCheck implements Serializable {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public String getName() {
@@ -112,57 +117,79 @@ public class CertCheck implements Serializable {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param name
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	public String getDomainName() {
+		return domainName;
+	}
 
-  public String getDomainName() {
-    return domainName;
-  }
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
+	}
 
-  public void setDomainName(String domainName) {
-    this.domainName = domainName;
-  }
+	public List<String> getRecipients() {
+		return recipients;
+	}
 
-  public List<String> getRecipients() {
-    return recipients;
-  }
+	public void setRecipients(List<String> recipients) {
+		this.recipients = recipients;
+	}
 
-  public void setRecipients(List<String> recipients) {
-    this.recipients = recipients;
-  }
+	public Boolean getActive() {
+		return active;
+	}
 
-  public Boolean getActive() {
-    return active;
-  }
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 
-  public void setActive(Boolean active) {
-    this.active = active;
-  }
+	public ModelRef<UserData> getUserDataRef() {
+		return userDataRef;
+	}
 
-  public ModelRef<UserData> getUserDataRef() {
-    return userDataRef;
-  }
+	public Date getCreatedAt() {
+		return createdAt;
+	}
 
-  public Date getCreatedAt() {
-    return createdAt;
-  }
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
 
-  public void setCreatedAt(Date createdAt) {
-    this.createdAt = createdAt;
-  }
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
 
-  public Date getUpdatedAt() {
-    return updatedAt;
-  }
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 
-  public void setUpdatedAt(Date updatedAt) {
-    this.updatedAt = updatedAt;
-  }
+	public Date getLimitDate() {
+		return limitDate;
+	}
 
-	
+	public void setLimitDate(Date limitDate) {
+		this.limitDate = limitDate;
+	}
+
+	public Long getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(Long period) {
+		this.period = period;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
 }

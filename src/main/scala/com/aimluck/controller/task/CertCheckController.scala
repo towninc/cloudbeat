@@ -11,12 +11,12 @@ import org.slim3.controller.Controller
 import org.slim3.controller.Navigation
 import org.slim3.datastore.Datastore
 import com.aimluck.service.CheckService
-import com.aimluck.service.CertCheckLogService
+import com.aimluck.service.CertCheckService
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocket
 import javax.net.ssl.TrustManagerFactory
 import com.aimluck.lib.util.TextUtil
-import com.aimluck.model.CertCheckLog
+import com.aimluck.model.CertCheck
 import com.aimluck.service.CertCheckService
 
 class CertCheckController extends Controller {
@@ -47,15 +47,14 @@ class CertCheckController extends Controller {
           x509cert = cert.asInstanceOf[X509Certificate]
           if TextUtil.nameFrom(x509cert.getSubjectX500Principal.getName, TextUtil.CN).endsWith(host)
         } yield x509cert
-        val checkLog = CertCheckLogService.fetchFromDomainName(check.getDomainName) match {
-          case Some(checkLog) => checkLog
+        val certCheck = CertCheckService.fetchFromDomainName(check.getDomainName) match {
+          case Some(certCheck) => certCheck
           case None => {
-            val checkLog = CertCheckLogService.createNew
-            checkLog.setKey(Datastore.allocateId(classOf[CertCheckLog]))
-            checkLog.getCheckRef.setModel(check)
-            checkLog.setName(check.getName)
-            checkLog.setDomainName(check.getDomainName)
-            checkLog
+            val certCheck = CertCheckService.createNew
+            certCheck.setKey(Datastore.allocateId(classOf[CertCheck]))
+            certCheck.setName(check.getName)
+            certCheck.setDomainName(check.getDomainName)
+            certCheck
           }
         }
         try {
@@ -63,13 +62,13 @@ class CertCheckController extends Controller {
             throw new Exception("No certifications!")
           } else {
             val limit = certs(0).getNotAfter
-            checkLog.setLimitDate(limit)
-            checkLog.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
+            certCheck.setLimitDate(limit)
+            certCheck.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
           }
         } catch {
-          case e: Exception => checkLog.setErrorMessage(e.getMessage)
+          case e: Exception => certCheck.setErrorMessage(e.getMessage)
         } finally {
-          CertCheckLogService.saveWithUserData(checkLog, check.getUserDataRef.getModel)
+          CertCheckService.saveWithUserData(certCheck, check.getUserDataRef.getModel)
         }
       }
       case None =>

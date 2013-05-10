@@ -141,7 +141,7 @@ class FormController extends AbstractUserBaseFormController {
             cert.setDomainName(request.getParameter("domainName"))
 
             cert.setActive(request.getParameter("active").toBoolean)
-                      
+
             //Recipients
             val recipients: List[String] = request.getParameter("recipients")
               .split(Constants.LINE_SEPARATOR).toList.filter { e =>
@@ -153,7 +153,7 @@ class FormController extends AbstractUserBaseFormController {
               cert.setRecipients(seqAsJavaList(List()))
             }
             CertCheckService.saveWithUserData(cert, userData)
-            
+
           }
         } catch {
           case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"));
