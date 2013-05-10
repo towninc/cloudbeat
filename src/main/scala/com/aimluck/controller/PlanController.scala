@@ -42,7 +42,16 @@ class PlanController extends AbstractUserBaseActionController {
           "plan1_maxCheckLogin" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_FREE).maxCheckLogin.toString()) },
           "plan2_maxCheckLogin" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_MICRO).maxCheckLogin.toString()) },
           "plan3_maxCheckLogin" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_STARTER).maxCheckLogin.toString()) },
-          "plan4_maxCheckLogin" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).maxCheckLogin.toString()) })
+          "plan4_maxCheckLogin" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).maxCheckLogin.toString()) },
+          "plan1_maxSSLCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_FREE).maxSSLCheck.toString()) },
+          "plan2_maxSSLCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_MICRO).maxSSLCheck.toString()) },
+          "plan3_maxSSLCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_STARTER).maxSSLCheck.toString()) },
+          "plan4_maxSSLCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).maxSSLCheck.toString()) },
+          "plan1_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_FREE).maxDomainCheck.toString()) },
+          "plan2_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_MICRO).maxDomainCheck.toString()) },
+          "plan3_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_STARTER).maxDomainCheck.toString()) },
+          "plan4_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).maxDomainCheck.toString()) })
+          
       }
       case None => {
         super.contentReplacerMap

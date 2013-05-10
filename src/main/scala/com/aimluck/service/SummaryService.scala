@@ -24,6 +24,8 @@ import sjson.json.Format
 import sjson.json.JsonSerialization
 import com.google.appengine.api.memcache.MemcacheServiceFactory
 import com.aimluck.meta.CheckMeta
+import com.aimluck.meta.CertCheckMeta
+import com.aimluck.meta.DomainCheckMeta
 
 object SummaryService {
   val CHECK_COUNT_NAMESPACE: String = "com.aimluck.service.SummaryService.CheckCount"
@@ -33,6 +35,14 @@ object SummaryService {
   val CHECK_LOGIN_COUNT_NAMESPACE: String = "com.aimluck.service.SummaryService.CheckLoginCount"
   val ERROR_LOGIN_COUNT_NAMESPACE: String = "com.aimluck.service.SummaryService.ErrorLoginCount"
   val ERROR_TODAY_LOGIN_COUNT_NAMESPACE: String = "com.aimluck.service.SummaryService.ErrorTodayLoginCount"
+    
+  val SSL_CHECK_COUNT_NAMESPACE: String = "com.aimluck.service.SummaryService.SSLCheckCount"
+  val ERROR_SSL_COUNT_NAMESPACE: String = "com.aimluck.service.SummaryService.ErrorSSLCount"
+  val ERROR_TODAY_SSL_COUNT_NAMESPACE: String = "com.aimluck.service.SummaryService.ErrorTodaySSLCount"
+    
+  val DOMAIN_CHECK_COUNT_NAMESPACE: String = "com.aimluck.service.SummaryService.DomainCheckCount"
+  val ERROR_DOMAIN_COUNT_NAMESPACE: String = "com.aimluck.service.SummaryService.ErrorDomainCount"
+  val ERROR_TODAY_DOMAIN_COUNT_NAMESPACE: String = "com.aimluck.service.SummaryService.ErrorTodayDomainCount"
 
   val memcacheService = MemcacheServiceFactory.getMemcacheService();
 
@@ -60,11 +70,39 @@ object SummaryService {
     "%s_%s".format(ERROR_TODAY_LOGIN_COUNT_NAMESPACE, userId)
   }
 
+  def getSSLCheckCountCacheKey(userId: String): String = {
+    "%s_%s".format(SSL_CHECK_COUNT_NAMESPACE, userId)
+  }
+
+  def getErrorSSLCountCacheKey(userId: String): String = {
+    "%s_%s".format(ERROR_SSL_COUNT_NAMESPACE, userId)
+  }
+
+  def getErrorTodaySSLCountCacheKey(userId: String): String = {
+    "%s_%s".format(ERROR_TODAY_SSL_COUNT_NAMESPACE, userId)
+  }
+  
+  def getDomainCheckCountCacheKey(userId: String): String = {
+    "%s_%s".format(DOMAIN_CHECK_COUNT_NAMESPACE, userId)
+  }
+
+  def getErrorDomainCountCacheKey(userId: String): String = {
+    "%s_%s".format(ERROR_DOMAIN_COUNT_NAMESPACE, userId)
+  }
+
+  def getErrorTodayDomainCountCacheKey(userId: String): String = {
+    "%s_%s".format(ERROR_TODAY_DOMAIN_COUNT_NAMESPACE, userId)
+  }
+  
   def clearCheckCache(userId: String): Unit = {
     memcacheService.delete(getCheckCountCacheKey(userId))
     memcacheService.delete(getErrorCountCacheKey(userId))
     memcacheService.delete(getCheckLoginCountCacheKey(userId))
     memcacheService.delete(getErrorLoginCountCacheKey(userId))
+    memcacheService.delete(getSSLCheckCountCacheKey(userId))
+    memcacheService.delete(getErrorSSLCountCacheKey(userId))
+    memcacheService.delete(getDomainCheckCountCacheKey(userId))
+    memcacheService.delete(getErrorDomainCountCacheKey(userId))
   }
 
   def getCheckCount(userId: String): Int = {
@@ -236,4 +274,113 @@ object SummaryService {
       case e: Exception => 0
     }
   }
+  
+  def getSSLCheckCount(userId: String): Int = {
+    val m: CertCheckMeta = CertCheckMeta.get
+    try {
+      val key: Key = Datastore.createKey(classOf[UserData], userId.toLong)
+      val countCacheKey = getSSLCheckCountCacheKey(userId);
+      try {
+        memcacheService.get(countCacheKey).asInstanceOf[Integer] match {
+          case null => throw new NullPointerException
+          case v => {
+            return v.toInt
+          }
+        }
+      } catch {
+        case _ => {
+          val count: Integer = Datastore.query(m)
+            .filter(m.userDataRef.equal(key))
+            .filter(m.active.equal(true)).limit(1000).count();
+          memcacheService.put(key, count)
+          count
+        }
+      }
+    } catch {
+      case e: Exception => 0
+    }
+  }
+  
+  def getDomainCheckCount(userId: String): Int = {
+    val m: DomainCheckMeta = DomainCheckMeta.get
+    try {
+      val key: Key = Datastore.createKey(classOf[UserData], userId.toLong)
+      val countCacheKey = getDomainCheckCountCacheKey(userId);
+      try {
+        memcacheService.get(countCacheKey).asInstanceOf[Integer] match {
+          case null => throw new NullPointerException
+          case v => {
+            return v.toInt
+          }
+        }
+      } catch {
+        case _ => {
+          val count: Integer = Datastore.query(m)
+            .filter(m.userDataRef.equal(key))
+            .filter(m.active.equal(true)).limit(1000).count();
+          memcacheService.put(key, count)
+          count
+        }
+      }
+    } catch {
+      case e: Exception => 0
+    }
+  }
+  
+  def getErrorDomainCount(userId: String): Int = {
+    val m: DomainCheckMeta = DomainCheckMeta.get
+    try {
+      val key: Key = Datastore.createKey(classOf[UserData], userId.toLong)
+      val countCacheKey = getErrorDomainCountCacheKey(userId);
+      try {
+        memcacheService.get(countCacheKey).asInstanceOf[Integer] match {
+          case null => throw new NullPointerException
+          case v => {
+            return v.toInt
+          }
+        }
+      } catch {
+        case _ => {
+          val count: Integer = Datastore.query(m)
+            .filter(m.userDataRef.equal(key))
+            .filter(m.active.equal(true))
+            .filter(m.status.equal(CheckService.Status.ERROR.toString)).limit(1000).count();
+          memcacheService.put(key, count)
+          count
+        }
+      }
+    } catch {
+      case e: Exception => 0
+    }
+  }
+
+  def getErrorTodayDomainCount(userId: String): Int = {
+    val m: DomainCheckMeta = DomainCheckMeta.get
+    try {
+      val key: Key = Datastore.createKey(classOf[UserData], userId.toLong)
+      val countCacheKey = getErrorTodayDomainCountCacheKey(userId);
+      try {
+        memcacheService.get(countCacheKey).asInstanceOf[Integer] match {
+          case null => throw new NullPointerException
+          case v => {
+            return v.toInt
+          }
+        }
+      } catch {
+        case _ => {
+          val dateStr = AppConstants.dayCountFormatWithTimeZone(AppConstants.timeZone)
+            .format(new Date())
+          val count: Integer = Datastore.query(m)
+            .filter(m.userDataRef.equal(key))
+            .filter(m.status.equal(CheckLogService.Status.DOWN.toString))
+            .filter(m.createdAt.equal(new Date(dateStr))).limit(1000).count();
+          memcacheService.put(key, count)
+          count
+        }
+      }
+    } catch {
+      case e: Exception => 0
+    }
+  }
+  
 }
