@@ -98,6 +98,20 @@ object DomainCheckService {
           (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("domainCheck"), domainCheck.getName)))))))
     }
   }
+
+  def fetch(_userData: Option[UserData], limit: Option[Int]) = limit match {
+    case Some(limit) => fetchWithLimit(_userData, limit)
+    case None => fetchAll(_userData)
+  }
+
+  def fetchWithLimit(_userData: Option[UserData], limit: Int): List[DomainCheck] = {
+    val m: DomainCheckMeta = DomainCheckMeta.get
+    _userData match {
+      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey)).sort(m.limitDate.asc).limit(limit).asList.toList
+      case None => Datastore.query(m).sort(m.updatedAt.desc).limit(limit).asList.toList
+    }
+  }
+
   def fetchOne(id: String, _userData: Option[UserData]): Option[DomainCheck] = {
     val m: DomainCheckMeta = DomainCheckMeta.get
     try {

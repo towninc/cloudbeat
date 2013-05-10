@@ -20,7 +20,7 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
   override def getList: JsValue = {
     import com.aimluck.service.DomainCheckService.DomainCheckListProtocol._
     JsonSerialization.tojson(UserDataService.fetchOne(this.sessionScope("userId")) match {
-      case Some(userData) => DomainCheckService.fetchAll(Some(userData))
+      case Some(userData) => DomainCheckService.fetch(Some(userData), this.param("limit"))
       case None => Nil
     })
   }
