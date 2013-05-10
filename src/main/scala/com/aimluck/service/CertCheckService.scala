@@ -159,6 +159,19 @@ object CertCheckService {
   } catch {
     case _ => None
   }
+  
+  def fetchList(_userData: Option[UserData], limit: Option[Int]) = limit match {
+    case Some(limit) => fetchListWithLimit(_userData, limit)
+    case None => fetchAll(_userData)
+  }
+  
+  def fetchListWithLimit(_userData: Option[UserData], limit: Int): List[CertCheck] = {
+    val m: CertCheckMeta = CertCheckMeta.get
+    _userData match {
+      case Some(userData) => Datastore.query(m).filter(m.userDataRef.equal(userData.getKey)).sort(m.updatedAt.desc).limit(limit).asList.toList
+      case None => Datastore.query(m).limit(limit).sort(m.updatedAt.desc).asList.toList
+    }
+  }
 
   def createNew(): CertCheck = {
     val result: CertCheck = new CertCheck
