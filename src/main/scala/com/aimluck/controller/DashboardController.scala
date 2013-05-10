@@ -31,6 +31,7 @@ class DashboardController extends AbstractUserBaseActionController {
         val checkLoginCount = SummaryService.getCheckLoginCount(userData.getUserId)
         val errorLoginCount = SummaryService.getErrorTodayLoginCount(userData.getUserId)
         val sslCount = SummaryService.getSSLCheckCount(userData.getUserId)
+        val domLimitCount = SummaryService.getDomainCheckCount(userData.getUserId)
         val unusedMessage =
           if (checkCount == 0)
             if (PlanService.getMaxCheckNumber(userData) == 0)
@@ -57,7 +58,8 @@ class DashboardController extends AbstractUserBaseActionController {
           "checkLoginCount" -> { e => Text(checkLoginCount.toString) },
           "errorLoginCount" -> { e => Text(errorLoginCount.toString) },
           "unusedMessage" -> { e => unusedMessage },
-          "sslCount" -> { e => Text(sslCount.toString) })
+          "sslCount" -> { e => Text(sslCount.toString) },
+          "domLimitCount" -> { e => Text(domLimitCount.toString) })
 
       }
       case None =>
