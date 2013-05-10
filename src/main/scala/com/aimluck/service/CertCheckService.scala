@@ -154,6 +154,7 @@ object CertCheckService {
     result.setName("")
     result.setDomainName("")
     result.setRecipients(List())
+    result.setActive(true)
     result
   }
 
