@@ -71,7 +71,7 @@ class FormController extends AbstractUserBaseFormController {
 
         if ((recipients != null) && (recipients.size > AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK)) {
           addError("recipients", LanguageUtil.get("error.dataLimit", Some(Array(
-            LanguageUtil.get("cert.recipients"),
+            LanguageUtil.get("domain.recipients"),
             AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK.toString))));
         }
         
@@ -102,30 +102,17 @@ class FormController extends AbstractUserBaseFormController {
           }
 
           // overSizeCheck
-          val isLogin: Boolean = request.getParameter("isLogin").toBoolean
           val isOverCapacity: Boolean =
             if (id == null) {
               //Activeが増える
-              if (isLogin) {
-                PlanService.isReachedMaxCheckLoginNumber(userData)
-              } else {
-                PlanService.isReachedMaxCheckNumber(userData)
-              }
+              PlanService.isReachedMaxDomainCheckNumber(userData)
             } else {
               val isActivated = request.getParameter("active").toBoolean
               if (isActivated) {
                 if (domain.getActive() != true) { //Activeが増える
-                  if (isLogin) {
-                    PlanService.isReachedMaxCheckLoginNumber(userData)
-                  } else {
-                    PlanService.isReachedMaxCheckNumber(userData)
-                  }
+                  PlanService.isReachedMaxDomainCheckNumber(userData)
                 } else {
-                  if (isLogin) { //Activeが増えない
-                    PlanService.isOverMaxCheckLoginNumber(userData)
-                  } else {
-                    PlanService.isOverMaxCheckNumber(userData)
-                  }
+                  PlanService.isOverMaxDomainCheckNumber(userData)
                 }
               } else {
                 false
@@ -134,7 +121,7 @@ class FormController extends AbstractUserBaseFormController {
 
           if (isOverCapacity) {
             addError(Constants.KEY_GLOBAL_ERROR,
-              "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format(if (isLogin) { "ログイン" } else { "ページ" }))
+              "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format("ドメイン"))
           }
 
           if (!isOverCapacity && (domain != null)) {

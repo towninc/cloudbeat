@@ -92,5 +92,53 @@ object PlanService {
       checkCount > maxCheck
     }
   }
+  
+  def getMaxSSLCheckNumber(user: UserData): Int = {
+    getPlan(user).maxSSLCheck
+  }
+  
+  def isReachedMaxSSLCheckNumber(user: UserData): Boolean = {
+    val maxCheck = getMaxSSLCheckNumber(user)
+    if (maxCheck < 0) {
+      false
+    } else {
+      var checkCount = SummaryService.getSSLCheckCount(user.getUserId())
+      checkCount >= maxCheck
+    }
+  }
+  
+  def isOverMaxSSLCheckNumber(user: UserData): Boolean = {
+    val maxCheck = getMaxSSLCheckNumber(user)
+    if (maxCheck < 0) {
+      false
+    } else {
+      val checkCount = SummaryService.getSSLCheckCount(user.getUserId())
+      checkCount > maxCheck
+    }
+  }
+  
+  def getMaxDomainCheckNumber(user: UserData): Int = {
+    getPlan(user).maxDomainCheck
+  }
+  
+  def isReachedMaxDomainCheckNumber(user: UserData): Boolean = {
+    val maxCheck = getMaxDomainCheckNumber(user)
+    if (maxCheck < 0) {
+      false
+    } else {
+      var checkCount = SummaryService.getDomainCheckCount(user.getUserId())
+      checkCount >= maxCheck
+    }
+  }
+  
+  def isOverMaxDomainCheckNumber(user: UserData): Boolean = {
+    val maxCheck = getMaxDomainCheckNumber(user)
+    if (maxCheck < 0) {
+      false
+    } else {
+      val checkCount = SummaryService.getDomainCheckCount(user.getUserId())
+      checkCount > maxCheck
+    }
+  }
 
 }

@@ -99,30 +99,17 @@ class FormController extends AbstractUserBaseFormController {
           }
 
           // overSizeCheck
-          val isLogin: Boolean = request.getParameter("isLogin").toBoolean
           val isOverCapacity: Boolean =
             if (id == null) {
               //Activeが増える
-              if (isLogin) {
-                PlanService.isReachedMaxCheckLoginNumber(userData)
-              } else {
-                PlanService.isReachedMaxCheckNumber(userData)
-              }
+              PlanService.isReachedMaxSSLCheckNumber(userData)
             } else {
               val isActivated = request.getParameter("active").toBoolean
               if (isActivated) {
                 if (!cert.getActive()) { //Activeが増える
-                  if (isLogin) {
-                    PlanService.isReachedMaxCheckLoginNumber(userData)
-                  } else {
-                    PlanService.isReachedMaxCheckNumber(userData)
-                  }
+                  PlanService.isReachedMaxSSLCheckNumber(userData)
                 } else {
-                  if (isLogin) { //Activeが増えない
-                    PlanService.isOverMaxCheckLoginNumber(userData)
-                  } else {
-                    PlanService.isOverMaxCheckNumber(userData)
-                  }
+                  PlanService.isOverMaxSSLCheckNumber(userData)
                 }
               } else {
                 false
@@ -131,7 +118,7 @@ class FormController extends AbstractUserBaseFormController {
 
           if (isOverCapacity) {
             addError(Constants.KEY_GLOBAL_ERROR,
-              "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format(if (isLogin) { "ログイン" } else { "ページ" }))
+              "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format("SSL"))
           }
 
           if (!isOverCapacity && (cert != null)) {
