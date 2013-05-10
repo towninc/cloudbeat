@@ -191,21 +191,6 @@ class FormController extends AbstractUserBaseFormController {
     !existsError
   }
 
-  @throws(classOf[Exception])
-  override protected def run(): Navigation = {
-    val id = request.getParameter(Constants.KEY_ID)
-    CertCheckService.fetchOne(id, None) match {
-      case Some(v) => {
-        if (v.getLogin() && (!isLoginController)) {
-          redirect("/check/loginForm?id=%s".format(KeyFactory.keyToString(v.getKey())))
-        } else {
-          super.run()
-        }
-      }
-      case None => super.run()
-    }
-  }
-
   override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
     super.replacerMap + ("isLogin" -> { e => <input type="hidden" id="isLogin" name="isLogin" value="false"/> },
       "formTitle" -> { e => Text("ドメイン監視登録") })
