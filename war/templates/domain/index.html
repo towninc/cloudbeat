@@ -42,6 +42,7 @@
 						<th>ドメイン名</th>
 						<th>残り日数</th>
 						<th>有効期限</th>
+						<th>編集</th>
 					</tr>
 				</thead>
 				<tbody id="checkList">
@@ -55,6 +56,8 @@
         <td>${domainName}</td>
         <td>${period}日</td>
         <td>${limitDate}</td>
+        <td class="action-td"><a href="/domain/form?id=${id}" class="btn btn-small btn-warning"><i class="icon-pencil" title="Edit"></i></a>
+        <a href="/domain/delete?id=${id}" onclick="return confirm('${deleteConfirm}');" class="btn btn-small"><i class="icon-remove" title="Remove"></i></a></td>
     </tr>
     <tr id="checkItem-error-message-tr-${id}" class="selectable error-message-tr" style="display:none;">
         <td colspan="5">
