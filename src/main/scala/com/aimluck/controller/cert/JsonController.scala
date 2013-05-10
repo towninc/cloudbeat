@@ -19,11 +19,12 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
   Logger.getLogger(classOf[JsonController].getName)
 
   override def getList: JsValue = {
-    import com.aimluck.service.CertCheckLogService.CertCheckLogListProtocol._
+     import com.aimluck.service.CertCheckService.CertCheckListProtocol._
     JsonSerialization.tojson(UserDataService.fetchOne(this.sessionScope("userId")) match {
-      case Some(userData) => CertCheckLogService.fetchAll(Some(userData))
+      case Some(userData) => CertCheckService.fetchAll(Some(userData))
       case None => Nil
     }) 
+    
   }
 
   override def getDetail(id: String): JsValue = {
