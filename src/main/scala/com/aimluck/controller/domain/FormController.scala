@@ -1,8 +1,8 @@
 package com.aimluck.controller.domain;
 
 import com.aimluck.lib.util.AppConstants
-import com.aimluck.model.CertCheck
-import com.aimluck.service.CertCheckService
+import com.aimluck.model.DomainCheck
+import com.aimluck.service.DomainCheckService
 import com.aimluck.service.UserDataService
 import java.text.DateFormat
 import java.util.logging.Logger
@@ -85,103 +85,83 @@ class FormController extends AbstractUserBaseFormController {
     !existsError
   }
 
+
   override def update: Boolean = {
 
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
-//        try {
-//          val id = request.getParameter(Constants.KEY_ID)
-//          val cert: CertCheck = if (id == null) {
-//            CertCheckService.createNew
-//          } else {
-//            CertCheckService.fetchOne(id, None) match {
-//              case Some(v) => v
-//              case None => null
-//            }
-//          }
-//
-//          // overSizeCheck
-//          val isLogin: Boolean = request.getParameter("isLogin").toBoolean
-//          val isOverCapacity: Boolean =
-//            if (id == null) {
-//              //Activeが増える
-//              if (isLogin) {
-//                PlanService.isReachedMaxCheckLoginNumber(userData)
-//              } else {
-//                PlanService.isReachedMaxCheckNumber(userData)
-//              }
-//            } else {
-//              val isActivated = request.getParameter("active").toBoolean
-//              if (isActivated) {
-//                if (cert.getActive() != true) { //Activeが増える
-//                  if (isLogin) {
-//                    PlanService.isReachedMaxCheckLoginNumber(userData)
-//                  } else {
-//                    PlanService.isReachedMaxCheckNumber(userData)
-//                  }
-//                } else {
-//                  if (isLogin) { //Activeが増えない
-//                    PlanService.isOverMaxCheckLoginNumber(userData)
-//                  } else {
-//                    PlanService.isOverMaxCheckNumber(userData)
-//                  }
-//                }
-//              } else {
-//                false
-//              }
-//            }
-//
-//          if (isOverCapacity) {
-//            addError(Constants.KEY_GLOBAL_ERROR,
-//              "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format(if (isLogin) { "ログイン" } else { "ページ" }))
-//          }
-//
-//          if (!isOverCapacity && (cert != null)) {
-//            //Name
-//            cert.setName(request.getParameter("name"))
-//            //Url
-//            cert.setUrl(request.getParameter("url"))
-//
-//            //formParams
-//            cert.setFormParams(request.getParameter("formParams"))
-//
-//            //preloadUrl
-//            cert.setPreloadUrl(request.getParameter("preloadUrl"))
-//
-//            //AssertText
-////            cert.setAssertText(request.getParameter("assertText"))
-//            //XPath
-////            cert.setXPath(request.getParameter("xPath"))
-//            //Description
-////            cert.setDescription(request.getParameter("description"))
-//            //active
-//            cert.setActive(request.getParameter("active").toBoolean)
-//                      
-//            //Recipients
-//            val recipients: List[String] = request.getParameter("recipients")
-//              .split(Constants.LINE_SEPARATOR).toList.filter { e =>
-//                e.trim.size > 0
-//              }
-//            if (recipients != null) {
-//              cert.setRecipients(seqAsJavaList(recipients))
-//            } else {
-//              cert.setRecipients(seqAsJavaList(List()))
-//            }
-//            //cert.setStatus(CertCheckService.Status.INITIALIZING.toString)
-//            cert.setErrorMessage(LanguageUtil.get("cert.StatusMessage.initializing"))
-//            //ssl
-////            cert.setCheckSSL(request.getParameter("ssl").toBoolean)
-//            //dom
-////            cert.setCheckDomain(request.getParameter("dom").toBoolean)
-//            //failThreshold
-////            cert.setFailThreshold(request.getParameter("failThreshold").toInt)
-////            cert.setFailCount(0)
-//            CertCheckService.saveWithUserData(cert, userData)
-//            
-//          }
-//        } catch {
-//          case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"));
-//        }
+        try {
+          val id = request.getParameter(Constants.KEY_ID)
+          val domain: DomainCheck = if (id == null) {
+            DomainCheckService.createNew
+          } else {
+            DomainCheckService.fetchOne(id, None) match {
+              case Some(v) => v
+              case None => null
+            }
+          }
+
+          // overSizeCheck
+          val isLogin: Boolean = request.getParameter("isLogin").toBoolean
+          val isOverCapacity: Boolean =
+            if (id == null) {
+              //Activeが増える
+              if (isLogin) {
+                PlanService.isReachedMaxCheckLoginNumber(userData)
+              } else {
+                PlanService.isReachedMaxCheckNumber(userData)
+              }
+            } else {
+              val isActivated = request.getParameter("active").toBoolean
+              if (isActivated) {
+                if (domain.getActive() != true) { //Activeが増える
+                  if (isLogin) {
+                    PlanService.isReachedMaxCheckLoginNumber(userData)
+                  } else {
+                    PlanService.isReachedMaxCheckNumber(userData)
+                  }
+                } else {
+                  if (isLogin) { //Activeが増えない
+                    PlanService.isOverMaxCheckLoginNumber(userData)
+                  } else {
+                    PlanService.isOverMaxCheckNumber(userData)
+                  }
+                }
+              } else {
+                false
+              }
+            }
+
+          if (isOverCapacity) {
+            addError(Constants.KEY_GLOBAL_ERROR,
+              "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format(if (isLogin) { "ログイン" } else { "ページ" }))
+          }
+
+          if (!isOverCapacity && (domain != null)) {
+            //Name
+            domain.setName(request.getParameter("name"))
+            //DomainName
+            domain.setDomainName(request.getParameter("domainName"))
+
+            //Active
+            domain.setActive(request.getParameter("active").toBoolean)
+
+            //Recipients
+            val recipients: List[String] = request.getParameter("recipients")
+              .split(Constants.LINE_SEPARATOR).toList.filter { e =>
+                e.trim.size > 0
+              }
+            if (recipients != null) {
+              domain.setRecipients(seqAsJavaList(recipients))
+            } else {
+              domain.setRecipients(seqAsJavaList(List()))
+            }
+            DomainCheckService.saveWithUserData(domain, userData)
+
+          }
+        } catch {
+          case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"));
+        }
       }
       case None =>
         addError(Constants.KEY_GLOBAL_ERROR,
