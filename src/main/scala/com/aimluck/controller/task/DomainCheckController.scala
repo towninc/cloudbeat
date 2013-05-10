@@ -33,6 +33,7 @@ class DomainCheckController extends Controller {
                     check.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
         	}
         	case e: Exception => check.setErrorMessage(e.getMessage)
+        	case None =>
         }
         DomainCheckService.saveWithUserData(check, check.getUserDataRef.getModel)
       }
