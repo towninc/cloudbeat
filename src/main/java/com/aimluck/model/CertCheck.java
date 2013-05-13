@@ -12,9 +12,6 @@ import com.google.appengine.api.datastore.Key;
 
 @Model(kind = "cC", schemaVersion = 1, schemaVersionName = "sV")
 public class CertCheck implements Serializable {
-	public static final Integer SEND_MAIL_30_DAYS_AGO = 30;
-	public static final Integer SEND_MAIL_60_DAYS_AGO = 60;	
-
 	private static final long serialVersionUID = 1L;
 	@Attribute(primaryKey = true, name = "k")
 	private Key key;

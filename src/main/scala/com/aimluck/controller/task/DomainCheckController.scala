@@ -18,6 +18,7 @@ import javax.net.ssl.TrustManagerFactory
 import com.aimluck.lib.util.TextUtil
 import com.aimluck.model.CertCheck
 import com.aimluck.lib.util.CheckDomainUtil
+import com.aimluck.lib.util.CheckUtil
 
 class DomainCheckController extends Controller {
   val logger = Logger.getLogger(classOf[CertCheckController].getName)
@@ -28,12 +29,13 @@ class DomainCheckController extends Controller {
     DomainCheckService.fetchOne(id, None) match {
       case Some(check) => {
         CheckDomainUtil.check(check.getDomainName()) match {
-        	case Some(limit) => {
-                    check.setLimitDate(limit)
-                    check.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
-        	}
-        	case e: Exception => check.setErrorMessage(e.getMessage)
-        	case None =>
+          case Some(limit) => {
+            check.setLimitDate(limit)
+            check.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
+            CheckUtil.checkAndSend(check, CheckUtil.TYPE_DOMAIN)
+          }
+          case e: Exception => check.setErrorMessage(e.getMessage)
+          case None =>
         }
         DomainCheckService.saveWithUserData(check, check.getUserDataRef.getModel)
       }

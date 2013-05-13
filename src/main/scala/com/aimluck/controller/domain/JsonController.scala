@@ -13,6 +13,7 @@ import dispatch.json.JsValue
 import sjson.json.JsonSerialization._
 import sjson.json.JsonSerialization
 import com.aimluck.lib.util.BaseUtil
+import com.aimluck.lib.util.CheckUtil
 
 class JsonController extends AbstractJsonDataController with BaseUtil {
   Logger.getLogger(classOf[JsonController].getName)
@@ -21,7 +22,7 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
     import com.aimluck.service.DomainCheckService.DomainCheckListProtocol._
     
     JsonSerialization.tojson(UserDataService.fetchOne(this.sessionScope("userId")) match {
-      case Some(userData) => DomainCheckService.fetch(Some(userData), this.param("limit")).sortWith(DEFAULT_PERIOD_SORT)
+      case Some(userData) => DomainCheckService.fetch(Some(userData), this.param("limit")).sortWith(CheckUtil.DEFAULT_PERIOD_SORT)
       case None => Nil
     })
   }

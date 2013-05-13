@@ -15,6 +15,7 @@ import com.aimluck.lib.util.BaseUtil
 import com.aimluck.service.CertCheckService
 import com.aimluck.model.CertCheck
 import com.aimluck.lib.util.DateTimeUtil
+import com.aimluck.lib.util.CheckUtil
 
 class JsonController extends AbstractJsonDataController with BaseUtil {
   Logger.getLogger(classOf[JsonController].getName)
@@ -24,7 +25,7 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
     val startDate: Date = new Date
 
     JsonSerialization.tojson(UserDataService.fetchOne(this.sessionScope("userId")) match {
-      case Some(userData) => CertCheckService.fetchList(Some(userData), this.param("limit")).sortWith(DEFAULT_PERIOD_SORT)
+      case Some(userData) => CertCheckService.fetchList(Some(userData), this.param("limit")).sortWith(CheckUtil.DEFAULT_PERIOD_SORT)
       case None => Nil
     })
 

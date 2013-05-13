@@ -44,6 +44,8 @@ public class DomainCheck implements Serializable {
 	private Date createdAt;
 	@Attribute(name = "uA")
 	private Date updatedAt;
+	@Attribute(name = "s")
+	private Integer state;
 
 	/**
 	 * Returns the key.
@@ -295,6 +297,14 @@ public class DomainCheck implements Serializable {
 	 */
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 }

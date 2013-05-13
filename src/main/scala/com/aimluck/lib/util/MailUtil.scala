@@ -91,10 +91,10 @@ object MailUtil {
     sendMail(email, title, body)
   }
 
-  def sendExpireMail(email: String, domain: String, day: Int) {
-    val title = "[" + LanguageUtil.get("title") + "]" + domain + "のSSL証明書の期限が" + day + "日を切りました"
+  def sendExpireMail(email: String, domain: String, day: Int, kind: String) {
+    val title = "[" + LanguageUtil.get("title") + "]" + domain + "の "+ kind + "の期限が" + day + "日を切りました"
     val body = "ご利用ありがとうございます。" + CL +
-      domain + "のSSL証明書の期限が" + day + "日を切りましたことをお伝えします" + CL * 3 +
+      domain + "の" + kind +  "の期限が" + day + "日を切りましたことをお伝えします" + CL * 3 +
       "--" + CL +
       LanguageUtil.get("title")
 

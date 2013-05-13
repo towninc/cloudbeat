@@ -19,6 +19,8 @@ import com.aimluck.lib.util.TextUtil
 import com.aimluck.model.CertCheck
 import com.aimluck.service.CertCheckService
 import com.aimluck.lib.util.MailUtil
+import com.aimluck.lib.util.BaseUtil
+import com.aimluck.lib.util.CheckUtil
 
 class CertCheckController extends Controller {
   val logger = Logger.getLogger(classOf[CertCheckController].getName)
@@ -28,13 +30,6 @@ class CertCheckController extends Controller {
   override def run(): Navigation = try {
     val id = request.getParameter(Constants.KEY_ID)
     val now = new Date(new Date().getTime() + HALF_YEAR * 5 + ONE_DAY * 120)
-    /* 期限が切れる60日前、30日前に1通ずつメール送信 */
-    def sendMailCond(check: CertCheck) =
-      if (check.getPeriod > 0 && check.getPeriod <= 30 && (check.getState == null || check.getState == CertCheck.SEND_MAIL_60_DAYS_AGO))
-        Some(CertCheck.SEND_MAIL_30_DAYS_AGO)
-      else if (check.getPeriod > 30 && check.getPeriod <= 60 && (check.getState == null || check.getState == CertCheck.SEND_MAIL_30_DAYS_AGO))
-        Some(CertCheck.SEND_MAIL_60_DAYS_AGO)
-      else None
     CertCheckService.fetchOne(id, None) match {
       case Some(check) => {
         val host = check.getDomainName
@@ -64,13 +59,7 @@ class CertCheckController extends Controller {
             val limit = certs(0).getNotAfter
             check.setLimitDate(limit)
             check.setPeriod((limit.getTime - now.getTime) / ONE_DAY)
-            sendMailCond(check) match {
-              case Some(day) => {
-                MailUtil.sendExpireMail(check.getUserDataRef.getModel.getEmail, check.getDomainName, day)
-                check.setState(day)
-              }
-              case None => 
-            }
+            CheckUtil.checkAndSend(check, CheckUtil.TYPE_SSL)
           }
         } catch {
           case e: Exception => check.setErrorMessage(e.getMessage)
