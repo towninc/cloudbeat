@@ -40,7 +40,8 @@ object UserDataService {
         JsObject(List(
           (JsString(Constants.KEY_ID), tojson(if (userData.getKey != null) KeyFactory.keyToString(userData.getKey) else null)),
           (JsString("name"), tojson(userData.getName)),
-          (JsString("email"), tojson(userData.getEmail))))
+          (JsString("email"), tojson(userData.getEmail)),
+          (JsString("planName"), tojson(userData.getPlanName))))
     }
   }
 
