@@ -22,10 +22,9 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
   override def getList: JsValue = {
     import com.aimluck.service.CertCheckService.CertCheckListProtocol._
     val startDate: Date = new Date
-    val sort =  DEFAULT_PERIOD_SORT(classOf[CertCheck])
 
     JsonSerialization.tojson(UserDataService.fetchOne(this.sessionScope("userId")) match {
-      case Some(userData) => CertCheckService.fetchList(Some(userData), this.param("limit")).sortWith(sort)
+      case Some(userData) => CertCheckService.fetchList(Some(userData), this.param("limit")).sortWith(DEFAULT_PERIOD_SORT)
       case None => Nil
     })
 
