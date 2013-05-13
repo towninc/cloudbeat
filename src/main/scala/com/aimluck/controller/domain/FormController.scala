@@ -160,6 +160,6 @@ class FormController extends AbstractUserBaseFormController {
 
   override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
     super.replacerMap + ("isLogin" -> { e => <input type="hidden" id="isLogin" name="isLogin" value="false"/> },
-      "formTitle" -> { e => Text("ドメイン監視登録") })
+      "formTitle" -> { e => Text("ドメイン期限監視登録") })
   }
 }
