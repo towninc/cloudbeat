@@ -20,6 +20,7 @@ import scala.xml.Text
 import org.slim3.controller.Navigation
 import com.google.appengine.api.datastore.KeyFactory
 import com.aimluck.service.PlanService
+import com.aimluck.lib.util.CheckDomainUtil
 
 class FormController extends AbstractUserBaseFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
@@ -41,13 +42,14 @@ class FormController extends AbstractUserBaseFormController {
           addError("name", LanguageUtil.get("error.stringLength", Some(Array(
             LanguageUtil.get("domain.name"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
         }
-        
+
         //Domain
         val domain = request.getParameter("domainName");
-        if (domain.size <= 0 || domain.size > AppConstants.VALIDATE_STRING_LENGTH) {
-          addError("domainName",LanguageUtil.get("error.stringLength", Some(Array(
-              LanguageUtil.get("domain.domainName"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
-        }
+        if (domain.size <= 0 || domain.size > AppConstants.VALIDATE_STRING_LENGTH)
+          addError("domainName", LanguageUtil.get("error.stringLength", Some(Array(
+            LanguageUtil.get("domain.domainName"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
+        else if (CheckDomainUtil.check(domain) == None)
+          addError("domainName", "ドメイン期限が取得できませんでした。");
 
         //active
         try {
@@ -74,7 +76,7 @@ class FormController extends AbstractUserBaseFormController {
             LanguageUtil.get("domain.recipients"),
             AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK.toString))));
         }
-        
+
       }
       case None => {
         addError(Constants.KEY_GLOBAL_ERROR,
@@ -84,7 +86,6 @@ class FormController extends AbstractUserBaseFormController {
 
     !existsError
   }
-
 
   override def update: Boolean = {
 
@@ -160,6 +161,6 @@ class FormController extends AbstractUserBaseFormController {
 
   override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
     super.replacerMap + ("isLogin" -> { e => <input type="hidden" id="isLogin" name="isLogin" value="false"/> },
-      "formTitle" -> { e => Text("ドメイン監視登録") })
+      "formTitle" -> { e => Text("ドメイン期限監視登録") })
   }
 }

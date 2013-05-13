@@ -13,6 +13,7 @@ import java.util.logging.Logger
 import java.util.Date
 import java.text.SimpleDateFormat
 import java.text.DateFormat
+import com.aimluck.model.CertCheck
 
 object MailUtil {
   val validatePat = """(^[a-zA-Z0-9!#$%&'_`/=~\\.\\*\\+\\-\\?\\^\\{\\|\\}]+@[a-zA-Z0-9][a-zA-Z0-9\\-]*[\\.[a-zA-Z0-9\\-]+]*$)""".r
@@ -84,6 +85,16 @@ object MailUtil {
     val body = "ご利用ありがとうございます。" + CL +
       "以下のURLから、メールアドレスの変更を完了できます。" + CL +
       url + CL * 3 +
+      "--" + CL +
+      LanguageUtil.get("title")
+
+    sendMail(email, title, body)
+  }
+
+  def sendExpireMail(email: String, domain: String, day: Int, kind: String) {
+    val title = "[" + LanguageUtil.get("title") + "]" + domain + "の "+ kind + "の期限が" + day + "日を切りました"
+    val body = "ご利用ありがとうございます。" + CL +
+      domain + "の" + kind +  "の期限が" + day + "日を切りましたことをお伝えします" + CL * 3 +
       "--" + CL +
       LanguageUtil.get("title")
 

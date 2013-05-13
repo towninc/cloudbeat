@@ -9,13 +9,9 @@ import com.aimluck.service.UserDataService
 import com.aimluck.service.SummaryService
 import org.dotme.liquidtpl.controller.AbstractJsonDataController
 import com.aimluck.model.CertCheck
+import org.slim3.datastore.ModelRef
 
 trait BaseUtil {
-  type HasPeriod = { def getPeriod(): java.lang.Long }
-
-  def DEFAULT_PERIOD_SORT[A <: HasPeriod] = (x: A, y: A) =>
-    y.getPeriod == null || x.getPeriod != null && x.getPeriod < y.getPeriod
-
   implicit def stringToIntOption(str: String) = {
     try {
       Some(str.toInt)
@@ -23,5 +19,4 @@ trait BaseUtil {
       case e: Exception => None
     }
   }
-
 }

@@ -18,13 +18,18 @@ import javax.net.ssl.TrustManagerFactory
 import com.aimluck.lib.util.TextUtil
 import com.aimluck.model.CertCheck
 import com.aimluck.service.CertCheckService
+import com.aimluck.lib.util.MailUtil
+import com.aimluck.lib.util.BaseUtil
+import com.aimluck.lib.util.CheckUtil
 
 class CertCheckController extends Controller {
   val logger = Logger.getLogger(classOf[CertCheckController].getName)
-  private val ONE_DAY = 1000 * 60 * 60 * 24
+  private val ONE_DAY = 1000L * 60 * 60 * 24
+  private val HALF_YEAR = ONE_DAY * 180
   @throws(classOf[Exception])
-  override def run(): Navigation = {
+  override def run(): Navigation = try {
     val id = request.getParameter(Constants.KEY_ID)
+    val now = new Date()
     CertCheckService.fetchOne(id, None) match {
       case Some(check) => {
         val host = check.getDomainName
@@ -53,7 +58,8 @@ class CertCheckController extends Controller {
           } else {
             val limit = certs(0).getNotAfter
             check.setLimitDate(limit)
-            check.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
+            check.setPeriod((limit.getTime - now.getTime) / ONE_DAY)
+            CheckUtil.checkAndSend(check, CheckUtil.TYPE_SSL)
           }
         } catch {
           case e: Exception => check.setErrorMessage(e.getMessage)
@@ -63,6 +69,8 @@ class CertCheckController extends Controller {
       }
       case None =>
     }
-    null;
+    null
+  } catch {
+    case _ => null
   }
 }

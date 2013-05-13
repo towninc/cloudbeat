@@ -1,8 +1,6 @@
 package com.aimluck.model;
 
 import java.io.Serializable;
-
-import com.google.appengine.api.datastore.Key;
 import java.util.Date;
 import java.util.List;
 
@@ -10,9 +8,10 @@ import org.slim3.datastore.Attribute;
 import org.slim3.datastore.Model;
 import org.slim3.datastore.ModelRef;
 
+import com.google.appengine.api.datastore.Key;
+
 @Model(kind = "cC", schemaVersion = 1, schemaVersionName = "sV")
 public class CertCheck implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 	@Attribute(primaryKey = true, name = "k")
 	private Key key;
@@ -39,6 +38,8 @@ public class CertCheck implements Serializable {
 	private Date limitDate;
 	@Attribute(name = "p")
 	private Long period;
+	@Attribute(name = "s")
+	private Integer state;
 
 	/**
 	 * Returns the key.
@@ -190,6 +191,14 @@ public class CertCheck implements Serializable {
 
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 }
