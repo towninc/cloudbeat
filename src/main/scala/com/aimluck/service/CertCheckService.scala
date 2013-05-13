@@ -23,6 +23,29 @@ import sjson.json.Format
 import sjson.json.JsonSerialization
 import com.google.appengine.api.memcache.MemcacheService
 import com.google.appengine.api.memcache.MemcacheServiceFactory
+import java.net.URL
+import java.security.KeyStore
+import java.security.cert.X509Certificate
+import java.util.Date
+import java.util.logging.Logger
+import scala.collection.JavaConversions._
+import org.dotme.liquidtpl.Constants
+import org.slim3.controller.Controller
+import org.slim3.controller.Navigation
+import org.slim3.datastore.Datastore
+import com.aimluck.service.CheckService
+import com.aimluck.service.CertCheckService
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocket
+import javax.net.ssl.TrustManagerFactory
+import com.aimluck.lib.util.TextUtil
+import com.aimluck.model.CertCheck
+import com.aimluck.service.CertCheckService
+import com.aimluck.lib.util.MailUtil
+import com.aimluck.lib.util.BaseUtil
+import com.aimluck.lib.util.CheckUtil
+import org.slim3.controller.HotServletContextWrapper
+import javax.servlet.ServletContext
 
 object CertCheckService {
   val logger = Logger.getLogger(CheckService.getClass.getName);
@@ -30,6 +53,8 @@ object CertCheckService {
   val CHECK_KEYS_NAMESPACE: String = "com.aimluck.service.CertCheckService.CertCheckKeys"
   val CHECK_CACHE_NAMESPACE: String = "com.aimluck.service.CertCheckService.CertCheck"
   val memcacheService = MemcacheServiceFactory.getMemcacheService();
+  private val ONE_DAY = 1000L * 60 * 60 * 24
+  private val HALF_YEAR = ONE_DAY * 180
 
   object CertCheckProtocol extends DefaultProtocol {
     import dispatch.json._
@@ -48,8 +73,8 @@ object CertCheckService {
           (JsString("domainName"), tojson(check.getDomainName)),
           (JsString("active"), tojson(check.getActive.toString)),
           (JsString("recipients"), tojson(check.getRecipients.toList)),
-       	  (JsString("limitDate"), if(check.getLimitDate() != null)tojson( AppConstants.dateTimeFormat.format(check.getLimitDate())) else tojson("-")),
-          (JsString("period"), if(check.getPeriod() != null)tojson(check.getPeriod().toString()) else tojson("-")),
+          (JsString("limitDate"), if (check.getLimitDate() != null) tojson(AppConstants.dateTimeFormat.format(check.getLimitDate())) else tojson("-")),
+          (JsString("period"), if (check.getPeriod() != null) tojson(check.getPeriod().toString()) else tojson("-")),
           (JsString("createdAt"), if (check.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(check.getCreatedAt)) else tojson("")),
           (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("check"), check.getName)))))))
       }
@@ -72,8 +97,8 @@ object CertCheckService {
           (JsString("domainName"), tojson(check.getDomainName)),
           (JsString("active"), tojson(check.getActive.toString)),
           (JsString("recipients"), tojson(check.getRecipients.toList)),
-       	  (JsString("limitDate"), if(check.getLimitDate() != null)tojson( AppConstants.dateTimeFormat.format(check.getLimitDate())) else tojson("-")),
-          (JsString("period"), if(check.getPeriod() != null)tojson(check.getPeriod().toString()) else tojson("-")),
+          (JsString("limitDate"), if (check.getLimitDate() != null) tojson(AppConstants.dateTimeFormat.format(check.getLimitDate())) else tojson("-")),
+          (JsString("period"), if (check.getPeriod() != null) tojson(check.getPeriod().toString()) else tojson("-")),
           (JsString("createdAt"), if (check.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(check.getCreatedAt)) else tojson("")),
           (JsString(Constants.KEY_DELETE_CONFORM), tojson(LanguageUtil.get("deleteOneConform", Some(Array(LanguageUtil.get("check"), check.getName)))))))
     }
@@ -153,18 +178,18 @@ object CertCheckService {
     case e: Exception => None
   }
 
-   def fetchFromDomainName(domain: String) = try {
+  def fetchFromDomainName(domain: String) = try {
     val m: CertCheckMeta = CertCheckMeta.get
     Option(Datastore.query(m).filter(m.domainName equal domain).asSingle)
   } catch {
     case _ => None
   }
-  
+
   def fetchList(_userData: Option[UserData], limit: Option[Int]) = limit match {
     case Some(limit) => fetchListWithLimit(_userData, limit)
     case None => fetchAll(_userData)
   }
-  
+
   def fetchListWithLimit(_userData: Option[UserData], limit: Int): List[CertCheck] = {
     val m: CertCheckMeta = CertCheckMeta.get
     _userData match {
@@ -193,11 +218,14 @@ object CertCheckService {
     model.getUserDataRef.setModel(userData)
 
     val result = Datastore.putWithoutTx(model).apply(0)
-    clearCertCheckKeysCache()
-    clearCertCheckCache(model)
+    try{
+    	clearCertCheckKeysCache()
+    	clearCertCheckCache(model)
+    }catch {
+    	case e: Exception => {}
+    }
     result
   }
-
 
   def delete(check: CertCheck) {
     val key = getCertCheckCacheKey(check)
@@ -224,4 +252,49 @@ object CertCheckService {
     memcacheService.delete(CHECK_KEYS_NAMESPACE)
   }
 
+  def certCheck(check: CertCheck, servletContext: ServletContext): CertCheck = try {
+    val now = new Date()
+    val host = check.getDomainName
+    val keyStore = KeyStore.getInstance("JKS")
+    val stream = servletContext.getResourceAsStream("/cert/cacerts")
+    keyStore.load(stream, "changeit".toCharArray)
+    val tmf = TrustManagerFactory.getInstance("PKIX")
+    tmf.init(keyStore)
+
+    val context = SSLContext.getInstance("TLS")
+    context.init(null, tmf.getTrustManagers(), null)
+
+    val sf = context.getSocketFactory
+    val soc = sf.createSocket(host, 443).asInstanceOf[SSLSocket]
+    soc.startHandshake
+    val session = soc.getSession
+    val certs = for {
+      cert <- session.getPeerCertificates
+      x509cert = cert.asInstanceOf[X509Certificate]
+      if TextUtil.nameFrom(x509cert.getSubjectX500Principal.getName, TextUtil.CN).endsWith(host)
+    } yield x509cert
+    try {
+      if (certs.isEmpty) {
+        throw new Exception("No certifications!")
+      } else {
+        val limit = certs(0).getNotAfter
+        check.setLimitDate(limit)
+        check.setPeriod((limit.getTime - now.getTime) / ONE_DAY)
+        check
+      }
+    } catch {
+      case e: Exception => {
+        check.setErrorMessage(e.getMessage)
+        null
+      }
+    } finally {
+    	check
+    }
+
+  } catch {
+	   case e: Exception => {
+        check.setErrorMessage(e.getMessage)
+        null
+      }
+  }
 }

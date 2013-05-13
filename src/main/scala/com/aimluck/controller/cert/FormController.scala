@@ -45,7 +45,7 @@ class FormController extends AbstractUserBaseFormController {
         //domain
         val domName = request.getParameter("domainName")
         if (domName.size <= 0 || domName.size > AppConstants.VALIDATE_STRING_LENGTH) {
-          addError("domName", LanguageUtil.get("error.stringLength", Some(Array(
+          addError("domainName", LanguageUtil.get("error.stringLength", Some(Array(
             LanguageUtil.get("cert.domName"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
         }
 
@@ -53,7 +53,7 @@ class FormController extends AbstractUserBaseFormController {
           val active = request.getParameter("active").toBoolean
         } catch {
           case e: NumberFormatException => {
-            addError("active", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("cert.active")))));
+            addError("active", LanguageUtil.get("error.certCheckError", Some(Array(LanguageUtil.get("cert.active")))));
 
           }
         }
@@ -73,6 +73,7 @@ class FormController extends AbstractUserBaseFormController {
             LanguageUtil.get("cert.recipients"),
             AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK.toString))));
         }
+
       }
       case None => {
         addError(Constants.KEY_GLOBAL_ERROR,
@@ -89,59 +90,63 @@ class FormController extends AbstractUserBaseFormController {
       case Some(userData) => {
         try {
           val id = request.getParameter(Constants.KEY_ID)
-          val cert: CertCheck = if (id == null) {
-            CertCheckService.createNew
-          } else {
-            CertCheckService.fetchOne(id, None) match {
-              case Some(v) => v
-              case None => null
-            }
-          }
-
-          // overSizeCheck
-          val isOverCapacity: Boolean =
-            if (id == null) {
-              //Activeが増える
-              PlanService.isReachedMaxSSLCheckNumber(userData)
-            } else {
-              val isActivated = request.getParameter("active").toBoolean
-              if (isActivated) {
-                if (!cert.getActive()) { //Activeが増える
+          (if (id == null)
+            Some(CertCheckService.createNew)
+          else CertCheckService.fetchOne(id, None)) match {
+            case Some(cert) => {
+              // overSizeCheck
+              val isOverCapacity: Boolean =
+                if (id == null) {
+                  //Activeが増える
                   PlanService.isReachedMaxSSLCheckNumber(userData)
                 } else {
-                  PlanService.isOverMaxSSLCheckNumber(userData)
+                  val isActivated = request.getParameter("active").toBoolean
+                  if (isActivated) {
+                    if (!cert.getActive()) { //Activeが増える
+                      PlanService.isReachedMaxSSLCheckNumber(userData)
+                    } else {
+                      PlanService.isOverMaxSSLCheckNumber(userData)
+                    }
+                  } else {
+                    false
+                  }
                 }
+
+              if (isOverCapacity) {
+                addError(Constants.KEY_GLOBAL_ERROR,
+                  "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format("SSL"))
               } else {
-                false
+                //Name
+                cert.setName(request.getParameter("name"))
+                //Url
+                cert.setDomainName(request.getParameter("domainName"))
+
+                cert.setActive(request.getParameter("active").toBoolean)
+
+                //Recipients
+                val recipients: List[String] = request.getParameter("recipients")
+                  .split(Constants.LINE_SEPARATOR).toList.filter { e =>
+                    e.trim.size > 0
+                  }
+                if (recipients != null) {
+                  cert.setRecipients(seqAsJavaList(recipients))
+                } else {
+                  cert.setRecipients(seqAsJavaList(List()))
+                }
+
+                //証明書情報を取得
+                val result = CertCheckService.certCheck(cert, this.servletContext);
+                if (result == null || result.getLimitDate() == null) {
+                  addError("domainName", LanguageUtil.get("error.certCheckError"));
+                } else {
+                  CertCheckService.saveWithUserData(result, userData)
+                }
+
               }
             }
-
-          if (isOverCapacity) {
-            addError(Constants.KEY_GLOBAL_ERROR,
-              "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format("SSL"))
+            case None => null
           }
 
-          if (!isOverCapacity && (cert != null)) {
-            //Name
-            cert.setName(request.getParameter("name"))
-            //Url
-            cert.setDomainName(request.getParameter("domainName"))
-
-            cert.setActive(request.getParameter("active").toBoolean)
-
-            //Recipients
-            val recipients: List[String] = request.getParameter("recipients")
-              .split(Constants.LINE_SEPARATOR).toList.filter { e =>
-                e.trim.size > 0
-              }
-            if (recipients != null) {
-              cert.setRecipients(seqAsJavaList(recipients))
-            } else {
-              cert.setRecipients(seqAsJavaList(List()))
-            }
-            CertCheckService.saveWithUserData(cert, userData)
-
-          }
         } catch {
           case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"));
         }
