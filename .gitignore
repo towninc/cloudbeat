@@ -1,4 +1,4 @@
 /.apt_generated
 /.cache
 /target
-/www-test
+/www-test .classpath
