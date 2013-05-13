@@ -29,7 +29,7 @@ class CertCheckController extends Controller {
   @throws(classOf[Exception])
   override def run(): Navigation = try {
     val id = request.getParameter(Constants.KEY_ID)
-    val now = new Date(new Date().getTime() + HALF_YEAR * 5 + ONE_DAY * 120)
+    val now = new Date()
     CertCheckService.fetchOne(id, None) match {
       case Some(check) => {
         val host = check.getDomainName
