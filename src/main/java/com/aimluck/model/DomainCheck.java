@@ -44,7 +44,7 @@ public class DomainCheck implements Serializable {
 	private Date createdAt;
 	@Attribute(name = "uA")
 	private Date updatedAt;
-	@Attribute(name = "s")
+	@Attribute(name = "s2")
 	private Integer state;
 
 	/**
