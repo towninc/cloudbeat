@@ -23,7 +23,7 @@ class DomainCheckController extends Controller {
   val logger = Logger.getLogger(classOf[CertCheckController].getName)
   private val ONE_DAY = 1000 * 60 * 60 * 24
   @throws(classOf[Exception])
-  override def run(): Navigation = {
+  override def run(): Navigation = try {
     val id = request.getParameter(Constants.KEY_ID)
     DomainCheckService.fetchOne(id, None) match {
       case Some(check) => {
@@ -39,6 +39,8 @@ class DomainCheckController extends Controller {
       }
       case None =>
     }
-    null;
+    null
+  } catch {
+    case _ => null
   }
 }

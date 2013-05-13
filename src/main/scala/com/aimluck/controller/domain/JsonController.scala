@@ -19,7 +19,6 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
 
   override def getList: JsValue = {
     import com.aimluck.service.DomainCheckService.DomainCheckListProtocol._
-    //val sort = DEFAULT_PERIOD_SORT
     
     JsonSerialization.tojson(UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => DomainCheckService.fetch(Some(userData), this.param("limit")).sortWith(DEFAULT_PERIOD_SORT)
