@@ -21,8 +21,10 @@ import org.slim3.controller.Navigation
 import com.google.appengine.api.datastore.KeyFactory
 import com.aimluck.service.PlanService
 import com.aimluck.lib.util.CheckDomainUtil
+import java.util.Date
 
 class FormController extends AbstractUserBaseFormController {
+  private val ONE_DAY = 1000 * 60 * 60 * 24
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
   override def redirectUri: String = "/domain/index";
@@ -47,9 +49,7 @@ class FormController extends AbstractUserBaseFormController {
         val domain = request.getParameter("domainName");
         if (domain.size <= 0 || domain.size > AppConstants.VALIDATE_STRING_LENGTH)
           addError("domainName", LanguageUtil.get("error.stringLength", Some(Array(
-            LanguageUtil.get("domain.domainName"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
-        else if (CheckDomainUtil.check(domain) == None)
-          addError("domainName", "ドメイン期限が取得できませんでした。");
+            LanguageUtil.get("domain.domainName"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))))
 
         //active
         try {
@@ -93,60 +93,66 @@ class FormController extends AbstractUserBaseFormController {
       case Some(userData) => {
         try {
           val id = request.getParameter(Constants.KEY_ID)
-          val domain: DomainCheck = if (id == null) {
-            DomainCheckService.createNew
-          } else {
-            DomainCheckService.fetchOne(id, None) match {
-              case Some(v) => v
-              case None => null
-            }
-          }
-
-          // overSizeCheck
-          val isOverCapacity: Boolean =
-            if (id == null) {
-              //Activeが増える
-              PlanService.isReachedMaxDomainCheckNumber(userData)
-            } else {
-              val isActivated = request.getParameter("active").toBoolean
-              if (isActivated) {
-                if (domain.getActive() != true) { //Activeが増える
+          (if (id == null)
+            Some(DomainCheckService.createNew)
+          else DomainCheckService.fetchOne(id, None)) match {
+            case Some(domain) => {
+              // overSizeCheck
+              val isOverCapacity: Boolean =
+                if (id == null) {
+                  //Activeが増える
                   PlanService.isReachedMaxDomainCheckNumber(userData)
                 } else {
-                  PlanService.isOverMaxDomainCheckNumber(userData)
+                  val isActivated = request.getParameter("active").toBoolean
+                  if (isActivated) {
+                    if (domain.getActive() != true) { //Activeが増える
+                      PlanService.isReachedMaxDomainCheckNumber(userData)
+                    } else {
+                      PlanService.isOverMaxDomainCheckNumber(userData)
+                    }
+                  } else {
+                    false
+                  }
                 }
+
+              if (isOverCapacity) {
+                addError(Constants.KEY_GLOBAL_ERROR,
+                  "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format("ドメイン"))
               } else {
-                false
+
+                CheckDomainUtil.check(request.getParameter("domainName")) match {
+                  case Some(limit) => {
+                    domain.setLimitDate(limit)
+                    domain.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
+                  }
+                  case None => addError("domainName", "ドメイン期限が取得できませんでした。")
+                }
+
+                //Name
+                domain.setName(request.getParameter("name"))
+                //DomainName
+                domain.setDomainName(request.getParameter("domainName"))
+
+                //Active
+                domain.setActive(request.getParameter("active").toBoolean)
+
+                //Recipients
+                val recipients: List[String] = request.getParameter("recipients")
+                  .split(Constants.LINE_SEPARATOR).toList.filter { e =>
+                    e.trim.size > 0
+                  }
+                if (recipients != null) {
+                  domain.setRecipients(seqAsJavaList(recipients))
+                } else {
+                  domain.setRecipients(seqAsJavaList(List()))
+                }
+                DomainCheckService.saveWithUserData(domain, userData)
+
               }
             }
-
-          if (isOverCapacity) {
-            addError(Constants.KEY_GLOBAL_ERROR,
-              "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format("ドメイン"))
+            case None => null
           }
 
-          if (!isOverCapacity && (domain != null)) {
-            //Name
-            domain.setName(request.getParameter("name"))
-            //DomainName
-            domain.setDomainName(request.getParameter("domainName"))
-
-            //Active
-            domain.setActive(request.getParameter("active").toBoolean)
-
-            //Recipients
-            val recipients: List[String] = request.getParameter("recipients")
-              .split(Constants.LINE_SEPARATOR).toList.filter { e =>
-                e.trim.size > 0
-              }
-            if (recipients != null) {
-              domain.setRecipients(seqAsJavaList(recipients))
-            } else {
-              domain.setRecipients(seqAsJavaList(List()))
-            }
-            DomainCheckService.saveWithUserData(domain, userData)
-
-          }
         } catch {
           case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"));
         }
