@@ -2,6 +2,7 @@ package com.aimluck.controller.cert;
 
 import java.util.logging.Logger
 import java.util.Date
+import java.util.TimeZone
 import scala.collection.JavaConversions._
 import org.dotme.liquidtpl.controller.AbstractJsonDataController
 import org.dotme.liquidtpl.Constants
@@ -13,20 +14,21 @@ import sjson.json.JsonSerialization
 import com.aimluck.lib.util.BaseUtil
 import com.aimluck.service.CertCheckService
 import com.aimluck.model.CertCheck
+import com.aimluck.lib.util.DateTimeUtil
 
 class JsonController extends AbstractJsonDataController with BaseUtil {
   Logger.getLogger(classOf[JsonController].getName)
 
   override def getList: JsValue = {
-     import com.aimluck.service.CertCheckService.CertCheckListProtocol._
-     val startDate: Date = new Date
-     val sort = (x: CertCheck, y: CertCheck) => x.getUpdatedAt.compareTo(y.getUpdatedAt) > 0
-      
+    import com.aimluck.service.CertCheckService.CertCheckListProtocol._
+    val startDate: Date = new Date
+    val sort =  DEFAULT_PERIOD_SORT(classOf[CertCheck])
+
     JsonSerialization.tojson(UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => CertCheckService.fetchList(Some(userData), this.param("limit")).sortWith(sort)
       case None => Nil
     })
-    
+
   }
 
   override def getDetail(id: String): JsValue = {
@@ -52,7 +54,7 @@ class JsonController extends AbstractJsonDataController with BaseUtil {
     }
   }
 
-   override def getForm(id: String): JsValue = {
+  override def getForm(id: String): JsValue = {
     import com.aimluck.service.CertCheckService.CertCheckProtocol._
     val startDate: Date = new Date
     UserDataService.fetchOne(this.sessionScope("userId")) match {

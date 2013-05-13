@@ -14,40 +14,40 @@ import org.slim3.datastore.ModelRef;
 public class DomainCheck implements Serializable {
 
 	@Attribute(primaryKey = true, name = "k")
-    private Key key;
-    @Attribute(version = true, name = "v")
-    private Long version;
-    @Attribute(name = "n")
-    private String name;
-    @Attribute(name = "s")
-    private String status;
-    @Attribute(name = "dN")
-    private String domainName;
-    @Attribute(name = "a")
-    private Boolean active = true;
+	private Key key;
+	@Attribute(version = true, name = "v")
+	private Long version;
+	@Attribute(name = "n")
+	private String name;
+	@Attribute(name = "s")
+	private String status;
+	@Attribute(name = "dN")
+	private String domainName;
+	@Attribute(name = "a")
+	private Boolean active = true;
 
-        @Attribute(name="lD")
-        private Date limitDate;
-        @Attribute(name="p")
-        private Long period;
+	@Attribute(name = "lD")
+	private Date limitDate;
+	@Attribute(name = "p")
+	private Long period;
 
-    @Attribute(name = "d", lob = true)
-    private String description;
-    @Attribute(name = "eM", lob = true)
-    private String errorMessage;
-    @Attribute(unindexed = true, name = "r")
-    private List<String> recipients;
-    @Attribute(name = "uDR")
-    private ModelRef<UserData> userDataRef = new ModelRef<UserData>(
-            UserData.class);
-    @Attribute(name = "cA")
-    private Date createdAt;
-    @Attribute(name = "uA")
-    private Date updatedAt;
+	@Attribute(name = "d", lob = true)
+	private String description;
+	@Attribute(name = "eM", lob = true)
+	private String errorMessage;
+	@Attribute(unindexed = true, name = "r")
+	private List<String> recipients;
+	@Attribute(name = "uDR")
+	private ModelRef<UserData> userDataRef = new ModelRef<UserData>(
+			UserData.class);
+	@Attribute(name = "cA")
+	private Date createdAt;
+	@Attribute(name = "uA")
+	private Date updatedAt;
 
 	/**
 	 * Returns the key.
-	 *
+	 * 
 	 * @return the key
 	 */
 	public Key getKey() {
@@ -56,7 +56,7 @@ public class DomainCheck implements Serializable {
 
 	/**
 	 * Sets the key.
-	 *
+	 * 
 	 * @param key
 	 *            the key
 	 */
@@ -66,7 +66,7 @@ public class DomainCheck implements Serializable {
 
 	/**
 	 * Returns the version.
-	 *
+	 * 
 	 * @return the version
 	 */
 	public Long getVersion() {
@@ -75,7 +75,7 @@ public class DomainCheck implements Serializable {
 
 	/**
 	 * Sets the version.
-	 *
+	 * 
 	 * @param version
 	 *            the version
 	 */
@@ -114,7 +114,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public String getName() {
@@ -122,16 +122,15 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param name
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public Long getPeriod() {
@@ -139,16 +138,15 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param period
 	 */
 	public void setPeriod(Long period) {
 		this.period = period;
 	}
 
-
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public Date getLimitDate() {
@@ -156,7 +154,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param limitDate
 	 */
 	public void setLimitDate(Date limitDate) {
@@ -164,7 +162,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public String getDomainName() {
@@ -172,7 +170,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param domainName
 	 */
 	public void setDomainName(String domainName) {
@@ -180,7 +178,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public String getStatus() {
@@ -188,7 +186,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param status
 	 */
 	public void setStatus(String status) {
@@ -196,7 +194,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public Boolean getActive() {
@@ -204,7 +202,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param active
 	 */
 	public void setActive(Boolean active) {
@@ -212,7 +210,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public String getDescription() {
@@ -220,7 +218,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param description
 	 */
 	public void setDescription(String description) {
@@ -228,7 +226,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public String getErrorMessage() {
@@ -236,7 +234,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param errorMessage
 	 */
 	public void setErrorMessage(String errorMessage) {
@@ -244,7 +242,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public ModelRef<UserData> getUserDataRef() {
@@ -252,7 +250,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public List<String> getRecipients() {
@@ -260,7 +258,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param recipients
 	 */
 	public void setRecipients(List<String> recipients) {
@@ -268,7 +266,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public Date getCreatedAt() {
@@ -276,7 +274,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param createdAt
 	 */
 	public void setCreatedAt(Date createdAt) {
@@ -284,7 +282,7 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public Date getUpdatedAt() {
@@ -292,12 +290,11 @@ public class DomainCheck implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param updatedAt
 	 */
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
 
 }
