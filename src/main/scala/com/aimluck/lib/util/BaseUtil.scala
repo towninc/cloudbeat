@@ -10,7 +10,7 @@ import com.aimluck.service.SummaryService
 import org.dotme.liquidtpl.controller.AbstractJsonDataController
 
 trait BaseUtil {
-  def DEFAULT_PERIOD_SORT[A <: { def getPeriod(): java.lang.Long }, B <: A](clazz: Class[B]): (B, B) => Boolean = (x: A, y: A) =>
+  def DEFAULT_PERIOD_SORT[A <: { def getPeriod(): java.lang.Long }](clazz: Class[A]): (A, A) => Boolean = (x: A, y: A) =>
     y.getPeriod == null || x.getPeriod != null && x.getPeriod < y.getPeriod
 
   implicit def stringToIntOption(str: String) = {
