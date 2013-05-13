@@ -10,6 +10,7 @@ import com.aimluck.service.SummaryService
 import org.dotme.liquidtpl.controller.AbstractJsonDataController
 import com.aimluck.model.CertCheck
 import org.slim3.datastore.ModelRef
+import collection.JavaConversions._
 
 object CheckUtil {
   val SEND_MAIL_30_DAYS_AGO = 30
@@ -22,7 +23,7 @@ object CheckUtil {
   type HasState = { def getState(): java.lang.Integer }
   type BaseCheck = HasPeriod with HasState {
     def setState(state: java.lang.Integer): Unit
-    def getUserDataRef(): ModelRef[UserData]
+    def getRecipients(): java.util.List[java.lang.String]
     def getDomainName(): java.lang.String
   }
 
@@ -32,7 +33,7 @@ object CheckUtil {
   /* 期限が切れる60日前、30日前に1通ずつメール送信 */
   def checkAndSend[A <: BaseCheck](check: A, kind: String) = sendMailCond(check) match {
     case Some(day) => {
-      MailUtil.sendExpireMail(check.getUserDataRef.getModel.getEmail, check.getDomainName, day, kind)
+      check.getRecipients.map(x => MailUtil.sendExpireMail(x, check.getDomainName, day, kind))
       check.setState(day)
     }
     case None =>
