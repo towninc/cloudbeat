@@ -41,7 +41,27 @@ object UserDataService {
           (JsString(Constants.KEY_ID), tojson(if (userData.getKey != null) KeyFactory.keyToString(userData.getKey) else null)),
           (JsString("name"), tojson(userData.getName)),
           (JsString("email"), tojson(userData.getEmail)),
-          (JsString("planName"), tojson(userData.getPlanName))))
+          (JsString("planName"), tojson(userData.getPlanName)),
+          (JsString("selectPlan"), tojson((
+            <select id={ if (userData.getKey != null) KeyFactory.keyToString(userData.getKey) else "" }>
+              {
+                for {
+                  i <- AppConstants.PLAN_MAP.keys.toList
+                  option = if (userData.getPlanName == i)
+                    <option value={ i } selected="selected">{ i }</option>
+                  else
+                    <option value={ i }>{ i }</option>
+                } yield option
+              }
+            </select>).toString))))
+    }
+  }
+
+  def fetch(key: Key): Option[UserData] = {
+    val m: UserDataMeta = UserDataMeta.get
+    Datastore.query(m).filter(m.key.equal(key)).asSingle match {
+      case v: UserData => Some(v)
+      case null => None
     }
   }
 
