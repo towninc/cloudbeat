@@ -59,6 +59,7 @@ class RegisterController extends AbstractFormController {
         user.setUserId(userId.toString)
         user.setKey(Datastore.createKey(classOf[UserData], userId))
         user.setPlanName(AppConstants.PLAN_MICRO)
+        user.setState(AppConstants.USER_STATE_ENABLE)
         UserDataService.save(user)
         val baseUrl: String = ServletUtils.getBaseUrl(request);
         MailUtil.sendRegisterMail(mail, password, baseUrl)

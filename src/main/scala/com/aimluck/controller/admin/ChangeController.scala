@@ -1,4 +1,4 @@
-package com.aimluck.controller.admin.plan
+package com.aimluck.controller.admin
 
 import java.util.logging.Logger
 import org.slim3.controller.Controller
@@ -14,10 +14,11 @@ class ChangeController extends Controller {
   override def run(): Navigation = {
     val result = for {
       user <- UserDataService.fetch(asKey("id"))
-      plan <- Option(asString("plan"))
-      if AppConstants.PLAN_MAP.get(plan) != None
+      plan <- Option(asString("plan")) if AppConstants.PLAN_MAP.get(plan) != None
+      state <- Option(asString("state")) if AppConstants.USER_STATE_LIST.contains(state)
     } yield {
       user.setPlanName(plan)
+      user.setState(state)
       Datastore.put(user)
       ()
     }

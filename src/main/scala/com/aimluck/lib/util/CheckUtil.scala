@@ -11,6 +11,7 @@ import org.dotme.liquidtpl.controller.AbstractJsonDataController
 import com.aimluck.model.CertCheck
 import org.slim3.datastore.ModelRef
 import collection.JavaConversions._
+import com.aimluck.service.PlanService
 
 object CheckUtil {
   val SEND_MAIL_30_DAYS_AGO = 30
@@ -21,6 +22,8 @@ object CheckUtil {
 
   type HasPeriod = { def getPeriod(): java.lang.Long }
   type HasState = { def getState(): java.lang.Integer }
+  type HasUserDataRef = { def getUserDataRef(): ModelRef[UserData] }
+  type HasActive = { def getActive(): java.lang.Boolean }
   type BaseCheck = HasPeriod with HasState {
     def setState(state: java.lang.Integer): Unit
     def getRecipients(): java.util.List[java.lang.String]
@@ -45,4 +48,24 @@ object CheckUtil {
     else if (check.getPeriod > 30 && check.getPeriod <= 60 && (check.getState == null || check.getState == SEND_MAIL_30_DAYS_AGO))
       Some(SEND_MAIL_60_DAYS_AGO)
     else None
+
+  def isEnableUser[A <: HasUserDataRef](check: A) =
+    check.getUserDataRef.getModel.getState == AppConstants.USER_STATE_ENABLE
+
+  def isOverCapacity[A <: HasActive](user: UserData, isNew: Boolean, model: A, isActived: Boolean, isLogin: Option[Boolean]) =
+    if (isNew)
+      PlanService.isReachedMax(user, model.getClass, isLogin) //Activeが増える
+    else if (isActived)
+      if (!model.getActive())
+        PlanService.isReachedMax(user, model.getClass, isLogin) //Activeが増える
+      else if (user.getState == AppConstants.USER_STATE_ENABLE)
+        PlanService.isOverMax(user, model.getClass, isLogin) //Activeが増える
+      else
+        false //停止中
+    else
+      false
+
+  def isOverCapacity[A <: HasActive](user: UserData, isNew: Boolean, model: A, isActived: Boolean) =
+    isOverCapacity[A](user, isNew, model, isActived, None)
+
 }

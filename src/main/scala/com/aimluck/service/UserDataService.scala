@@ -42,12 +42,25 @@ object UserDataService {
           (JsString("name"), tojson(userData.getName)),
           (JsString("email"), tojson(userData.getEmail)),
           (JsString("planName"), tojson(userData.getPlanName)),
+          (JsString("state"), tojson(userData.getState)),
           (JsString("selectPlan"), tojson((
-            <select id={ if (userData.getKey != null) KeyFactory.keyToString(userData.getKey) else "" }>
+            <select id={ "planName_" + (if (userData.getKey != null) KeyFactory.keyToString(userData.getKey) else "") }>
               {
                 for {
                   i <- AppConstants.PLAN_MAP.keys.toList
                   option = if (userData.getPlanName == i)
+                    <option value={ i } selected="selected">{ i }</option>
+                  else
+                    <option value={ i }>{ i }</option>
+                } yield option
+              }
+            </select>).toString)),
+          (JsString("selectState"), tojson((
+            <select id={ "state_" + (if (userData.getKey != null) KeyFactory.keyToString(userData.getKey) else "") }>
+              {
+                for {
+                  i <- AppConstants.USER_STATE_LIST
+                  option = if (userData.getState == i)
                     <option value={ i } selected="selected">{ i }</option>
                   else
                     <option value={ i }>{ i }</option>
@@ -101,7 +114,6 @@ object UserDataService {
 
   def createNew(): UserData = {
     val result: UserData = new UserData
-    result.setPlanName(AppConstants.PLAN_FREE)
     result
   }
 

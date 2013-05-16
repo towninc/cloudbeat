@@ -1,4 +1,4 @@
-package com.aimluck.controller.check;
+package com.aimluck.controller.check
 
 import com.aimluck.lib.util.AppConstants
 import com.aimluck.model.Check
@@ -21,17 +21,18 @@ import org.slim3.controller.Navigation
 import com.google.appengine.api.datastore.KeyFactory
 import com.aimluck.service.PlanService
 import com.aimluck.lib.util.XmlUtil
+import com.aimluck.lib.util.CheckUtil
 
 class FormController extends AbstractUserBaseFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
-  override def redirectUri: String = "/check/index";
+  override def redirectUri: String = "/check/index"
 
   override def getTemplateName: String = {
     "form"
   }
 
-  val isLoginController = false;
+  val isLoginController = false
 
   override def validate: Boolean = {
     UserDataService.fetchOne(this.sessionScope("userId")) match {
@@ -52,9 +53,9 @@ class FormController extends AbstractUserBaseFormController {
             } catch {
               case _ => (false, Nil)
             }
-            if (assertResult) 
+            if (assertResult)
               addError("check", "サイトに接続出来ました")
-            else if(textList == Nil) 
+            else if (textList == Nil)
               addError("check", "サイトに接続出来ませんでした")
             else
               addError("check", "サイト内に検索テキストが見つかりません")
@@ -65,14 +66,14 @@ class FormController extends AbstractUserBaseFormController {
           val name = request.getParameter("name")
           if (name.size <= 0 || name.size > AppConstants.VALIDATE_STRING_LENGTH) {
             addError("name", LanguageUtil.get("error.stringLength", Some(Array(
-              LanguageUtil.get("check.name"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
+              LanguageUtil.get("check.name"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))))
           }
 
           //Url
           val url = request.getParameter("url")
           if (url.size <= 0 || url.size > AppConstants.VALIDATE_STRING_LENGTH) {
             addError("url", LanguageUtil.get("error.stringLength", Some(Array(
-              LanguageUtil.get("check.url"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
+              LanguageUtil.get("check.url"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))))
           }
 
           //formParams
@@ -80,35 +81,35 @@ class FormController extends AbstractUserBaseFormController {
           val isLogin: Boolean = request.getParameter("isLogin").toBoolean
           if ((isLogin && formParams.size <= 0) || formParams.size > AppConstants.VALIDATE_STRING_LENGTH) {
             addError("formParams", LanguageUtil.get("error.stringLength", Some(Array(
-              LanguageUtil.get("check.formParams"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
+              LanguageUtil.get("check.formParams"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))))
           }
 
           //preloadUrl
           val preloadUrl = request.getParameter("preloadUrl")
           if (preloadUrl.size > AppConstants.VALIDATE_STRING_LENGTH) {
             addError("preloadUrl", LanguageUtil.get("error.stringLength", Some(Array(
-              LanguageUtil.get("check.preloadUrl"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
+              LanguageUtil.get("check.preloadUrl"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))))
           }
 
           //AssertText
           val assertText = request.getParameter("assertText")
           if (assertText.size < 0 || assertText.size > AppConstants.VALIDATE_STRING_LENGTH) {
             addError("assertText", LanguageUtil.get("error.stringLength", Some(Array(
-              LanguageUtil.get("check.assertText"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
+              LanguageUtil.get("check.assertText"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))))
           }
 
           //XPath
           val xPath = request.getParameter("xPath")
           if (xPath.size < 0 || xPath.size > AppConstants.VALIDATE_STRING_LENGTH) {
             addError("xPath", LanguageUtil.get("error.stringLength", Some(Array(
-              LanguageUtil.get("check.xPath"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
+              LanguageUtil.get("check.xPath"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))))
           }
 
           //Description
           val description = request.getParameter("description")
           if (description.size > AppConstants.VALIDATE_LONGTEXT_LENGTH) {
             addError("description", LanguageUtil.get("error.stringLength.max", Some(Array(
-              LanguageUtil.get("check.description"), AppConstants.VALIDATE_LONGTEXT_LENGTH.toString))));
+              LanguageUtil.get("check.description"), AppConstants.VALIDATE_LONGTEXT_LENGTH.toString))))
           }
 
           //active
@@ -116,25 +117,25 @@ class FormController extends AbstractUserBaseFormController {
             val active = request.getParameter("active").toBoolean
           } catch {
             case e: NumberFormatException => {
-              addError("active", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("check.active")))));
+              addError("active", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("check.active")))))
 
             }
           }
 
           //Recipients
-          val recipientsText: String = request.getParameter("recipients");
-          val recipients: List[String] = if (recipientsText != null) {
-            recipientsText.split(Constants.LINE_SEPARATOR).toList.filter { e =>
-              e.trim.size > 0
-            }
-          } else {
-            null
-          }
+          val recipientsText = request.getParameter("recipients")
+          val recipients =
+            if (recipientsText == null)
+              Nil
+            else
+              for (
+                x <- recipientsText.split(Constants.LINE_SEPARATOR).toList if x.trim.size > 0
+              ) yield x
 
-          if ((recipients != null) && (recipients.size > AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK)) {
+          if (recipients.size > AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK) {
             addError("recipients", LanguageUtil.get("error.dataLimit", Some(Array(
               LanguageUtil.get("check.recipients"),
-              AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK.toString))));
+              AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK.toString))))
           }
 
           //failThreshold
@@ -142,12 +143,12 @@ class FormController extends AbstractUserBaseFormController {
             val failThreshold = request.getParameter("failThreshold").toInt
             if ((failThreshold < 0) || (failThreshold > AppConstants.DATA_LIMIT_THRESHOLD)) {
               addError("failThreshold", LanguageUtil.get("error.invaldValue", Some(Array(
-                LanguageUtil.get("check.failThreshold"), "6", AppConstants.DATA_LIMIT_THRESHOLD.toString))));
+                LanguageUtil.get("check.failThreshold"), "6", AppConstants.DATA_LIMIT_THRESHOLD.toString))))
             }
           } catch {
             case e: NumberFormatException => {
               addError("failThreshold", LanguageUtil.get("error.invaldValue",
-                Some(Array(LanguageUtil.get("stepMail.failThreshold")))));
+                Some(Array(LanguageUtil.get("stepMail.failThreshold")))))
             }
           }
 
@@ -156,7 +157,7 @@ class FormController extends AbstractUserBaseFormController {
             val ssl = request.getParameter("ssl").toBoolean
           } catch {
             case e: NumberFormatException => {
-              addError("ssl", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("check.ssl")))));
+              addError("ssl", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("check.ssl")))))
             }
           }
 
@@ -165,7 +166,7 @@ class FormController extends AbstractUserBaseFormController {
             val dom = request.getParameter("dom").toBoolean
           } catch {
             case e: NumberFormatException => {
-              addError("dom", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("check.dom")))));
+              addError("dom", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("check.dom")))))
             }
           }
         }
@@ -185,92 +186,56 @@ class FormController extends AbstractUserBaseFormController {
       case Some(userData) => {
         try {
           val id = request.getParameter(Constants.KEY_ID)
-          val check: Check = if (id == null) {
-            CheckService.createNew
-          } else {
-            CheckService.fetchOne(id, None) match {
-              case Some(v) => v
-              case None => null
-            }
-          }
+          val isLogin = request.getParameter("isLogin").toBoolean
+          val isActive = request.getParameter("active").toBoolean
+          val isNew = id == null
+          for (
+            check <- if (isNew)
+              Some(CheckService.createNew)
+            else
+              CheckService.fetchOne(id, None)
+          ) {
+            if ((CheckUtil.isOverCapacity(userData, isNew, check, isActive, Some(isLogin))))
+              addError(Constants.KEY_GLOBAL_ERROR,
+                "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format(if (isLogin) { "ログイン" } else { "ページ" }))
+            else {
+              //Name
+              check.setName(request.getParameter("name"))
+              //Url
+              check.setUrl(request.getParameter("url"))
 
-          // overSizeCheck
-          val isLogin: Boolean = request.getParameter("isLogin").toBoolean
-          val isOverCapacity: Boolean =
-            if (id == null) {
-              //Activeが増える
-              if (isLogin) {
-                PlanService.isReachedMaxCheckLoginNumber(userData)
-              } else {
-                PlanService.isReachedMaxCheckNumber(userData)
-              }
-            } else {
-              val isActivated = request.getParameter("active").toBoolean
-              if (isActivated) {
-                if (check.getActive() != true) { //Activeが増える
-                  if (isLogin) {
-                    PlanService.isReachedMaxCheckLoginNumber(userData)
-                  } else {
-                    PlanService.isReachedMaxCheckNumber(userData)
-                  }
-                } else {
-                  if (isLogin) { //Activeが増えない
-                    PlanService.isOverMaxCheckLoginNumber(userData)
-                  } else {
-                    PlanService.isOverMaxCheckNumber(userData)
-                  }
-                }
-              } else {
-                false
-              }
-            }
+              //formParams
+              check.setFormParams(request.getParameter("formParams"))
 
-          if (isOverCapacity) {
-            addError(Constants.KEY_GLOBAL_ERROR,
-              "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format(if (isLogin) { "ログイン" } else { "ページ" }))
-          }
+              //preloadUrl
+              check.setPreloadUrl(request.getParameter("preloadUrl"))
 
-          if (!isOverCapacity && (check != null)) {
-            //Name
-            check.setName(request.getParameter("name"))
-            //Url
-            check.setUrl(request.getParameter("url"))
+              //AssertText
+              check.setAssertText(request.getParameter("assertText"))
+              //XPath
+              check.setXPath(request.getParameter("xPath"))
+              //Description
+              check.setDescription(request.getParameter("description"))
+              //active
+              check.setActive(request.getParameter("active").toBoolean)
 
-            //formParams
-            check.setFormParams(request.getParameter("formParams"))
-
-            //preloadUrl
-            check.setPreloadUrl(request.getParameter("preloadUrl"))
-
-            //AssertText
-            check.setAssertText(request.getParameter("assertText"))
-            //XPath
-            check.setXPath(request.getParameter("xPath"))
-            //Description
-            check.setDescription(request.getParameter("description"))
-            //active
-            check.setActive(request.getParameter("active").toBoolean)
-
-            //Recipients
-            val recipients: List[String] = request.getParameter("recipients")
-              .split(Constants.LINE_SEPARATOR).toList.filter { e =>
-                e.trim.size > 0
-              }
-            if (recipients != null) {
+              //Recipients
+              val recipients = for (
+                x <- request.getParameter("recipients").split(Constants.LINE_SEPARATOR) if x.trim.size > 0
+              ) yield x
               check.setRecipients(seqAsJavaList(recipients))
-            } else {
-              check.setRecipients(seqAsJavaList(List()))
-            }
-            check.setStatus(CheckService.Status.INITIALIZING.toString)
-            check.setErrorMessage(LanguageUtil.get("check.StatusMessage.initializing"))
-            //failThreshold
-            check.setFailThreshold(request.getParameter("failThreshold").toInt)
-            check.setFailCount(0)
-            CheckService.saveWithUserData(check, userData)
+              check.setStatus(CheckService.Status.INITIALIZING.toString)
+              check.setErrorMessage(LanguageUtil.get("check.StatusMessage.initializing"))
+              //failThreshold
+              check.setFailThreshold(request.getParameter("failThreshold").toInt)
+              check.setFailCount(0)
+              CheckService.saveWithUserData(check, userData)
 
+            }
           }
+
         } catch {
-          case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"));
+          case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"))
         }
       }
       case None =>

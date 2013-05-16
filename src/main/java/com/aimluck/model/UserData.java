@@ -31,6 +31,8 @@ public class UserData {
 	private Date createdAt;
 	@Attribute(name = "uA")
 	private Date updatedAt;
+	@Attribute(name = "s")
+	private String state;
 
 	/**
 	 * 
@@ -178,4 +180,12 @@ public class UserData {
 	public void setPlanName(String planName) {
 		this.planName = planName;
 	}
+
+  public String getState() {
+    return state;
+  }
+
+  public void setState(String state) {
+    this.state = state;
+  }
 }

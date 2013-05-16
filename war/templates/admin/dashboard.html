@@ -3,32 +3,37 @@
 <script type="text/javascript">
 //<![CDATA[             
 	$(function() {
-		$.initList("PlanList", "checkItem", true, "/admin/plan/json", {
+		$.initList("UserList", "checkItem", true, "/admin/json", {
 			"pageType" : "page",
 		}, function(jsonData) {
-			var values = jsonData.values;
-			var size = values.length;
-			$.setListValues("PlanList", "PlanItem", true, jsonData);
+			var values = jsonData.values
+			var size = values.length
+			$.setListValues("UserList", "PlanItem", true, jsonData)
 			if (size > 0) {
-				$('#PlanListContainer').show();
+				$('#UserListContainer').show()
 			}
 		});
 
 	});
 
-	$.changePlan = function(id) {
-		$.post("/admin/plan/change", {
-			id : id,
-			plan : $("#" + id).val()
-		}, function(json) {
-			if (json.result == "success") {
-				$("#information").show()
-				$("#error").hide()
-			} else {
-				$("#information").hide()
-				$("#error").show()
-			}
-		})
+	$.change = function(id, email) {
+		var planName = $("#planName_" + id).val()
+		var state = $("#state_" + id).val()
+		if(window.confirm(email + " のプランを " + planName + " , 状態を " + state + " に変更しますがよろしいですか？")) {
+			$.post("/admin/change", {
+				id : id,
+				plan : planName,
+				state : state
+			}, function(json) {
+				if (json.result == "success") {
+					$("#information").show()
+					$("#error").hide()
+				} else {
+					$("#information").hide()
+					$("#error").show()
+				}
+			})
+		}
 	}
 
     //]]>
@@ -36,17 +41,17 @@
 <div class="span12">
 	<div id="information" class="alert alert-info" style="display: none">
 		<button type="button" class="close" onclick="$('#information').hide()">×</button>
-		<span id="information">プランを変更しました。</span>
+		<span id="information">操作が完了しました。</span>
 	</div>
 	<div id="error" class="alert alert-error" style="display: none">
 		<button type="button" class="close" onclick="$('#error').hide()">×</button>
-		<span id="information">プランの変更に失敗しました。</span>
+		<span id="information">操作が失敗しました。</span>
 	</div>
-	<!-- ユーザ別プラン状況リスト -->
-	<div id="PlanListContainer" class="widget widget-table hide">
+	<!-- ユーザリスト -->
+	<div id="UserListContainer" class="widget widget-table hide">
 		<div class="widget-header">
 			<i class="icon-file-alt"></i>
-			<h3>ユーザ別プラン状況リスト</h3>
+			<h3>ユーザリスト</h3>
 		</div>
 		<!-- /widget-header -->
 		<div class="widget-content">
@@ -55,10 +60,11 @@
 					<tr>
 						<th class="w30">メールアドレス</th>
 						<th>プラン</th>
+						<th>状態</th>
 						<th></th>
 					</tr>
 				</thead>
-				<tbody id="PlanList">
+				<tbody id="UserList">
 				</tbody>
 
 			</table>
@@ -66,14 +72,15 @@
 		<!-- /widget-content -->
 	</div>
 	<!-- /widget -->
-	<!-- ユーザ別プラン状況リスト -->
+	<!-- ユーザリスト -->
 </div>
 <!-- /row -->
 <script id="PlanItem" type="text/x-jquery-tmpl">
 	<tr>
         <td>${email}</td>
 		<td>{{html selectPlan}}</td>
-		<td><button class="btn btn-large" onclick="if(window.confirm('${email} のプランを ${planName} に変更しますがよろしいですか？'))$.changePlan('${id}')">変更する</button></td>
+		<td>{{html selectState}}</td>
+		<td><button class="btn btn-large" onclick="$.change('${id}', '${email}')">変更する</button></td>
     </tr>
 </script>
 

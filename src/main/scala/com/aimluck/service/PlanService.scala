@@ -6,139 +6,74 @@
 package com.aimluck.service
 
 import java.util.logging.Logger
-
 import scala.collection.JavaConversions._
-
 import org.dotme.liquidtpl.exception.DuplicateDataException
-
 import com.aimluck.lib.beans.PlanBean
 import com.aimluck.lib.util.AppConstants
 import com.aimluck.model.UserData
-
 import sjson.json.Format
+import com.aimluck.model.Check
+import com.aimluck.model.CertCheck
+import com.aimluck.model.DomainCheck
 
 object PlanService {
   val logger = Logger.getLogger(PlanService.getClass.getName)
 
-  def getPlan(user: UserData): PlanBean = {
-    def onPlanNotFound: PlanBean = {
-      UserDataService.fetchOne(user.getUserId()) match {
-        case Some(userData) => {
-          userData.setPlanName(AppConstants.PLAN_FREE)
+  def getPlan(user: UserData) =
+    AppConstants.PLAN_MAP((for (
+      name <- Option(user.getPlanName) if AppConstants.PLAN_MAP.get(name) != None
+    ) yield name) match {
+      case Some(name) =>
+        if (user.getState == AppConstants.USER_STATE_ENABLE)
+          name
+        else
+          AppConstants.PLAN_MICRO
+      case None => {
+        for (userData <- UserDataService.fetchOne(user.getUserId())) {
+          userData.setPlanName(AppConstants.PLAN_MICRO)
           UserDataService.save(userData)
         }
-        case None =>
+        AppConstants.PLAN_MICRO
       }
-      AppConstants.PLAN_MAP.apply(AppConstants.PLAN_FREE)
-    }
+    })
 
-    user.getPlanName() match {
-      case null => {
-        onPlanNotFound
-      }
-      case name: String => {
-        AppConstants.PLAN_MAP.apply(name) match {
-          case null => onPlanNotFound
-          case b: PlanBean => b
-        }
-      }
-    }
+  def getMax[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) = clazz match {
+    case _: Class[Check] =>
+      if (isLogin.get)
+        getPlan(user).maxCheckLogin
+      else
+        getPlan(user).maxCheck
+    case _: Class[CertCheck] =>
+      getPlan(user).maxSSLCheck
+    case _: Class[DomainCheck] =>
+      getPlan(user).maxDomainCheck
   }
 
-  def getMaxCheckNumber(user: UserData): Int = {
-    getPlan(user).maxCheck
+  def getCount[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) = clazz match {
+    case _: Class[Check] =>
+      if (isLogin.get)
+        SummaryService.getCheckLoginCount(user.getUserId)
+      else
+        SummaryService.getCheckCount(user.getUserId)
+    case _: Class[CertCheck] =>
+      SummaryService.getSSLCheckCount(user.getUserId)
+    case _: Class[DomainCheck] =>
+      SummaryService.getDomainCheckCount(user.getUserId)
   }
 
-  def isReachedMaxCheckNumber(user: UserData): Boolean = {
-    val maxCheck = getMaxCheckNumber(user)
-    if (maxCheck < 0) {
+  def compareMax[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean], comp: (Int, Int) => Boolean) = {
+    val max = getMax[A](user, clazz, isLogin)
+    val count = getCount[A](user, clazz, isLogin)
+    if (max < 0)
       false
-    } else {
-      val checkCount = SummaryService.getCheckCount(user.getUserId())
-      checkCount >= maxCheck
-    }
+    else
+      comp(count, max)
   }
 
-  def isOverMaxCheckNumber(user: UserData): Boolean = {
-    val maxCheck = getMaxCheckNumber(user)
-    if (maxCheck < 0) {
-      false
-    } else {
-      val checkCount = SummaryService.getCheckCount(user.getUserId())
-      checkCount > maxCheck
-    }
-  }
+  def isReachedMax[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) =
+    compareMax(user, clazz, isLogin, _ >= _)
 
-  def getMaxCheckLoginNumber(user: UserData): Int = {
-    getPlan(user).maxCheckLogin
-  }
-
-  def isReachedMaxCheckLoginNumber(user: UserData): Boolean = {
-    val maxCheck = getMaxCheckLoginNumber(user)
-    if (maxCheck < 0) {
-      false
-    } else {
-      val checkCount = SummaryService.getCheckLoginCount(user.getUserId())
-      checkCount >= maxCheck
-    }
-  }
-
-  def isOverMaxCheckLoginNumber(user: UserData): Boolean = {
-    val maxCheck = getMaxCheckLoginNumber(user)
-    if (maxCheck < 0) {
-      false
-    } else {
-      val checkCount = SummaryService.getCheckLoginCount(user.getUserId())
-      checkCount > maxCheck
-    }
-  }
+  def isOverMax[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) = 
+    compareMax(user, clazz, isLogin, _ > _)
   
-  def getMaxSSLCheckNumber(user: UserData): Int = {
-    getPlan(user).maxSSLCheck
-  }
-  
-  def isReachedMaxSSLCheckNumber(user: UserData): Boolean = {
-    val maxCheck = getMaxSSLCheckNumber(user)
-    if (maxCheck < 0) {
-      false
-    } else {
-      var checkCount = SummaryService.getSSLCheckCount(user.getUserId())
-      checkCount >= maxCheck
-    }
-  }
-  
-  def isOverMaxSSLCheckNumber(user: UserData): Boolean = {
-    val maxCheck = getMaxSSLCheckNumber(user)
-    if (maxCheck < 0) {
-      false
-    } else {
-      val checkCount = SummaryService.getSSLCheckCount(user.getUserId())
-      checkCount > maxCheck
-    }
-  }
-  
-  def getMaxDomainCheckNumber(user: UserData): Int = {
-    getPlan(user).maxDomainCheck
-  }
-  
-  def isReachedMaxDomainCheckNumber(user: UserData): Boolean = {
-    val maxCheck = getMaxDomainCheckNumber(user)
-    if (maxCheck < 0) {
-      false
-    } else {
-      var checkCount = SummaryService.getDomainCheckCount(user.getUserId())
-      checkCount >= maxCheck
-    }
-  }
-  
-  def isOverMaxDomainCheckNumber(user: UserData): Boolean = {
-    val maxCheck = getMaxDomainCheckNumber(user)
-    if (maxCheck < 0) {
-      false
-    } else {
-      val checkCount = SummaryService.getDomainCheckCount(user.getUserId())
-      checkCount > maxCheck
-    }
-  }
-
 }

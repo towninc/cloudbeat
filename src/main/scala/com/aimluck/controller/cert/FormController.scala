@@ -1,4 +1,4 @@
-package com.aimluck.controller.cert;
+package com.aimluck.controller.cert
 
 import com.aimluck.lib.util.AppConstants
 import com.aimluck.model.CertCheck
@@ -20,17 +20,18 @@ import scala.xml.Text
 import org.slim3.controller.Navigation
 import com.google.appengine.api.datastore.KeyFactory
 import com.aimluck.service.PlanService
+import com.aimluck.lib.util.CheckUtil
 
 class FormController extends AbstractUserBaseFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
-  override def redirectUri: String = "/cert/index";
+  override def redirectUri: String = "/cert/index"
 
   override def getTemplateName: String = {
     "form"
   }
 
-  val isLoginController = false;
+  val isLoginController = false
 
   override def validate: Boolean = {
     UserDataService.fetchOne(this.sessionScope("userId")) match {
@@ -39,39 +40,39 @@ class FormController extends AbstractUserBaseFormController {
         val name = request.getParameter("name")
         if (name.size <= 0 || name.size > AppConstants.VALIDATE_STRING_LENGTH) {
           addError("name", LanguageUtil.get("error.stringLength", Some(Array(
-            LanguageUtil.get("cert.name"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
+            LanguageUtil.get("cert.name"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))))
         }
 
         //domain
         val domName = request.getParameter("domainName")
         if (domName.size <= 0 || domName.size > AppConstants.VALIDATE_STRING_LENGTH) {
           addError("domainName", LanguageUtil.get("error.stringLength", Some(Array(
-            LanguageUtil.get("cert.domName"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
+            LanguageUtil.get("cert.domName"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))))
         }
 
         try {
           val active = request.getParameter("active").toBoolean
         } catch {
           case e: NumberFormatException => {
-            addError("active", LanguageUtil.get("error.certCheckError", Some(Array(LanguageUtil.get("cert.active")))));
+            addError("active", LanguageUtil.get("error.certCheckError", Some(Array(LanguageUtil.get("cert.active")))))
 
           }
         }
 
         //Recipients
-        val recipientsText: String = request.getParameter("recipients");
-        val recipients: List[String] = if (recipientsText != null) {
-          recipientsText.split(Constants.LINE_SEPARATOR).toList.filter { e =>
-            e.trim.size > 0
-          }
-        } else {
-          null
-        }
+        val recipientsText = request.getParameter("recipients")
+        val recipients =
+          if (recipientsText == null)
+            Nil
+          else
+            for (
+              x <- recipientsText.split(Constants.LINE_SEPARATOR).toList if x.trim.size > 0
+            ) yield x
 
-        if ((recipients != null) && (recipients.size > AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK)) {
+        if (recipients.size > AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK) {
           addError("recipients", LanguageUtil.get("error.dataLimit", Some(Array(
             LanguageUtil.get("cert.recipients"),
-            AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK.toString))));
+            AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK.toString))))
         }
 
       }
@@ -90,65 +91,45 @@ class FormController extends AbstractUserBaseFormController {
       case Some(userData) => {
         try {
           val id = request.getParameter(Constants.KEY_ID)
-          (if (id == null)
-            Some(CertCheckService.createNew)
-          else CertCheckService.fetchOne(id, None)) match {
-            case Some(cert) => {
-              // overSizeCheck
-              val isOverCapacity: Boolean =
-                if (id == null) {
-                  //Activeが増える
-                  PlanService.isReachedMaxSSLCheckNumber(userData)
-                } else {
-                  val isActivated = request.getParameter("active").toBoolean
-                  if (isActivated) {
-                    if (!cert.getActive()) { //Activeが増える
-                      PlanService.isReachedMaxSSLCheckNumber(userData)
-                    } else {
-                      PlanService.isOverMaxSSLCheckNumber(userData)
-                    }
-                  } else {
-                    false
-                  }
-                }
+          val isNew = id == null
+          val isActive = request.getParameter("active").toBoolean
+          for (
+            cert <- if (isNew)
+              Some(CertCheckService.createNew)
+            else
+              CertCheckService.fetchOne(id, None)
+          ) {
+            if (CheckUtil.isOverCapacity(userData, isNew, cert, isActive))
+              addError(Constants.KEY_GLOBAL_ERROR,
+                "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format("SSL"))
+            else {
+              //Name
+              cert.setName(request.getParameter("name"))
+              //Url
+              cert.setDomainName(request.getParameter("domainName"))
 
-              if (isOverCapacity) {
-                addError(Constants.KEY_GLOBAL_ERROR,
-                  "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format("SSL"))
+              cert.setActive(request.getParameter("active").toBoolean)
+
+              //Recipients
+              val recipients = for (
+                x <- request.getParameter("recipients").split(Constants.LINE_SEPARATOR) if x.trim.size > 0
+              ) yield x
+
+              cert.setRecipients(seqAsJavaList(recipients))
+
+              //証明書情報を取得
+              val result = CertCheckService.certCheck(cert, this.servletContext)
+              if (result == null || result.getLimitDate() == null) {
+                addError("domainName", LanguageUtil.get("error.certCheckError"))
               } else {
-                //Name
-                cert.setName(request.getParameter("name"))
-                //Url
-                cert.setDomainName(request.getParameter("domainName"))
-
-                cert.setActive(request.getParameter("active").toBoolean)
-
-                //Recipients
-                val recipients: List[String] = request.getParameter("recipients")
-                  .split(Constants.LINE_SEPARATOR).toList.filter { e =>
-                    e.trim.size > 0
-                  }
-                if (recipients != null) {
-                  cert.setRecipients(seqAsJavaList(recipients))
-                } else {
-                  cert.setRecipients(seqAsJavaList(List()))
-                }
-
-                //証明書情報を取得
-                val result = CertCheckService.certCheck(cert, this.servletContext);
-                if (result == null || result.getLimitDate() == null) {
-                  addError("domainName", LanguageUtil.get("error.certCheckError"));
-                } else {
-                  CertCheckService.saveWithUserData(result, userData)
-                }
-
+                CertCheckService.saveWithUserData(result, userData)
               }
+
             }
-            case None => null
           }
 
         } catch {
-          case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"));
+          case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"))
         }
       }
       case None =>

@@ -27,27 +27,21 @@ class PlanController extends AbstractUserBaseActionController {
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
         super.replacerMap + (
-          "plan1_name" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_FREE).name) },
           "plan2_name" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_MICRO).name) },
           "plan3_name" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_STARTER).name) },
           "plan4_name" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).name) },
-          "plan1_price" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_FREE).price.toString()) },
           "plan2_price" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_MICRO).price.toString()) },
           "plan3_price" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_STARTER).price.toString()) },
           "plan4_price" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).price.toString()) },
-          "plan1_maxCheck" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_FREE).maxCheck.toString()) },
           "plan2_maxCheck" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_MICRO).maxCheck.toString()) },
           "plan3_maxCheck" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_STARTER).maxCheck.toString()) },
           "plan4_maxCheck" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).maxCheck.toString()) },
-          "plan1_maxCheckLogin" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_FREE).maxCheckLogin.toString()) },
           "plan2_maxCheckLogin" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_MICRO).maxCheckLogin.toString()) },
           "plan3_maxCheckLogin" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_STARTER).maxCheckLogin.toString()) },
           "plan4_maxCheckLogin" -> { e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).maxCheckLogin.toString()) },
-          "plan1_maxSSLCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_FREE).maxSSLCheck.toString()) },
           "plan2_maxSSLCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_MICRO).maxSSLCheck.toString()) },
           "plan3_maxSSLCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_STARTER).maxSSLCheck.toString()) },
           "plan4_maxSSLCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).maxSSLCheck.toString()) },
-          "plan1_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_FREE).maxDomainCheck.toString()) },
           "plan2_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_MICRO).maxDomainCheck.toString()) },
           "plan3_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_STARTER).maxDomainCheck.toString()) },
           "plan4_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).maxDomainCheck.toString()) })

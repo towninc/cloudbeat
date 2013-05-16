@@ -8,6 +8,8 @@ import com.aimluck.service.SummaryService
 import scala.xml.Text
 import scala.xml.Node
 import com.aimluck.service.PlanService
+import com.aimluck.model.Check
+import com.aimluck.lib.util.AppConstants
 
 class DashboardController extends AbstractUserBaseActionController {
   override def getTemplateName: String = {
@@ -34,7 +36,7 @@ class DashboardController extends AbstractUserBaseActionController {
         val domLimitCount = SummaryService.getDomainCheckCount(userData.getUserId)
         val unusedMessage =
           if (checkCount == 0)
-            if (PlanService.getMaxCheckNumber(userData) == 0)
+            if (PlanService.getMax(userData, classOf[Check], Some(false)) == 0)
               <div class="alert alert-info">
                 <button type="button" class="close" data-dismiss="alert">×</button>
                 ご登録いただきありがとうございます。監視サイトを登録いただくためにはまずはプランをお申し込みいただく必要がございます。
@@ -53,11 +55,20 @@ class DashboardController extends AbstractUserBaseActionController {
               </div>
           else
             Text("")
+        val pausedMessage =
+          if (userData.getState == AppConstants.USER_STATE_PAUSE)
+            <div class="alert alert-error">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+              登録数が現在のプランを上回っているため、監視が無効になっています。上位のプランをお申し込みいただくか、監視を削除してください。
+            </div>
+          else
+            Text("")
         super.replacerMap + ("checkCount" -> { e => Text(checkCount.toString) },
           "errorCount" -> { e => Text(errorCount.toString) },
           "checkLoginCount" -> { e => Text(checkLoginCount.toString) },
           "errorLoginCount" -> { e => Text(errorLoginCount.toString) },
           "unusedMessage" -> { e => unusedMessage },
+          "pausedMessage" -> { e => pausedMessage },
           "sslCount" -> { e => Text(sslCount.toString) },
           "domLimitCount" -> { e => Text(domLimitCount.toString) })
 
