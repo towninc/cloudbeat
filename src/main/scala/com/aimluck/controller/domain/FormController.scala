@@ -125,7 +125,7 @@ class FormController extends AbstractUserBaseFormController {
                     domain.setLimitDate(limit)
                     domain.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
                   }
-                  case None => addError("domainName", "ドメイン期限が取得できませんでした。")
+                  case None => addError("domainName", "ドメインが取得できませんでした。")
                 }
 
                 //Name
@@ -167,6 +167,6 @@ class FormController extends AbstractUserBaseFormController {
 
   override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
     super.replacerMap + ("isLogin" -> { e => <input type="hidden" id="isLogin" name="isLogin" value="false"/> },
-      "formTitle" -> { e => Text("ドメイン期限監視登録") })
+      "formTitle" -> { e => Text("ドメイン監視登録") })
   }
 }
