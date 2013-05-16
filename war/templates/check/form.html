@@ -203,8 +203,8 @@
 						&nbsp;&nbsp;&nbsp;
 						<button onclick="$('#kind').val('check')" type="submit"
 							class="btn btn-large">接続チェック</button>
-						<div id="checkError" class="alert alert-danger"
-							style="margin-top: 5px; display: none;"></div>
+						<div id="checkFailError" class="alert alert-danger" style="margin-top: 5px; display: none;"></div>
+						<div id="checkSuccessError" class="alert alert-success" style="margin-top: 5px; display: none;"></div>
 						<input type="hidden" id="kind" name="kind" value="" />
 					</div>
 					<liquidtpl:isLogin />

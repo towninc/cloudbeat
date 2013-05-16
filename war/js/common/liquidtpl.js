@@ -329,7 +329,7 @@ $.setFormValues = function(formId, jsonData, beforeSubmit, afterSuccess, afterSu
 };
 
 $.submit = function(formId, afterSuccess, afterSubmit) {
-    $(".alert-danger").hide();
+    $(".alert").hide();
     $("#" + formId).find("input[type='submit']").attr('disabled', 'disabled');
     $("#" + formId).find("button[type='submit']").attr('disabled', 'disabled');
 

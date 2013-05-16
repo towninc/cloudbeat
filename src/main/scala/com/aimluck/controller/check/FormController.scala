@@ -54,11 +54,11 @@ class FormController extends AbstractUserBaseFormController {
               case _ => (false, Nil)
             }
             if (assertResult)
-              addError("check", "サイトに接続出来ました")
+              addError("checkSuccess", "サイトに接続出来ました")
             else if (textList == Nil)
-              addError("check", "サイトに接続出来ませんでした")
+              addError("checkFail", "サイトに接続出来ませんでした")
             else
-              addError("check", "サイト内に検索テキストが見つかりません")
+              addError("checkFail", "サイト内に検索テキストが見つかりません")
           }
 
         } else {
