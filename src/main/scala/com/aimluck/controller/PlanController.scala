@@ -44,7 +44,20 @@ class PlanController extends AbstractUserBaseActionController {
           "plan4_maxSSLCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).maxSSLCheck.toString()) },
           "plan2_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_MICRO).maxDomainCheck.toString()) },
           "plan3_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_STARTER).maxDomainCheck.toString()) },
-          "plan4_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).maxDomainCheck.toString()) })
+          "plan4_maxDomainCheck" -> {e => Text(AppConstants.PLAN_MAP.apply(AppConstants.PLAN_BUSINESS).maxDomainCheck.toString()) },
+          "plan2_action" -> {e => <span class="btn disabled">ご利用中</span>},
+          "plan3_action" -> {e => userData.getPlanName match {
+            case AppConstants.PLAN_MICRO => 
+              <a class="btn" href="/user/inquiry">お申し込み</a>
+            case _ => 
+              <span class="btn disabled">ご利用中</span>
+          }},
+          "plan4_action" -> {e => userData.getPlanName match {
+            case n if n == AppConstants.PLAN_MICRO || n == AppConstants.PLAN_STARTER => 
+              <a class="btn" href="/user/inquiry">お申し込み</a>
+            case _ => 
+              <span class="btn disabled">ご利用中</span>
+          }})
           
       }
       case None => {

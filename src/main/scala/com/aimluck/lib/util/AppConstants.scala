@@ -53,8 +53,8 @@ object AppConstants {
   
   val PLAN_MAP = Map(
     PLAN_MICRO -> PlanBean("Micro", 5, 5, 5, 5, 0),
-    PLAN_STARTER -> PlanBean("Starter", 10, 10, 10, 10, 1050),
-    PLAN_BUSINESS -> PlanBean("Business", 20, 20, 20, 20, 2100),
+    PLAN_STARTER -> PlanBean("Starter", 20, 20, 20, 20, 1050),
+    PLAN_BUSINESS -> PlanBean("Business", 50, 50, 50, 50, 2100),
     PLAN_UNLIMITED -> PlanBean("Unlimited", -1, -1, -1, -1, -1))
 
 
