@@ -43,19 +43,26 @@
     
     //]]>
 </script>
-<liquidtpl:pageType/>
+<liquidtpl:pageType />
 <div class="span12">
 	<div id="buttonWrapper" style='margin-bottom: 10px;'>
-		<button onclick="$.formLink();" class="btn btn-primary btn-large"><liquidtpl:pageTypeString/>監視登録</button>											
+		<button onclick="$.formLink();" class="btn btn-primary btn-large">
+			<liquidtpl:pageTypeString />
+			監視登録
+		</button>
 	</div>
 	<div id="checkListContainer" class="widget widget-table hide">
 		<div class="widget-header">
-			<i id="page_icon" class="icon-file"></i>
-			<i id="login_icon" class="icon-file-alt"></i>
-			<h3><liquidtpl:pageTypeString/>監視</h3>
-		</div> <!-- /widget-header -->
+			<i id="page_icon" class="icon-file"></i> <i id="login_icon"
+				class="icon-file-alt"></i>
+			<h3>
+				<liquidtpl:pageTypeString />
+				監視
+			</h3>
+		</div>
+		<!-- /widget-header -->
 		<div class="widget-content">
-			<table  class="table table-striped table-bordered">
+			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
 						<th>タイトル</th>
@@ -68,9 +75,12 @@
 				<tbody id="checkList">
 				</tbody>
 			</table>
-		</div> <!-- /widget-content -->
-	</div> <!-- /widget -->
-</div> <!-- /row -->
+		</div>
+		<!-- /widget-content -->
+	</div>
+	<!-- /widget -->
+</div>
+<!-- /row -->
 <script id="checkItem" type="text/x-jquery-tmpl">
     <tr>
         <td><a href="javascript:void(0)" onclick="$('#checkItem-error-message-tr-${id}').toggle();" id="error-message">${name}</a></td>

@@ -2,55 +2,79 @@
 	<div class="widget">
 		<div class="widget-header">
 			<i class="icon-lock"></i>
-			<h3><liquidtpl:formTitle/></h3>
-		</div> <!-- /widget-header -->
+			<h3>
+				<liquidtpl:formTitle />
+			</h3>
+		</div>
+		<!-- /widget-header -->
 		<div class="widget-content">
-			<form action="/cert/form" id="checkForm" style="display: none;" class="form-horizontal">
+			<form action="/cert/form" id="checkForm" style="display: none;"
+				class="form-horizontal">
 				<div id="grobalError" class="alert alert-error alert-block hide"></div>
-				<fieldset>			
-								<div class="control-group">
-									<label class="control-label"><liquidtpl:text key="cert.name"/> <strong class="fcRed">(*)</strong></label>
-									<div class="controls">
-	            						<input type="text" id="nameField" name="name" class="input-xlarge" />
-	            						<div id="nameError" class="alert alert-danger" style="margin-top:5px; display:none;" />
-									</div>
-									<!-- /controls -->
-								</div>
-								<div class="control-group">
-									<label class="control-label"><liquidtpl:text key="cert.domName"/>  <strong class="fcRed">(*)</strong></label>
-									<div class="controls">
-	            						<input id="domainNameField" name="domainName" class="input-xlarge" />
-	            						<div id="domainNameError" class="alert alert-danger" style="margin-top:5px; display:none;" />
-									</div>
-									<!-- /controls -->
-								</div>
-								<div class="control-group">
-									<label class="control-label"><liquidtpl:text key="cert.recipients"/></label>
-									<div class="controls">
-	            						<textarea id="recipientsField" name="recipients" class="input-xlarge" rows="5"></textarea>
-	            						<div id="recipientsError" class="alert alert-danger" style="margin-top:5px; display:none;" />
-	            						<p class="help-block"><liquidtpl:text key="cert.recipientsMessage"/></p>
-	            						<p class="help-block"><liquidtpl:text key="cert.recipientsMessage2"/></p>
-									</div>
-									<!-- /controls -->
-								</div>
-								<div class="control-group">
-									<label class="control-label"><liquidtpl:text key="cert.active"/><strong class="fcRed">(*)</strong></label>
-									<div class="controls">
-							            <div>
-							            	<label class="radio" for="activeField1"><input type="radio" id="activeField1" name="active" value="true" checked="checked" /><liquidtpl:text key="cert.isActive"/></label>
-							            	<label class="radio" for="activeField2"><input type="radio" id="activeField2" name="active" value="false" /><liquidtpl:text key="cert.isInactive"/></label>
-							            </div>
-							            <div id="activeError" class="alert alert-danger" style="margin-top:5px; display:none;" />
-									</div>
-									<!-- /controls -->
-								</div>
+				<fieldset>
+					<div class="control-group">
+						<label class="control-label"><liquidtpl:text
+								key="cert.name" /> <strong class="fcRed">(*)</strong></label>
+						<div class="controls">
+							<input type="text" id="nameField" name="name"
+								class="input-xlarge" />
+							<div id="nameError" class="alert alert-danger"
+								style="margin-top: 5px; display: none;" />
+						</div>
+						<!-- /controls -->
+					</div>
+					<div class="control-group">
+						<label class="control-label"><liquidtpl:text
+								key="cert.domName" /> <strong class="fcRed">(*)</strong></label>
+						<div class="controls">
+							<input id="domainNameField" name="domainName"
+								class="input-xlarge" />
+							<div id="domainNameError" class="alert alert-danger"
+								style="margin-top: 5px; display: none;" />
+						</div>
+						<!-- /controls -->
+					</div>
+					<div class="control-group">
+						<label class="control-label"><liquidtpl:text
+								key="cert.recipients" /></label>
+						<div class="controls">
+							<textarea id="recipientsField" name="recipients"
+								class="input-xlarge" rows="5"></textarea>
+							<div id="recipientsError" class="alert alert-danger"
+								style="margin-top: 5px; display: none;" />
+							<p class="help-block">
+								<liquidtpl:text key="cert.recipientsMessage" />
+							</p>
+							<p class="help-block">
+								<liquidtpl:text key="cert.recipientsMessage2" />
+							</p>
+						</div>
+						<!-- /controls -->
+					</div>
+					<div class="control-group">
+						<label class="control-label"><liquidtpl:text
+								key="cert.active" /><strong class="fcRed">(*)</strong></label>
+						<div class="controls">
+							<div>
+								<label class="radio" for="activeField1"><input
+									type="radio" id="activeField1" name="active" value="true"
+									checked="checked" />
+								<liquidtpl:text key="cert.isActive" /></label> <label class="radio"
+									for="activeField2"><input type="radio"
+									id="activeField2" name="active" value="false" />
+								<liquidtpl:text key="cert.isInactive" /></label>
+							</div>
+							<div id="activeError" class="alert alert-danger"
+								style="margin-top: 5px; display: none;" />
+						</div>
+						<!-- /controls -->
+					</div>
 					<!-- /control-group -->
 					<div class="form-actions">
 						<button type="submit" class="btn btn-primary btn-large">登録</button>
 					</div>
-					<liquidtpl:isLogin/>
-				</fieldset>						
+					<liquidtpl:isLogin />
+				</fieldset>
 			</form>
 		</div>
 	</div>
