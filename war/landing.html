@@ -1,70 +1,167 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>CloudDoctor - サイト監視ツール</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <meta name="apple-mobile-web-app-capable" content="yes"/>    
-    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet"/>
-    <link href="/css/font-awesome.min.css" rel="stylesheet"/>
-    <link href="/css/base-admin-2.css" rel="stylesheet"/>
-    <link href="/css/base-admin-2-responsive.css" rel="stylesheet"/>
-    <link href="/css/pages/login.css" rel="stylesheet"/>
-    <link href="/style.css" rel="stylesheet"/> 
-    <script src="/js/jquery-1.7.2.min.js"></script>
-    <script src="/js/common/jquery.tmpl.min.js" type="text/javascript"></script>
-    <script src="/js/common/jquery.tmplPlus.min.js" type="text/javascript"></script>
-    <script src="/js/common/jquery.datalink.js" type="text/javascript"></script>
-    <script src="/js/common/jquery.json-2.2.min.js" type="text/javascript"></script>
-    <script src="/js/common/liquidtpl.js"></script>
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>サーバー監視ツール「CloudDoctor」</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="icon" href="img/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+<meta name="description"
+	content="サーバー監視ツールCloudDoctorは24時間5分毎にサイトを監視し、表示されなくなったらすぐにメールでご連絡致します。">
+<meta name="keywords" content="サーバー監視">
+<meta name="author" content="www.clouddoctor.jp">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link href="./css/bootstrap.min.css" rel="stylesheet">
+<link href="./css/bootstrap-responsive.min.css" rel="stylesheet">
+<link
+	href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600"
+	rel="stylesheet">
+<link href="./css/font-awesome.min.css" rel="stylesheet">
+<link href="./css/ui-lightness/jquery-ui-1.10.0.custom.min.css"
+	rel="stylesheet">
+<link href="./css/base-admin-2.css" rel="stylesheet">
+<link href="./css/base-admin-2-responsive.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" type="text/css"
+	media="screen">
+<link rel="stylesheet" href="css/panel.css" type="text/css"
+	media="screen">
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-  </head>
+</head>
 <body>
-<div class="navbar navbar-inverse navbar-fixed-top">
-	<div class="navbar-inner">
-		<div class="container">
-			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-				<i class="icon-reorder"></i>
-			</a>		
-			<a class="brand" href="/">
-				CloudDoctor				
-			</a>
-			<div class="nav-collapse collapse">
-				<ul class="nav pull-right">
-					<li>
-						<a href="/login">ログイン</a>
-					</li>
-					<li>
-						<a href="/user/register">ユーザー登録</a>
-					</li>
-				</ul>			
+	<!--============================== common navi =================================-->
+	<div id="panel">
+		<div class="navbar navbar-inverse navbar-fixed-top" id="advanced">
+			<div class="navbar-inner">
+				<div class="container">
+					<button type="button" class="btn btn-navbar" data-toggle="collapse"
+						data-target=".nav-top-collapse">
+						<span class="icon-bar"></span><span class="icon-bar"></span><span
+							class="icon-bar"></span>
+					</button>
+					<div class="nav-collapse collapse nav-top-collapse">
+						<ul class="nav">
+							<li class="home"><a href="/"><img
+									src="img/tm/tm_home.png"></a></li>
+							<li class="divider-vertical"></li>
+							<li class="active"><a href="/">サーバー監視</a></li>
+							<li class=""><a href="http://aws.clouddoctor.jp/">サーバー移行</a></li>
+							<li class=""><a href="http://blog.clouddoctor.jp/">サーバーブログ</a></li>
+							<li><a
+								href="http://192.168.3.31/clouddoctorportal/contact/index.html">お問い合わせ</a></li>
+						</ul>
+					</div>
+				</div>
 			</div>
-		</div> <!-- /container -->
-	</div> <!-- /navbar-inner -->
-</div> <!-- /navbar -->
+		</div>
+	</div>
+	<!--============================== header =================================-->
+	<!-- subnavbar -->
+	<div class="subnavbar">
+		<div class="subnavbar-inner">
+			<div class="container">
+				<div class="brand_ pull-left">
+					<a href="index.html"><img src="img/common/logo.png"
+						alt="CloudDoctor" /></a>
+				</div>
+				<a class="btn-customnavbar btn btn-navbar" data-toggle="collapse"
+					data-target=".nav-custom-collapse"> <i class="icon-cog"></i>
+				</a>
 
-
-<div id="content">
-<div class="topimg">
-<h1><span class="mini">サイト監視ツール</span><br>CloudDoctor</h1>
-<p class="sub">サイトが表示されなくなったらすぐにメールが届く</p>
-<p class="clearfix"><button class="btn btn-warning btn-large span4 ml0" type="submit" onclick="location.href='/user/register'">新規ユーザー登録</button></p>
-<div class="imgBox"><img src="screen01.png" alt="サイト監視ツールCloudDoctor" /></div>
-</div>
-</div>
-
-<div id="footer">
-	<div class="container">				
-		<hr>
-		<p><a href="http://aimluck.com/">&copy; 2013 Aimluck, Inc.</a></p>
-		</hr>
-	</div> <!-- /container -->
-</div> <!-- /footer -->
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/Application.js"></script>
+				<div class="nav-custom-collapse collapse">
+					<ul id="nav-btns" class="nav-btns pull-right">
+						<li class="btn-toolbar"><a class="btn mr15" href="login">ログイン</a>
+							<a class="btn btn-primary" href="/user/register">無料登録</a></li>
+					</ul>
+				</div>
+				<!-- /.subnav-collapse -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /subnavbar-inner -->
+	</div>
+	<!-- /subnavbar -->
+	<div class="bg-content">
+		<!--============================== content =================================-->
+		<div class="container">
+			<div class="topimg">
+				<h1>
+					サーバーのトラブルを<br> 自動でメール通知。
+				</h1>
+				<p class="sub">サーバー監視ツール「CloudDoctor」</p>
+				<p class="clearfix">
+					<button class="btn btn-primary btn-large ml0" type="submit"
+						onClick="location.href='/user/register'">無料で登録できます</button>
+				</p>
+				<div class="imgBox">
+					<img src="img/screens.png" alt="サーバー監視ツールCloudDoctor" /><span
+						class="badgeImg"><img src="img/batch.png" alt="0円無料で使える" /></span>
+				</div>
+			</div>
+		</div>
+		<div id="content" class="content-extra">
+			<a name="feature" id="feature"></a>
+			<div class="row-1">
+				<div class="container">
+					<div class="row">
+						<ul class="thumbnails thumbnails-1">
+							<li class="span3">
+								<div class="thumbnail thumbnail-1">
+									<h3>ページ監視</h3>
+									<section>
+										<p>お客様のWebサイトにアクセスできるかを自動的に監視し、アクセスができないときにメールでお知らせします。</p>
+									</section>
+								</div>
+							</li>
+							<li class="span3">
+								<div class="thumbnail thumbnail-1">
+									<h3>ログイン監視</h3>
+									<section>
+										<p>お客様のWebアプリにログインできるかを自動的に監視し、ログインができないときにメールでお知らせします。</p>
+									</section>
+								</div>
+							</li>
+							<li class="span3">
+								<div class="thumbnail thumbnail-1">
+									<h3>ドメイン期限監視</h3>
+									<section>
+										<p>お客様のドメインの有効期限を自動的に監視し、有効期限が近づくとメールでお知らせします。</p>
+									</section>
+								</div>
+							</li>
+							<li class="span3">
+								<div class="thumbnail thumbnail-1">
+									<h3>SSL期限監視</h3>
+									<section>
+										<p>お客様のSSL証明書の有効期限を自動的に監視し、有効期限が近づくとメールでお知らせします。</p>
+									</section>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--============================== footer =================================-->
+		<footer>
+			<div class="container clearfix">
+				<p class="privacy">
+					<a href="http://aimluck.com/" target="_blank">&copy; 2013
+						Aimluck, Inc.</a>
+				</p>
+			</div>
+		</footer>
+	</div>
+	<!-- Le javascript
+================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="./js/libs/jquery-1.8.3.min.js"></script>
+	<script src="./js/libs/jquery-ui-1.10.0.custom.min.js"></script>
+	<script src="./js/libs/bootstrap.min.js"></script>
+	<script src="./js/Application.js"></script>
 </body>
 </html>
