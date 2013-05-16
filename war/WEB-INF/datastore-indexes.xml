@@ -19,4 +19,14 @@
 		<property name="uDR" direction="asc" />
 		<property name="uA" direction="desc" />
 	</datastore-index>
+	
+	<datastore-index kind="cC" ancestor="false" source="manual">
+        <property name="uDR" direction="asc"/>
+        <property name="uA" direction="desc"/>
+    </datastore-index>
+    
+	<datastore-index kind="dC" ancestor="false" source="manual">
+        <property name="uDR" direction="asc"/>
+        <property name="lD" direction="asc"/>
+    </datastore-index>
 </datastore-indexes>
