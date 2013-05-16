@@ -37,27 +37,27 @@ object PlanService {
       }
     })
 
-  def getMax[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) = clazz match {
-    case _: Class[Check] =>
+  def getMax[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) = clazz.getSimpleName match {
+    case "Check" =>
       if (isLogin.get)
         getPlan(user).maxCheckLogin
       else
         getPlan(user).maxCheck
-    case _: Class[CertCheck] =>
+    case "CertCheck" =>
       getPlan(user).maxSSLCheck
-    case _: Class[DomainCheck] =>
+    case "DomainCheck" =>
       getPlan(user).maxDomainCheck
   }
 
-  def getCount[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) = clazz match {
-    case _: Class[Check] =>
+  def getCount[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) = clazz.getSimpleName match {
+    case "Check" =>
       if (isLogin.get)
         SummaryService.getCheckLoginCount(user.getUserId)
       else
         SummaryService.getCheckCount(user.getUserId)
-    case _: Class[CertCheck] =>
+    case "CertCheck" =>
       SummaryService.getSSLCheckCount(user.getUserId)
-    case _: Class[DomainCheck] =>
+    case "DomainCheck" =>
       SummaryService.getDomainCheckCount(user.getUserId)
   }
 
@@ -73,7 +73,7 @@ object PlanService {
   def isReachedMax[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) =
     compareMax(user, clazz, isLogin, _ >= _)
 
-  def isOverMax[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) = 
+  def isOverMax[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) =
     compareMax(user, clazz, isLogin, _ > _)
-  
+
 }
