@@ -119,15 +119,6 @@ class FormController extends AbstractUserBaseFormController {
                 addError(Constants.KEY_GLOBAL_ERROR,
                   "登録できる%s監視数の上限に達しました。監視を追加する場合はほかの監視を無効にしてください".format("ドメイン"))
               } else {
-
-                CheckDomainUtil.check(request.getParameter("domainName")) match {
-                  case Some(limit) => {
-                    domain.setLimitDate(limit)
-                    domain.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
-                  }
-                  case None => addError("domainName", "ドメインが取得できませんでした。")
-                }
-
                 //Name
                 domain.setName(request.getParameter("name"))
                 //DomainName
@@ -146,7 +137,15 @@ class FormController extends AbstractUserBaseFormController {
                 } else {
                   domain.setRecipients(seqAsJavaList(List()))
                 }
-                DomainCheckService.saveWithUserData(domain, userData)
+
+                CheckDomainUtil.check(request.getParameter("domainName")) match {
+                  case Some(limit) => {
+                    domain.setLimitDate(limit)
+                    domain.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
+                    DomainCheckService.saveWithUserData(domain, userData)
+                  }
+                  case None => addError("domainName", "ドメインが取得できませんでした。")
+                }
 
               }
             }
