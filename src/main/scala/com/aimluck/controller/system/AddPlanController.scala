@@ -11,16 +11,16 @@ import javax.net.ssl.SSLSocket
 import java.io.FileInputStream
 import javax.servlet.ServletContext
 import java.util.logging.Logger
+import com.aimluck.lib.util.AppConstants
 
 class AddPlanController extends Controller {
-  private final val DEFAULT_PLAN_NAME = "micro"
   val logger = Logger.getLogger(classOf[AddPlanController].getName)
   override def run = {
     val plan = asString("plan")
     UserDataService.fetchOne(this.sessionScope("userId")) match {
       case Some(userData) => {
         if (plan == null)
-          userData.setPlanName(DEFAULT_PLAN_NAME)
+          userData.setPlanName(AppConstants.PLAN_MICRO)
         else
           userData.setPlanName(plan)
         Datastore.put(userData)

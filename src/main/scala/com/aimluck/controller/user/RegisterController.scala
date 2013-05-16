@@ -18,7 +18,7 @@ import com.aimluck.lib.util.AppConstants
 import com.aimluck.lib.util.ServletUtils
 
 class RegisterController extends AbstractFormController {
-  final val PASS_LENGTH = 6
+  private val PASS_LENGTH = 6
 
   override val logger = Logger.getLogger(classOf[RegisterController].getName)
 
@@ -58,8 +58,9 @@ class RegisterController extends AbstractFormController {
         val userId = UserDataService.createUserId
         user.setUserId(userId.toString)
         user.setKey(Datastore.createKey(classOf[UserData], userId))
+        user.setPlanName(AppConstants.PLAN_MICRO)
         UserDataService.save(user)
-        val baseUrl:String = ServletUtils.getBaseUrl(request);
+        val baseUrl: String = ServletUtils.getBaseUrl(request);
         MailUtil.sendRegisterMail(mail, password, baseUrl)
         val userService = UserServiceFactory.getUserService
       }
