@@ -111,6 +111,13 @@
 				break
 			case "registerLoginCheck":
 				location.href = "/check/loginForm"
+				break
+			case "registerCertCheck":
+				location.href = "/cert/form"
+				break
+			case "registerDomainCheck":
+				location.href = "/domain/form"
+				break
 		}
 	}
 	//]]>
@@ -329,6 +336,7 @@
 
 <script id="domLimitItem" type="text/x-jquery-tmpl">
     <tr>
+		<td>${name}</td>
         <td>${domainName}</td>
         <td>${period}日</td>
         <td>${limitDate}</td>
@@ -344,6 +352,7 @@
 
 <script id="SSLCheckItem" type="text/x-jquery-tmpl">
 	<tr>
+		<td>${name}</td>
         <td>${domainName}</td>
 		<td>{{if active=='true'}}<span class="label label-success"><liquidtpl:text key="check.isActive"/></span>{{else}}<span class="label"><liquidtpl:text key="check.isInactive"/></span>{{/if}}</td>
         <td>${period}日</td>

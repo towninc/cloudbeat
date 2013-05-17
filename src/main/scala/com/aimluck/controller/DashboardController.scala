@@ -51,6 +51,8 @@ class DashboardController extends AbstractUserBaseActionController {
                 <div style="margin-top: 5px;">
                   <button id="registerPageCheck" class="btn" onclick="$.formLink(this);">ページ監視登録</button>
                   <button id="registerLoginCheck" class="btn" onclick="$.formLink(this);">ログイン監視登録</button>
+                  <button id="registerCertCheck" class="btn" onclick="$.formLink(this);">SSL期限監視登録</button>
+                  <button id="registerDomainCheck" class="btn" onclick="$.formLink(this);">ドメイン監視登録</button>
                 </div>
               </div>
           else
