@@ -32,12 +32,10 @@ class CertCheckController extends Controller {
       check <- CertCheckService.fetchOne(id, None)
       if (CheckUtil.isEnableUser(check))
     } {
-        val result = CertCheckService.certCheck(check, this.servletContext)
-        CertCheckService.saveWithUserData(result, result.getUserDataRef.getModel)
-        CheckUtil.checkAndSend(result, CheckUtil.TYPE_SSL)
-      }
-
-    
+      val result = CertCheckService.certCheck(check, this.servletContext)
+      CheckUtil.checkAndSend(result, CheckUtil.TYPE_SSL)
+      CertCheckService.saveWithUserData(result, result.getUserDataRef.getModel)
+    }
 
     null
   }

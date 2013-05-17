@@ -33,6 +33,7 @@ class DomainCheckController extends Controller {
             check.setLimitDate(limit)
             check.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
             CheckUtil.checkAndSend(check, CheckUtil.TYPE_DOMAIN)
+            Datastore.putWithoutTx(check)
           }
           case e: Exception => check.setErrorMessage(e.getMessage)
           case None =>
