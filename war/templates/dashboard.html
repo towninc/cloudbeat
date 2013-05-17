@@ -274,7 +274,8 @@
 						<thead>
 							<tr>
 								<th>タイトル</th>
-								<th>ドメイン名</th>
+								<th class="w30">ドメイン名</th>
+								<th>有効・無効</th>
 								<th>残り日数</th>
 								<th>有効期限</th>
 								<th>編集</th>
@@ -338,6 +339,7 @@
     <tr>
 		<td>${name}</td>
         <td>${domainName}</td>
+		<td>{{if active=='true'}}<span class="label label-success"><liquidtpl:text key="check.isActive"/></span>{{else}}<span class="label"><liquidtpl:text key="check.isInactive"/></span>{{/if}}</td>
         <td>${period}日</td>
         <td>${limitDate}</td>
         <td class="action-td"><a href="/domain/form?id=${id}" class="btn btn-small btn-warning"><i class="icon-pencil" title="Edit"></i></a>
@@ -370,6 +372,7 @@
   <tr class="selectable">
     <td>${name}</td>
     <td class='thin'><a href="${url}" target="_blank">${url}</a></td>
+	<td>{{if active=='true'}}<span class="label label-success"><liquidtpl:text key="check.isActive"/></span>{{else}}<span class="label"><liquidtpl:text key="check.isInactive"/></span>{{/if}}</td>
     <td class="thin{{if status=='D'}} noticeMessage{{else status=='R'}} confirmMessage{{/if}}">{{html statusHtml}}</td>
     <td class="thin">${createdAt}</td>
   </tr>
