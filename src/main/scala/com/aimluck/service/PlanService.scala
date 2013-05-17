@@ -8,16 +8,21 @@ package com.aimluck.service
 import java.util.logging.Logger
 import scala.collection.JavaConversions._
 import org.dotme.liquidtpl.exception.DuplicateDataException
+import org.slim3.datastore.Datastore
 import com.aimluck.lib.beans.PlanBean
 import com.aimluck.lib.util.AppConstants
+import com.aimluck.model.PlanLink
 import com.aimluck.model.UserData
+import com.google.appengine.api.memcache.MemcacheServiceFactory
 import sjson.json.Format
+import com.google.appengine.api.datastore.Key
 import com.aimluck.model.Check
-import com.aimluck.model.CertCheck
-import com.aimluck.model.DomainCheck
+import com.aimluck.meta.PlanLinkMeta
 
 object PlanService {
   val logger = Logger.getLogger(PlanService.getClass.getName)
+  val PLAN_LINK_CACHE_NAMESPACE: String = "com.aimluck.service.PlanService.PlanLink"
+  val memcacheService = MemcacheServiceFactory.getMemcacheService();
 
   def getPlan(user: UserData) =
     AppConstants.PLAN_MAP((for (
@@ -75,5 +80,40 @@ object PlanService {
 
   def isOverMax[A](user: UserData, clazz: Class[A], isLogin: Option[Boolean]) =
     compareMax(user, clazz, isLogin, _ > _)
+
+  def getPlanLink(name: String): String = {
+    val m: PlanLinkMeta = PlanLinkMeta.get
+    AppConstants.PLAN_MAP.get(name) match {
+      case Some(planMap) => {
+        val cacheKey = "%s_%s".format(PLAN_LINK_CACHE_NAMESPACE, name);
+        try {
+          memcacheService.get(cacheKey) match {
+            case null => throw new NullPointerException
+            case pL: PlanLink => pL.getUrl()
+            case _ => throw new NullPointerException
+          }
+        } catch {
+          case _ => {
+            Datastore.query(m).filter(m.name.equal(name)).limit(1).asSingle() match {
+              case link: PlanLink => {
+                memcacheService.put(cacheKey, link)
+                link.getUrl()
+              }
+              case null => {
+                val newLink = new PlanLink
+                newLink.setName(name)
+                newLink.setUrl("/user/inquiry")
+                Datastore.putWithoutTx(newLink)
+                newLink.getUrl()
+              }
+            }
+          }
+        }
+      }
+      case None => {
+        "/user/inquiry"
+      }
+    }
+  }
 
 }
