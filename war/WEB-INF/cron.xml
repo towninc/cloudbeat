@@ -2,11 +2,13 @@
 <cronentries>
 	<cron>
 		<url>/cron/certCheck</url>
-		<schedule>every day 00:00</schedule>
+		<schedule>every day 10:00</schedule>
+		<timezone>Asia/Tokyo</timezone>
 	</cron>
 	<cron>
 		<url>/cron/domainCheck</url>
-		<schedule>every day 00:00</schedule>
+		<schedule>every day 10:00</schedule>
+		<timezone>Asia/Tokyo</timezone>
 	</cron>
 	<cron>
 		<url>/cron/check</url>
