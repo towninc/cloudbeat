@@ -266,18 +266,17 @@ object CertCheckService {
 
     val sf = context.getSocketFactory
     val soc = sf.createSocket(host, 443).asInstanceOf[SSLSocket]
+   
     soc.startHandshake
     val session = soc.getSession
-    val certs = for {
-      cert <- session.getPeerCertificates
-      x509cert = cert.asInstanceOf[X509Certificate]
-      if TextUtil.nameFrom(x509cert.getSubjectX500Principal.getName, TextUtil.CN).endsWith(host)
-    } yield x509cert
+    var certArray = session.getPeerCertificates
+
     try {
-      if (certs.isEmpty) {
+      if (certArray.isEmpty) {
         throw new Exception("No certifications!")
       } else {
-        val limit = certs(0).getNotAfter
+        var cert = certArray(0).asInstanceOf[X509Certificate]
+        val limit = cert.getNotAfter
         check.setLimitDate(limit)
         check.setPeriod((limit.getTime - now.getTime) / ONE_DAY)
         check
