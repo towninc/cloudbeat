@@ -55,7 +55,7 @@
 		});
 
 		$.initList("domLimitCheckList", "domLimitItem", true, "/domain/json", {
-			"limit" : "10"
+			"limit" : "5"
 		}, function(jsonData) {
 			var values = jsonData.values;
 			var size = values.length;
@@ -87,7 +87,7 @@
 		});
 
 		$.initList("SSLCheckList", "SSLCheckItem", true, "/cert/json", {
-			"limit" : "10"
+			"limit" : "5"
 		}, function(jsonData) {
 			var values = jsonData.values;
 			var size = values.length;
