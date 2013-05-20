@@ -28,7 +28,7 @@ class FormController extends AbstractUserBaseFormController {
   private val ONE_DAY = 1000 * 60 * 60 * 24
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
-  override def redirectUri: String = "/domain/index"
+  override def redirectUri: String = "/domain/"
 
   override def getTemplateName: String = {
     "form"

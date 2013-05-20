@@ -26,7 +26,7 @@ import com.aimluck.lib.util.CheckUtil
 class FormController extends AbstractUserBaseFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
-  override def redirectUri: String = "/check/index"
+  override def redirectUri: String = "/check/"
 
   override def getTemplateName: String = {
     "form"

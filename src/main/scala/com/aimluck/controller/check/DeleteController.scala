@@ -34,6 +34,6 @@ class DeleteController extends Controller {
     if(isLogin)
     	return redirect("/check/login")
     else
-    	return redirect("/check/index")
+    	return redirect("/check/")
   }
 }
