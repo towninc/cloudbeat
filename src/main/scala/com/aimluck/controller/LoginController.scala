@@ -14,6 +14,7 @@ import sjson.json.JsonSerialization._
 import sjson.json.DefaultProtocol._
 import scala.collection.JavaConversions._
 import javax.servlet.http.Cookie;
+import org.slim3.controller.Navigation
 
 class LoginController extends AbstractFormController {
   override val logger = Logger.getLogger(classOf[LoginController].getName)
@@ -54,5 +55,15 @@ class LoginController extends AbstractFormController {
         addError("email", LanguageUtil.get("error.loginFailed"));
     }
     !existsError
+  }
+
+  @throws(classOf[Exception])
+  override def run(): Navigation = {
+    val userId: String = sessionScope("userId")
+    if (userId != null) {
+      redirect("/dashboard")
+    } else {
+      super.run()
+    }
   }
 }

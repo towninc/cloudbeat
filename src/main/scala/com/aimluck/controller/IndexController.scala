@@ -7,13 +7,7 @@ import com.aimluck.service.CheckService
 class IndexController extends Controller {
   @throws(classOf[Exception])
   override def run(): Navigation = {
-    val userId: String = sessionScope("userId")
-    if (userId == null) {
-      forward("/landing.html")
-    } else {
-      redirect("/dashboard")
-    }
-
+	forward("/landing.html")
     //ToDo delete this line when landing page is created
   }
 }
