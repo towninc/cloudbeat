@@ -269,13 +269,13 @@ object CertCheckService {
    
     soc.startHandshake
     val session = soc.getSession
-    var certArray = session.getPeerCertificates
+    val certArray = session.getPeerCertificates
 
     try {
       if (certArray.isEmpty) {
         throw new Exception("No certifications!")
       } else {
-        var cert = certArray(0).asInstanceOf[X509Certificate]
+        val cert = certArray(0).asInstanceOf[X509Certificate]
         val limit = cert.getNotAfter
         check.setLimitDate(limit)
         check.setPeriod((limit.getTime - now.getTime) / ONE_DAY)
