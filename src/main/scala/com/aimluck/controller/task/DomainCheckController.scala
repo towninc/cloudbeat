@@ -26,22 +26,22 @@ class DomainCheckController extends Controller {
   @throws(classOf[Exception])
   override def run(): Navigation = try {
     val id = request.getParameter(Constants.KEY_ID)
-    DomainCheckService.fetchOne(id, None) match {
-      case Some(check) => {
-        CheckDomainUtil.check(check.getDomainName()) match {
-          case Some(limit) => {
-            check.setLimitDate(limit)
-            check.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
-            CheckUtil.checkAndSend(check, CheckUtil.TYPE_DOMAIN)
-            Datastore.putWithoutTx(check)
-          }
-          case e: Exception => check.setErrorMessage(e.getMessage)
-          case None =>
+    for (
+      check <- DomainCheckService.fetchOne(id, None) if (CheckUtil.isEnableUser(check))
+    ) {
+      CheckDomainUtil.check(check.getDomainName()) match {
+        case Some(limit) => {
+          check.setLimitDate(limit)
+          check.setPeriod((limit.getTime - new Date().getTime) / ONE_DAY)
+          CheckUtil.checkAndSend(check, CheckUtil.TYPE_DOMAIN)
+          Datastore.putWithoutTx(check)
         }
-        DomainCheckService.saveWithUserData(check, check.getUserDataRef.getModel)
+        case e: Exception => check.setErrorMessage(e.getMessage)
+        case None =>
       }
-      case None =>
+      DomainCheckService.saveWithUserData(check, check.getUserDataRef.getModel)
     }
+
     null
   } catch {
     case _ => null

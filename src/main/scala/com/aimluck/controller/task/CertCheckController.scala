@@ -28,10 +28,9 @@ class CertCheckController extends Controller {
   @throws(classOf[Exception])
   override def run(): Navigation = {
     val id = request.getParameter(Constants.KEY_ID)
-    for {
-      check <- CertCheckService.fetchOne(id, None)
-      if (CheckUtil.isEnableUser(check))
-    } {
+    for (
+      check <- CertCheckService.fetchOne(id, None) if (CheckUtil.isEnableUser(check))
+    ) {
       val result = CertCheckService.certCheck(check, this.servletContext)
       CheckUtil.checkAndSend(result, CheckUtil.TYPE_SSL)
       CertCheckService.saveWithUserData(result, result.getUserDataRef.getModel)
