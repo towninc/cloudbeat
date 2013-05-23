@@ -23,7 +23,7 @@
 							<div class="tab-pane active" id="tabContent1">
 								<div class="control-group">
 									<label class="control-label"><liquidtpl:text
-											key="check.name" /> <strong class="fcRed">(*)</strong></label>
+											key="check.name" /></label>
 									<div class="controls">
 										<input type="text" id="nameField" name="name"
 											class="input-xlarge" />
@@ -34,7 +34,7 @@
 								</div>
 								<div class="control-group">
 									<label class="control-label"><liquidtpl:text
-											key="check.url" /> <strong class="fcRed">(*)</strong></label>
+											key="check.url" /></label>
 									<div class="controls">
 										<input type="url" id="urlField" name="url"
 											class="input-xlarge" />
@@ -45,7 +45,7 @@
 								</div>
 								<div class="control-group loginControl hide">
 									<label class="control-label"><liquidtpl:text
-											key="check.formParams" /> <strong class="fcRed">(*)</strong></label>
+											key="check.formParams" /></label>
 									<div class="controls">
 										<textarea id="formParamsField" name="formParams"
 											class="input-xlarge"></textarea>
@@ -149,7 +149,7 @@
 								</div>
 								<div class="control-group editControl hide">
 									<label class="control-label"><liquidtpl:text
-											key="check.ssl" /><strong class="fcRed"></strong></label>
+											key="check.ssl" /></label>
 									<div class="controls">
 										<div>
 											<label class="radio" for="sslField1"><input
@@ -166,7 +166,7 @@
 								</div>
 								<div class="control-group editControl hide">
 									<label class="control-label"><liquidtpl:text
-											key="check.dom" /><strong class="fcRed"></strong></label>
+											key="check.dom" /></label>
 									<div class="controls">
 										<div>
 											<label class="radio" for="domField1"><input
@@ -230,7 +230,7 @@
                     }
                     $("#recipientsField").val(recipientsValue);
                 }
-                
+
                 if($('#isLogin').val() == 'true'){
                 	$('.loginControl').show();
                 	$('#checkForm').attr("action", "/check/loginForm")
@@ -238,7 +238,7 @@
                 	$('.loginControl').hide();
                 	$('.loginControl input[type="text"]').val('');
                 }
-                
+
                 if($('#idField').val()){
                 	$('.editControl').show();
                 }

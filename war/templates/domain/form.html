@@ -12,17 +12,17 @@
 				<div class="tabbable">
 					<ul class="nav nav-tabs">
 					  <li class="active">
-					    <a id="tab1" href="#tabContent1" data-toggle="tab">基本項目</a>
+					    <a id="tab1" href="#tabContent1" data-toggle="tab">蝓ｺ譛ｬ鬆�岼</a>
 					  </li>
 					  <li>
-					  	<a id="tab2" href="#tabContent2" data-toggle="tab">オプション項目</a>
+					  	<a id="tab2" href="#tabContent2" data-toggle="tab">繧ｪ繝励す繝ｧ繝ｳ鬆�岼</a>
 					  </li>
 					</ul>
 					<div class="tab-content">
-						<div class="tab-pane active" id="tabContent1">	
-						-->					
+						<div class="tab-pane active" id="tabContent1">
+						-->
 								<div class="control-group">
-									<label class="control-label"><liquidtpl:text key="domain.name"/> <strong class="fcRed">(*)</strong></label>
+									<label class="control-label"><liquidtpl:text key="domain.name"/></label>
 									<div class="controls">
 	            						<input type="text" id="nameField" name="name" class="input-xlarge" />
 	            						<div id="nameError" class="alert alert-danger" style="margin-top:5px; display:none;" />
@@ -30,7 +30,7 @@
 									<!-- /controls -->
 								</div>
 								<div class="control-group">
-									<label class="control-label"><liquidtpl:text key="domain.domainName"/> <strong class="fcRed">(*)</strong></label>
+									<label class="control-label"><liquidtpl:text key="domain.domainName"/></label>
 									<div class="controls">
 	            						<input type="text" id="domainNameField" name="domainName" class="input-xlarge" />
 	            						<div id="domainNameError" class="alert alert-danger" style="margin-top:5px; display:none;" />
@@ -48,7 +48,7 @@
 									<!-- /controls -->
 								</div>
 								<div class="control-group">
-									<label class="control-label"><liquidtpl:text key="domain.active"/><strong class="fcRed">(*)</strong></label>
+									<label class="control-label"><liquidtpl:text key="domain.active"/></label>
 									<div class="controls">
 							            <div>
 							            	<label class="radio" for="activeField1"><input type="radio" id="activeField1" name="active" value="true" checked="checked" /><liquidtpl:text key="domain.isActive"/></label>
@@ -68,10 +68,10 @@
 								</div>
 								-->
 					<div class="form-actions">
-						<button type="submit" class="btn btn-primary btn-large">登録</button>
+						<button type="submit" class="btn btn-primary btn-large">逋ｻ骭ｲ</button>
 					</div>
 					<liquidtpl:isLogin/>
-				</fieldset>						
+				</fieldset>
 			</form>
 		</div>
 	</div>
@@ -93,7 +93,7 @@
                     }
                     $("#recipientsField").val(recipientsValue);
                 }
-                
+
                 if($('#isLogin').val() == 'true'){
                 	$('.loginControl').show();
                 	$('#checkForm').attr("action", "/check/loginForm")
@@ -101,7 +101,7 @@
                 	$('.loginControl').hide();
                 	$('.loginControl input[type="text"]').val('');
                 }
-                
+
                 if($('#idField').val()){
                 	$('.editControl').show();
                 }
