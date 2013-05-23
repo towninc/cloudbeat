@@ -37,7 +37,7 @@ import org.apache.commons.codec.binary.Base64
 object XmlUtil {
   val logger = Logger.getLogger(XmlUtil.getClass.getName)
 
-  val urlPattern = """(https?://)([^@:]+:[^@:]+)@([\w\-\./:\#\?\=\&\;\%\~\+]+)""".r
+  val urlPattern = """(https?://)([^@:]+:[^@:]+)@([\w\-\./:\#\?\=\&\\%\~\+]+)""".r
 
   @throws(classOf[Exception])
   def getCookie(urlString: String, timeout: Int): HTTPHeader = {
@@ -64,30 +64,52 @@ object XmlUtil {
       header =>
         {
           if (header.getName().equalsIgnoreCase("set-cookie")) {
-            return header;
+            return header
           }
         }
     }
-    return cookie;
+    return cookie
 
   }
 
   @throws(classOf[Exception])
-  def perseFromUrl(urlString: String, timeout: Int, headers: List[HTTPHeader], formParams: String): Node = {
-
-    //    logger.info("urlString= " + urlString)
-
+  def perseFromUrl(urlString: String, timeout: Int, headers: List[HTTPHeader], formParams: String) = {
     val parser: DOMParser = new DOMParser()
-    val urlFetchService: URLFetchService = URLFetchServiceFactory.getURLFetchService()
+    val (reader, _) = readerFromUrl(urlString, timeout, headers, formParams)
 
-    val method: HTTPMethod =
-      if (formParams != null && formParams.size > 0) HTTPMethod.POST
-      else HTTPMethod.GET
+    val source: InputSource = new InputSource(reader)
+    parser.setFeature("http://xml.org/sax/features/namespaces", false)
+    parser.parse(source)
+    val node: Node = parser.getDocument
+    reader.close
+    node
+  }
+
+  @throws(classOf[Exception])
+  def textsFromUrl(urlString: String, timeout: Int, headers: List[HTTPHeader], formParams: String) = {
+    val (reader, charset) = readerFromUrl(urlString, timeout, headers, formParams)
+    val list = try {
+      Iterator.continually(reader.readLine).takeWhile(_ != null).toList
+    } finally {
+      reader.close
+    }
+    (list, charset)
+  }
+
+  @throws(classOf[Exception])
+  def readerFromUrl(urlString: String, timeout: Int, headers: List[HTTPHeader], formParams: String) = {
+    val urlFetchService = URLFetchServiceFactory.getURLFetchService
+
+    val method =
+      if (formParams != null && formParams.size > 0)
+        HTTPMethod.POST
+      else
+        HTTPMethod.GET
 
     val (newUrlString, auth) = urlString match {
       case urlPattern(protocol, auth, body) => {
-        val authEncBytes = Base64.encodeBase64(auth.getBytes());
-        val authStringEnc = new String(authEncBytes);
+        val authEncBytes = Base64.encodeBase64(auth.getBytes())
+        val authStringEnc = new String(authEncBytes)
         val urlString = protocol + body
         (urlString, Some(authStringEnc))
       }
@@ -95,10 +117,9 @@ object XmlUtil {
         (urlString, None)
     }
 
-    val url: URL = new URL(newUrlString + "?" + UUID.randomUUID().toString())
-    //    logger.info("URL: " + url.toString())
+    val url = new URL(newUrlString + "?" + UUID.randomUUID.toString)
 
-    val httpRequest: HTTPRequest = new HTTPRequest(url, method)
+    val httpRequest = new HTTPRequest(url, method)
 
     //headerの追加
     headers.foreach {
@@ -109,62 +130,46 @@ object XmlUtil {
     }
 
     auth match {
-      case Some(auth) => 
+      case Some(auth) =>
         httpRequest.addHeader(new HTTPHeader("Authorization", "Basic " + auth))
       case None =>
     }
 
-    httpRequest.getFetchOptions().setDeadline(timeout * 1000);
+    httpRequest.getFetchOptions().setDeadline(timeout * 1000)
     httpRequest.addHeader(new HTTPHeader("_", UUID.randomUUID().toString()))
 
     if (formParams != null && formParams.size > 0) {
       //formDataの追加
-      httpRequest.setPayload(formParams.getBytes("UTF-8"));
+      httpRequest.setPayload(formParams.getBytes("UTF-8"))
     }
 
-    val httpResponse: HTTPResponse = urlFetchService.fetch(httpRequest)
+    val httpResponse = urlFetchService.fetch(httpRequest)
 
-    //    val con = url.openConnection
-    //    con.addRequestProperty("_", UUID.randomUUID().toString())
+    val contentType = (for {
+      header <- httpResponse.getHeaders
+      if (header.getName.equalsIgnoreCase("Content-Type"))
+      contentType = header.getValue
+    } yield contentType).head
 
-    var contentType: String = null
-
-    httpResponse.getHeaders().foreach {
-      header =>
-        {
-          if (header.getName().equalsIgnoreCase("Content-Type")) {
-            contentType = header.getValue();
-          }
-        }
-    }
-
-    val charsetSearch: String = contentType.replaceFirst("(?i).*charset=(.*)", "$1")
+    val charsetSearch = contentType.replaceFirst("(?i).*charset=(.*)", "$1")
     val charset =
       if (contentType == charsetSearch) {
-        Constants.CHARSET;
+        Constants.CHARSET
       } else {
         charsetSearch
       }
-    val reader: BufferedReader = new BufferedReader(new InputStreamReader(
-      new ByteArrayInputStream(httpResponse.getContent()), charset));
-
-    val source: InputSource = new InputSource(reader);
-    parser.setFeature("http://xml.org/sax/features/namespaces", false);
-    parser.parse(source);
-    val node: Node = parser.getDocument();
-    reader.close();
-
-    return node;
+    (new BufferedReader(new InputStreamReader(
+      new ByteArrayInputStream(httpResponse.getContent), charset)), charset)
   }
 
   @throws(classOf[Exception])
   def getTextList(node: Node, _xpath: String): List[String] = {
     val xpath = if ((_xpath == null) || (_xpath.length() < 1)) {
-      "//*";
+      "//*"
     } else {
       _xpath
     }
-    val resultBuf: ListBuffer[String] = ListBuffer[String]();
+    val resultBuf: ListBuffer[String] = ListBuffer[String]()
     val nodeList: NodeList = XPathAPI.selectNodeList(node, xpath)
     for (i <- (0 to nodeList.getLength - 1)) {
       val text = nodeList.item(i).getTextContent
@@ -181,75 +186,40 @@ object XmlUtil {
     // logger.info("urlString= " + urlString)
 
     val noText = (_assertText == null) || (_assertText.size == 0)
+    val noXpath = (_xpath == null) || (_xpath.size == 0)
     val headers: ListBuffer[HTTPHeader] = ListBuffer[HTTPHeader]()
     if (preloadUrlString != null && preloadUrlString.size > 0) {
       val cookie: HTTPHeader = getCookie(preloadUrlString, timeout)
       if (cookie != null)
         headers += cookie
     }
-    headers += new HTTPHeader("Connection", "keep-alive");
-    headers += new HTTPHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.56 Safari/537.17");
-    headers += new HTTPHeader("Cache-Control", "no-cache,max-age=0");
-    headers += new HTTPHeader("Pragma", "no-cache");
-    headers += new HTTPHeader("Content-Type", "application/x-www-form-urlencoded");
+    headers += new HTTPHeader("Connection", "keep-alive")
+    headers += new HTTPHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1 WOW64) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.56 Safari/537.17")
+    headers += new HTTPHeader("Cache-Control", "no-cache,max-age=0")
+    headers += new HTTPHeader("Pragma", "no-cache")
+    headers += new HTTPHeader("Content-Type", "application/x-www-form-urlencoded")
 
-    val node: Node = perseFromUrl(urlString, timeout, headers.toList, formParams)
+    /*　使わないときは評価しない　*/
+    lazy val node = perseFromUrl(urlString, timeout, headers.toList, formParams)
+    lazy val (texts, charset) = textsFromUrl(urlString, timeout, headers.toList, formParams)
+    lazy val assertText = new String(_assertText.replace(".*", "").getBytes("UTF-8"), charset)
 
     val allListBuffer: ListBuffer[String] = ListBuffer[String]()
-    val textList = getTextList(node, _xpath).filter { _text =>
-      {
-        val text = _text.trim
-        //   logger.info("TEXT: " + text.toString())
-        if (text.size > 0) {
-          allListBuffer.append(text)
+    val hasText =
+      if (noText)
+        true
+      else if (noXpath) 
+        texts.filter(text => text.contains(assertText)).length > 0
+      else getTextList(node, _xpath).filter { _text =>
+        {
+          val text = _text.trim
+          //   logger.info("TEXT: " + text.toString())
+          if (text.size > 0) {
+            allListBuffer.append(text)
+          }
+          text.matches(_assertText)
         }
-        text.matches(_assertText)
-      }
-    }
-    ((noText || (textList.size > 0)), allListBuffer.toList)
+      }.size > 0
+    (hasText, allListBuffer.toList)
   }
-
-  //  val JSESSIONID: String = "JSESSIONID"
-  //  def urlFetch(url: String): Unit = {
-  //    val client: HttpClient = new HttpClient();
-  //    val method: HttpMethod = new GetMethod(url);
-  //    method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-  //      new DefaultHttpMethodRetryHandler(3, false));
-  //    method.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-  //    try {
-  //      val statusCode: Int = {
-  //        val firstStatusCode = client.executeMethod(method);
-  //        client.getState().getCookies().find { e =>
-  //          e.getName == JSESSIONID
-  //        } match {
-  //          case Some(v) => {
-  //            method.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-  //            client.getState().addCookie(
-  //              new Cookie(v.getDomain,
-  //                v.getName, v.getValue, v.getPath, v.getExpiryDate, false));
-  //
-  //            client.executeMethod(method);
-  //          }
-  //          case None => firstStatusCode
-  //        }
-  //      }
-  //
-  //      client.getState().getCookies().find { e =>
-  //        e.getName == JSESSIONID
-  //      } match {
-  //        case Some(v) => println("jsessionid: %s".format(v.getValue))
-  //        case None =>
-  //      }
-  //
-  //      val reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
-  //      var line = reader.readLine();
-  //      while (line != null) {
-  //        System.out.println(line);
-  //        line = reader.readLine();
-  //      }
-  //      method.releaseConnection();
-  //    } catch {
-  //      case _: Exception =>
-  //    }
-  //  }
 }
