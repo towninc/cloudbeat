@@ -37,7 +37,7 @@ import org.apache.commons.codec.binary.Base64
 object XmlUtil {
   val logger = Logger.getLogger(XmlUtil.getClass.getName)
 
-  val urlPattern = """(https?://)([^@:]+:[^@:]+)@([\w\-\./:\#\?\=\&\\%\~\+]+)""".r
+  val urlPattern = """(https?://)([^@:]+:[^@:]+)@([\w\-\./:\#\?\=\&\;\%\~\+]+)""".r
 
   @throws(classOf[Exception])
   def getCookie(urlString: String, timeout: Int): HTTPHeader = {
