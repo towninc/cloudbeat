@@ -69,11 +69,13 @@ class FormController extends AbstractUserBaseFormController {
               x <- recipientsText.split(Constants.LINE_SEPARATOR).toList if x.trim.size > 0
             ) yield x
 
-        if (recipients.size > AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK) {
+        if (recipients.size > AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK)
           addError("recipients", LanguageUtil.get("error.dataLimit", Some(Array(
             LanguageUtil.get("domain.recipients"),
             AppConstants.DATA_LIMIT_RECIPIENTS_PER_CHECK.toString))))
-        }
+        else if (recipients.isEmpty)
+          addError("recipients", LanguageUtil.get("error.required", Some(Array(
+            LanguageUtil.get("domain.recipients")))))
 
       }
       case None => {
