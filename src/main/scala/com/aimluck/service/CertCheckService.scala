@@ -5,47 +5,39 @@
 
 package com.aimluck.service
 
+import java.security.KeyStore
+import java.security.cert.X509Certificate
+import java.util.ArrayList
+import java.util.Date
+import java.util.Date
+import java.util.logging.Logger
+import java.util.logging.Logger
+import scala.collection.JavaConversions._
+import scala.collection.JavaConversions._
+import org.dotme.liquidtpl.Constants
+import org.dotme.liquidtpl.Constants
+import org.dotme.liquidtpl.LanguageUtil
+import org.slim3.datastore.Datastore
+import org.slim3.datastore.Datastore
+import com.aimluck.lib.ssl.DoNothingTrustManager
+import com.aimluck.lib.util.AppConstants
+import com.aimluck.lib.util.BaseUtil
 import com.aimluck.meta.CertCheckMeta
 import com.aimluck.model.CertCheck
-import com.aimluck.lib.util.AppConstants
+import com.aimluck.model.CertCheck
 import com.aimluck.model.UserData
 import com.google.appengine.api.datastore.Key
 import com.google.appengine.api.datastore.KeyFactory
-import java.util.Date
-import java.util.logging.Logger
-import org.dotme.liquidtpl.Constants
-import org.dotme.liquidtpl.LanguageUtil
-import org.dotme.liquidtpl.helper.BasicHelper
-import org.slim3.datastore.Datastore
-import scala.collection.JavaConversions._
-import sjson.json.DefaultProtocol
-import sjson.json.Format
-import sjson.json.JsonSerialization
 import com.google.appengine.api.memcache.MemcacheService
 import com.google.appengine.api.memcache.MemcacheServiceFactory
-import java.net.URL
-import java.security.KeyStore
-import java.security.cert.X509Certificate
-import java.util.Date
-import java.util.logging.Logger
-import scala.collection.JavaConversions._
-import org.dotme.liquidtpl.Constants
-import org.slim3.controller.Controller
-import org.slim3.controller.Navigation
-import org.slim3.datastore.Datastore
-import com.aimluck.service.CheckService
-import com.aimluck.service.CertCheckService
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocket
 import javax.net.ssl.TrustManagerFactory
-import com.aimluck.lib.util.TextUtil
-import com.aimluck.model.CertCheck
-import com.aimluck.service.CertCheckService
-import com.aimluck.lib.util.MailUtil
-import com.aimluck.lib.util.BaseUtil
-import com.aimluck.lib.util.CheckUtil
-import org.slim3.controller.HotServletContextWrapper
 import javax.servlet.ServletContext
+import sjson.json.DefaultProtocol
+import sjson.json.Format
+import sjson.json.JsonSerialization
+import javax.net.ssl.TrustManager
 
 object CertCheckService {
   val logger = Logger.getLogger(CheckService.getClass.getName);
@@ -218,11 +210,11 @@ object CertCheckService {
     model.getUserDataRef.setModel(userData)
 
     val result = Datastore.putWithoutTx(model).apply(0)
-    try{
-    	clearCertCheckKeysCache()
-    	clearCertCheckCache(model)
-    }catch {
-    	case e: Exception => {}
+    try {
+      clearCertCheckKeysCache()
+      clearCertCheckCache(model)
+    } catch {
+      case e: Exception => {}
     }
     result
   }
@@ -262,11 +254,12 @@ object CertCheckService {
     tmf.init(keyStore)
 
     val context = SSLContext.getInstance("TLS")
-    context.init(null, tmf.getTrustManagers(), null)
+    val tms = List(new DoNothingTrustManager())
+    context.init(null, tms.toArray(classManifest[TrustManager]), null)
 
     val sf = context.getSocketFactory
     val soc = sf.createSocket(host, 443).asInstanceOf[SSLSocket]
-   
+
     soc.startHandshake
     val session = soc.getSession
     val certArray = session.getPeerCertificates
@@ -287,13 +280,13 @@ object CertCheckService {
         null
       }
     } finally {
-    	check
+      check
     }
 
   } catch {
-	   case e: Exception => {
-        check.setErrorMessage(e.getMessage)
-        null
-      }
+    case e: Exception => {
+      check.setErrorMessage(e.getMessage)
+      null
+    }
   }
 }
