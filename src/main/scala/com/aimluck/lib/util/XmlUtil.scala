@@ -33,6 +33,9 @@ import java.io.ByteArrayInputStream
 import java.util.ArrayList
 import java.util.logging.Logger
 import org.apache.commons.codec.binary.Base64
+import scala.util.matching.Regex
+import scala.io.Source
+import scala.util.control.Breaks.{ break, breakable }
 
 object XmlUtil {
   val logger = Logger.getLogger(XmlUtil.getClass.getName)
@@ -75,8 +78,9 @@ object XmlUtil {
   @throws(classOf[Exception])
   def perseFromUrl(urlString: String, timeout: Int, headers: List[HTTPHeader], formParams: String) = {
     val parser: DOMParser = new DOMParser()
-    val (reader, _) = readerFromUrl(urlString, timeout, headers, formParams)
-
+    val (response, charset) = readerFromUrl(urlString, timeout, headers, formParams)
+    val reader = new BufferedReader(new InputStreamReader(
+      new ByteArrayInputStream(response.getContent), charset))
     val source: InputSource = new InputSource(reader)
     parser.setFeature("http://xml.org/sax/features/namespaces", false)
     parser.parse(source)
@@ -87,13 +91,8 @@ object XmlUtil {
 
   @throws(classOf[Exception])
   def textsFromUrl(urlString: String, timeout: Int, headers: List[HTTPHeader], formParams: String) = {
-    val (reader, charset) = readerFromUrl(urlString, timeout, headers, formParams)
-    val list = try {
-      Iterator.continually(reader.readLine).takeWhile(_ != null).toList
-    } finally {
-      reader.close
-    }
-    (list, charset)
+    val (response, charset) = readerFromUrl(urlString, timeout, headers, formParams)
+    new String(response.getContent, charset)
   }
 
   @throws(classOf[Exception])
@@ -151,15 +150,32 @@ object XmlUtil {
       contentType = header.getValue
     } yield contentType).head
 
-    val charsetSearch = contentType.replaceFirst("(?i).*charset=(.*)", "$1")
+    var charsetSearch: String = null
+    if (contentType.contains("charset")) {
+      charsetSearch = contentType.replaceFirst("(?i).*charset=(.*)", "$1")
+    } else {
+      val src = Source.fromURL(url, "ISO-8859-1").getLines.toList
+      val regex = new Regex("""charset[ ]*=[ ]*[0-9a-z|\-|_]+""")
+      breakable {
+      for (line <- src) {
+        val lower = line.toLowerCase
+        if (lower.contains("content") && lower.contains("charset")) {
+          charsetSearch = regex.findFirstIn(lower).get
+          charsetSearch = charsetSearch.split("=")(1).trim
+          break
+        } 
+      }
+    }
+    }
+
     val charset =
       if (contentType == charsetSearch) {
         Constants.CHARSET
       } else {
         charsetSearch
       }
-    (new BufferedReader(new InputStreamReader(
-      new ByteArrayInputStream(httpResponse.getContent), charset)), charset)
+
+    (httpResponse, charset)
   }
 
   @throws(classOf[Exception])
@@ -199,17 +215,17 @@ object XmlUtil {
     headers += new HTTPHeader("Pragma", "no-cache")
     headers += new HTTPHeader("Content-Type", "application/x-www-form-urlencoded")
 
-    /*　使わないときは評価しない　*/
-    lazy val node = perseFromUrl(urlString, timeout, headers.toList, formParams)
-    lazy val (texts, charset) = textsFromUrl(urlString, timeout, headers.toList, formParams)
-    lazy val assertText = new String(_assertText.replace(".*", "").getBytes("UTF-8"), charset)
-
     val allListBuffer: ListBuffer[String] = ListBuffer[String]()
+
+    lazy val node = perseFromUrl(urlString, timeout, headers.toList, formParams)
+
+    lazy val text = TextUtil.convert(textsFromUrl(urlString, timeout, headers.toList, formParams))
+
     val hasText =
       if (noText)
         true
-      else if (noXpath) 
-        texts.filter(text => text.contains(assertText)).length > 0
+      else if (noXpath)
+        text.contains(_assertText.replace(".*", ""))
       else getTextList(node, _xpath).filter { _text =>
         {
           val text = _text.trim
@@ -220,6 +236,11 @@ object XmlUtil {
           text.matches(_assertText)
         }
       }.size > 0
+      
+      if(!noText && noXpath) {
+        // 検索テキストエラー処理
+        allListBuffer.append("")
+      }
     (hasText, allListBuffer.toList)
   }
 }
