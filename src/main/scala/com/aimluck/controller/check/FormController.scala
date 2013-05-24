@@ -153,24 +153,6 @@ class FormController extends AbstractUserBaseFormController {
                 Some(Array(LanguageUtil.get("stepMail.failThreshold")))))
             }
           }
-
-          //ssl
-          try {
-            val ssl = request.getParameter("ssl").toBoolean
-          } catch {
-            case e: NumberFormatException => {
-              addError("ssl", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("check.ssl")))))
-            }
-          }
-
-          //dom
-          try {
-            val dom = request.getParameter("dom").toBoolean
-          } catch {
-            case e: NumberFormatException => {
-              addError("dom", LanguageUtil.get("error.invaldValue", Some(Array(LanguageUtil.get("check.dom")))))
-            }
-          }
         }
       }
       case None => {
