@@ -30,7 +30,6 @@ object TextUtil {
     val ncrStringSplit = srcNCRString.replace("&#", ";&#").split(";")
     val buf = new StringBuilder
 
-    /*TODO: ばぐってるからなおしてね*/
     for (str <- ncrStringSplit) {
       if (str.startsWith("&#x"))
         buf.append(Integer.parseInt(str.toLowerCase.replace("&#x", ""), 16).toInt.asInstanceOf[Char])
@@ -38,7 +37,6 @@ object TextUtil {
         buf.append(Integer.parseInt(str.toLowerCase.replace("&#", "")).toInt.asInstanceOf[Char])
       else
         buf.append(str)
-
     }
 
     buf.toString
