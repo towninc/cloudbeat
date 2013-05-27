@@ -38,6 +38,7 @@ import sjson.json.DefaultProtocol
 import sjson.json.Format
 import sjson.json.JsonSerialization
 import javax.net.ssl.TrustManager
+import java.net.InetAddress
 
 object CertCheckService {
   val logger = Logger.getLogger(CheckService.getClass.getName);
@@ -63,6 +64,7 @@ object CertCheckService {
           (JsString(Constants.KEY_ID), tojson(if (check.getKey != null) KeyFactory.keyToString(check.getKey) else null)),
           (JsString("name"), tojson(check.getName)),
           (JsString("domainName"), tojson(check.getDomainName)),
+          (JsString("connectDomainName"), if (check.getConnectDomainName() != null)tojson(check.getConnectDomainName()) else tojson("")),
           (JsString("active"), tojson(check.getActive.toString)),
           (JsString("recipients"), tojson(check.getRecipients.toList)),
           (JsString("limitDate"), if (check.getLimitDate() != null) tojson(AppConstants.dateTimeFormat.format(check.getLimitDate())) else tojson("-")),
@@ -87,6 +89,7 @@ object CertCheckService {
           (JsString(Constants.KEY_ID), tojson(if (check.getKey != null) KeyFactory.keyToString(check.getKey) else null)),
           (JsString("name"), tojson(check.getName)),
           (JsString("domainName"), tojson(check.getDomainName)),
+          (JsString("connectDomainName"), if (check.getConnectDomainName() != null)tojson(check.getConnectDomainName()) else tojson("")),
           (JsString("active"), tojson(check.getActive.toString)),
           (JsString("recipients"), tojson(check.getRecipients.toList)),
           (JsString("limitDate"), if (check.getLimitDate() != null) tojson(AppConstants.dateTimeFormat.format(check.getLimitDate())) else tojson("-")),
@@ -246,7 +249,9 @@ object CertCheckService {
 
   def certCheck(check: CertCheck, servletContext: ServletContext): CertCheck = try {
     val now = new Date()
-    val host = check.getDomainName
+    var host = check.getDomainName
+    if(!check.getConnectDomainName().isEmpty())
+    	host = check.getConnectDomainName()
     val keyStore = KeyStore.getInstance("JKS")
     val stream = servletContext.getResourceAsStream("/cert/cacerts")
     keyStore.load(stream, "changeit".toCharArray)

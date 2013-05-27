@@ -50,6 +50,13 @@ class FormController extends AbstractUserBaseFormController {
             LanguageUtil.get("cert.domName"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))))
         }
 
+        //connectDomain
+        val connectDomName = request.getParameter("connectDomainName")
+        if (!connectDomName.isEmpty() && (connectDomName.size <= 0 || connectDomName.size > AppConstants.VALIDATE_STRING_LENGTH)) {
+          addError("connectDomName", LanguageUtil.get("error.stringLength", Some(Array(
+            LanguageUtil.get("cert.connectDomName"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))))
+        }
+        
         try {
           val active = request.getParameter("active").toBoolean
         } catch {
@@ -110,6 +117,8 @@ class FormController extends AbstractUserBaseFormController {
               //Url
               cert.setDomainName(request.getParameter("domainName"))
 
+              cert.setConnectDomainName(request.getParameter("connectDomainName"))
+              
               cert.setActive(request.getParameter("active").toBoolean)
 
               //Recipients

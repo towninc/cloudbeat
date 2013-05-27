@@ -8,6 +8,15 @@
 			<form action="/cert/form" id="checkForm" style="display: none;" class="form-horizontal">
 				<div id="grobalError" class="alert alert-error alert-block hide"></div>
 				<fieldset>
+									<div class="tabbable">
+						<ul class="nav nav-tabs">
+							<li class="active"><a id="tab1" href="#tabContent1"
+								data-toggle="tab">基本項目</a></li>
+							<li><a id="tab2" href="#tabContent2" data-toggle="tab">オプション項目</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="tabContent1">
 								<div class="control-group">
 									<label class="control-label"><liquidtpl:text key="cert.name"/></label>
 									<div class="controls">
@@ -45,6 +54,20 @@
 									</div>
 									<!-- /controls -->
 								</div>
+							</div>
+							<div class="tab-pane" id="tabContent2">
+								<div class="control-group">
+									<label class="control-label"><liquidtpl:text key="cert.connectDomName"/></label>
+									<div class="controls">
+	            						<input id="connectDomainNameField" name="connectDomainName" class="input-xlarge" />
+	            						<div id="connectDomainNameError" class="alert alert-danger" style="margin-top:5px; display:none;" />
+	            						<p class="help-block"><liquidtpl:text key="cert.connectDomNameMessage"/></p>
+									</div>
+									<!-- /controls -->
+								</div>
+							</div>
+						</div>
+					</div>
 					<!-- /control-group -->
 					<div class="form-actions">
 						<button type="submit" class="btn btn-primary btn-large">登録</button>

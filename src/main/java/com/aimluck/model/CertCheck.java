@@ -40,7 +40,9 @@ public class CertCheck implements Serializable {
 	private Long period;
 	@Attribute(name = "s")
 	private Integer state;
-
+	@Attribute(name = "cDN")
+	private String connectDomainName;
+	
 	/**
 	 * Returns the key.
 	 *
@@ -199,6 +201,14 @@ public class CertCheck implements Serializable {
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public String getConnectDomainName() {
+		return connectDomainName;
+	}
+
+	public void setConnectDomainName(String connectDomainName) {
+		this.connectDomainName = connectDomainName;
 	}
 
 }
