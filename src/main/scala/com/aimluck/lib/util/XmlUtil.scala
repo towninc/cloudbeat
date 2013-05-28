@@ -150,26 +150,24 @@ object XmlUtil {
       contentType = header.getValue
     } yield contentType).head
 
-    var charsetSearch: String = null
-    if (contentType.contains("charset")) {
-      charsetSearch = contentType.replaceFirst("(?i).*charset=(.*)", "$1")
-    } else {
-      val src = Source.fromURL(url, "ISO-8859-1").getLines.toList
-      val regex = new Regex("""charset[ ]*=[ ]*[0-9a-z|\-|_]+""")
-      breakable {
-      for (line <- src) {
-        val lower = line.toLowerCase
-        if (lower.contains("content") && lower.contains("charset")) {
-          charsetSearch = regex.findFirstIn(lower).get
-          charsetSearch = charsetSearch.split("=")(1).trim
-          break
-        } 
+    val regex = new Regex("(?i).*charset\\s*=\\s*[\"']?([0-9a-z|\\-|_]+)[\"']?.*")
+    val charsetSearch: String = regex.findFirstMatchIn(contentType) match {
+      case Some(m) => {
+        m.group(1)
       }
-    }
+      case None => {
+        val content: String = new String(httpResponse.getContent, "ISO-8859-1")
+        regex.findFirstMatchIn(content) match {
+          case Some(m) => {
+            m.group(1)
+          }
+          case None => null
+        }
+      }
     }
 
     val charset =
-      if (contentType == charsetSearch) {
+      if ((charsetSearch == null) || (contentType == charsetSearch)) {
         Constants.CHARSET
       } else {
         charsetSearch
@@ -236,11 +234,11 @@ object XmlUtil {
           text.matches(_assertText)
         }
       }.size > 0
-      
-      if(!noText && noXpath) {
-        // 検索テキストエラー処理
-        allListBuffer.append("")
-      }
+
+    if (!noText && noXpath) {
+      // 検索テキストエラー処理
+      allListBuffer.append("")
+    }
     (hasText, allListBuffer.toList)
   }
 }
