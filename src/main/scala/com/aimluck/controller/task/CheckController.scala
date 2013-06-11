@@ -92,6 +92,8 @@ class CheckController extends Controller {
           buf.append(e.getLocalizedMessage)
           buf.append(Constants.LINE_SEPARATOR)
           buf.append(e.getStackTraceString)
+          logger.warning(e.getMessage());
+          logger.warning(e.getStackTraceString);
           false
       }
 

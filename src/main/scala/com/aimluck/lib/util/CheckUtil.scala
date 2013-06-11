@@ -43,7 +43,9 @@ object CheckUtil {
   }
 
   def sendMailCond[A <: HasPeriod with HasState](check: A) =
-    if (check.getPeriod > 0 && check.getPeriod <= 30 && (check.getState == null || check.getState == SEND_MAIL_60_DAYS_AGO))
+    if (check == null || check.getPeriod() == null)
+      None
+    else if (check.getPeriod > 0 && check.getPeriod <= 30 && (check.getState == null || check.getState == SEND_MAIL_60_DAYS_AGO))
       Some(SEND_MAIL_30_DAYS_AGO)
     else if (check.getPeriod > 30 && check.getPeriod <= 60 && (check.getState == null || check.getState == SEND_MAIL_30_DAYS_AGO))
       Some(SEND_MAIL_60_DAYS_AGO)
