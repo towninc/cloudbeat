@@ -33,8 +33,10 @@ class CertCheckController extends Controller {
     ) {
       if (check != null) {
         val result = CertCheckService.certCheck(check, this.servletContext)
-        CheckUtil.checkAndSend(result, CheckUtil.TYPE_SSL)
-        CertCheckService.saveWithUserData(result, result.getUserDataRef.getModel)
+        if (result != null) {
+          CheckUtil.checkAndSend(result, CheckUtil.TYPE_SSL)
+          CertCheckService.saveWithUserData(result, result.getUserDataRef.getModel)
+        }
       }
     }
 
