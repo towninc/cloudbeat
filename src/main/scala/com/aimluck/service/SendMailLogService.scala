@@ -19,7 +19,7 @@ object SendMailLogService {
   val logger = Logger.getLogger(SendMailLogService.getClass.getName)
   val meta = SendMailLogMeta.get
 
-  def createNew(address: String, msg: Message, check: Check, checkLog: CheckLog, exceptionMessage: String):SendMailLog = {
+  def createNew(address: String, msg: Message, check: Check, checkLog: CheckLog, exceptionMessage: String): SendMailLog = {
     val count = countWithCheckKey(check.getKey())
     if (count == 0) {
       val log = new SendMailLog
