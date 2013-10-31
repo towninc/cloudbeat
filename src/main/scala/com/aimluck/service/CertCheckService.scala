@@ -5,13 +5,13 @@
 
 package com.aimluck.service
 
-import java.security.KeyStore
+import java.net.URL
 import java.security.cert.X509Certificate
-import java.util.ArrayList
-import java.util.Date
-import java.util.Date
+import java.security.KeyStore
 import java.util.logging.Logger
 import java.util.logging.Logger
+import java.util.Date
+import java.util.Date
 import scala.collection.JavaConversions._
 import scala.collection.JavaConversions._
 import org.dotme.liquidtpl.Constants
@@ -30,15 +30,20 @@ import com.google.appengine.api.datastore.Key
 import com.google.appengine.api.datastore.KeyFactory
 import com.google.appengine.api.memcache.MemcacheService
 import com.google.appengine.api.memcache.MemcacheServiceFactory
+import com.google.appengine.api.urlfetch.HTTPMethod
+import com.google.appengine.api.urlfetch.HTTPRequest
+import com.google.appengine.api.urlfetch.HTTPResponse
+import com.google.appengine.api.urlfetch.URLFetchService
+import com.google.appengine.api.urlfetch.URLFetchServiceFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocket
+import javax.net.ssl.TrustManager
 import javax.net.ssl.TrustManagerFactory
 import javax.servlet.ServletContext
 import sjson.json.DefaultProtocol
 import sjson.json.Format
 import sjson.json.JsonSerialization
-import javax.net.ssl.TrustManager
-import java.net.InetAddress
+import java.io.BufferedReader
 
 object CertCheckService {
   val logger = Logger.getLogger(CheckService.getClass.getName);
@@ -64,7 +69,7 @@ object CertCheckService {
           (JsString(Constants.KEY_ID), tojson(if (check.getKey != null) KeyFactory.keyToString(check.getKey) else null)),
           (JsString("name"), tojson(check.getName)),
           (JsString("domainName"), tojson(check.getDomainName)),
-          (JsString("connectDomainName"), if (check.getConnectDomainName() != null)tojson(check.getConnectDomainName()) else tojson("")),
+          (JsString("connectDomainName"), if (check.getConnectDomainName() != null) tojson(check.getConnectDomainName()) else tojson("")),
           (JsString("active"), tojson(check.getActive.toString)),
           (JsString("recipients"), tojson(check.getRecipients.toList)),
           (JsString("limitDate"), if (check.getLimitDate() != null) tojson(AppConstants.dateTimeFormat.format(check.getLimitDate())) else tojson("-")),
@@ -89,7 +94,7 @@ object CertCheckService {
           (JsString(Constants.KEY_ID), tojson(if (check.getKey != null) KeyFactory.keyToString(check.getKey) else null)),
           (JsString("name"), tojson(check.getName)),
           (JsString("domainName"), tojson(check.getDomainName)),
-          (JsString("connectDomainName"), if (check.getConnectDomainName() != null)tojson(check.getConnectDomainName()) else tojson("")),
+          (JsString("connectDomainName"), if (check.getConnectDomainName() != null) tojson(check.getConnectDomainName()) else tojson("")),
           (JsString("active"), tojson(check.getActive.toString)),
           (JsString("recipients"), tojson(check.getRecipients.toList)),
           (JsString("limitDate"), if (check.getLimitDate() != null) tojson(AppConstants.dateTimeFormat.format(check.getLimitDate())) else tojson("-")),
@@ -247,11 +252,49 @@ object CertCheckService {
     memcacheService.delete(CHECK_KEYS_NAMESPACE)
   }
 
-  def certCheck(check: CertCheck, servletContext: ServletContext): CertCheck = try {
+  case class CertInfo(limitDate: Long, period: Int)
+  object CertInfoProtocol extends DefaultProtocol {
+    implicit val certInfoFormat: Format[CertInfo] =
+      asProduct2("limitDate", "period")(CertInfo)(CertInfo.unapply(_).get)
+  }
+
+  def certCheck(check: CertCheck, servletContext: ServletContext): CertCheck = {
+    import dispatch.json._
+    import JsonSerialization._
+    import CertInfoProtocol._
+    try {
+      var host = check.getDomainName
+      if (!check.getConnectDomainName().isEmpty()) {
+        host = check.getConnectDomainName()
+      }
+      val urlFetchService: URLFetchService = URLFetchServiceFactory.getURLFetchService()
+
+      val externalURL: String = LanguageUtil.get("checkSSL.externalURL")
+      val url: URL = new URL(externalURL + "?h=" + host)
+      val httpRequest: HTTPRequest = new HTTPRequest(url, HTTPMethod.GET)
+      val httpResponse: HTTPResponse = urlFetchService.fetch(httpRequest)
+
+      val jsString = new String(httpResponse.getContent, "UTF-8")
+
+      val json = Js(jsString);
+      val certInfo: CertInfo = fromjson[CertInfo](json);
+      val limit: Date = new Date();
+      limit.setTime(certInfo.limitDate)
+      check.setLimitDate(limit)
+      check.setPeriod(certInfo.period)
+      check
+    } catch {
+      case e: Exception => {
+        certCheckDelegate(check, servletContext)
+      }
+    }
+  }
+
+  def certCheckDelegate(check: CertCheck, servletContext: ServletContext): CertCheck = try {
     val now = new Date()
     var host = check.getDomainName
-    if(!check.getConnectDomainName().isEmpty())
-    	host = check.getConnectDomainName()
+    if (!check.getConnectDomainName().isEmpty())
+      host = check.getConnectDomainName()
     val keyStore = KeyStore.getInstance("JKS")
     val stream = servletContext.getResourceAsStream("/cert/cacerts")
     keyStore.load(stream, "changeit".toCharArray)

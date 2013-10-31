@@ -19,21 +19,26 @@ object SendMailLogService {
   val logger = Logger.getLogger(SendMailLogService.getClass.getName)
   val meta = SendMailLogMeta.get
 
-  def createNew(address: String, msg: Message, check: Check, checkLog: CheckLog, exceptionMessage: String) = {
-    val log = new SendMailLog
-    log.setTitle(msg.getSubject)
-    log.setAddress(address)
-    log.setBody(msg.getTextBody)
-    log.setRetryCount(1)
-    log.setCheckKey(check.getKey)
-    log.setCheckLogKey(checkLog.getKey)
-    val date = new Date
-    log.setCreateDate(date)
-    log.setUpdateDate(date)
-    log.setExceptionMessage(exceptionMessage)
-    log.setIsSuccessed(false)
-    Datastore.put(log)
-    log
+  def createNew(address: String, msg: Message, check: Check, checkLog: CheckLog, exceptionMessage: String):SendMailLog = {
+    val count = countWithCheckKey(check.getKey())
+    if (count == 0) {
+      val log = new SendMailLog
+      log.setTitle(msg.getSubject)
+      log.setAddress(address)
+      log.setBody(msg.getTextBody)
+      log.setRetryCount(1)
+      log.setCheckKey(check.getKey)
+      log.setCheckLogKey(checkLog.getKey)
+      val date = new Date
+      log.setCreateDate(date)
+      log.setUpdateDate(date)
+      log.setExceptionMessage(exceptionMessage)
+      log.setIsSuccessed(false)
+      Datastore.put(log)
+      log
+    } else {
+      null
+    }
   }
 
   def updateSuccess(log: SendMailLog) = {
@@ -52,7 +57,15 @@ object SendMailLogService {
     log
   }
 
-  def fetchWithAddressAndCheckKey(address: String, checkKey: Key) = try {
+  def countWithCheckKey(checkKey: Key): Int = {
+    try {
+      Datastore.query(meta).filter(meta.checkKey equal checkKey).limit(100).count()
+    } catch {
+      case e: Exception => 0
+    }
+  }
+
+  def fetchWithAddressAndCheckKey(address: String, checkKey: Key): Option[SendMailLog] = try {
     Option(Datastore.query(meta).filter(meta.address equal address, meta.checkKey equal checkKey).asSingle)
   } catch {
     case e: Exception => None
