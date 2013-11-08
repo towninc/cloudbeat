@@ -13,7 +13,7 @@ import java.util.logging.Logger
 
 class CertCheckController extends Controller {
 
-  override val logger = Logger.getLogger(classOf[CertCheckController].getName)
+  val logger = Logger.getLogger(classOf[CertCheckController].getName)
 
   @throws(classOf[Exception])
   override def run(): Navigation = {

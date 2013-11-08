@@ -12,7 +12,7 @@ import com.aimluck.service.DomainCheckService
 import java.util.logging.Logger
 
 class DomainCheckController extends Controller {
-  override val logger = Logger.getLogger(classOf[DomainCheckController].getName)
+  val logger = Logger.getLogger(classOf[DomainCheckController].getName)
   @throws(classOf[Exception])
   override def run(): Navigation = {
     try {
