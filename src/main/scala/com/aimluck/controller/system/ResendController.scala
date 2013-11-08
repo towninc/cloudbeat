@@ -51,13 +51,13 @@ class ResendController extends Controller {
       }
     })
     // ログをDatastoreに保存
-    val log:SendMailLog = SendMailLogService.fetchWithAddressAndCheckKey(address, checkKey) match {
+    val log: SendMailLog = SendMailLogService.fetchWithAddressAndCheckKey(address, checkKey) match {
       case Some(log) if isSuccess => SendMailLogService.updateSuccess(log)
       case Some(log) if log.getRetryCount < MAX_RETRY_COUNT => SendMailLogService.updateFail(log, message.orNull)
       case _ => SendMailLogService.createNew(address, msg, check, checkLog, message.orNull)
     }
 
-    if (log.getRetryCount < MAX_RETRY_COUNT) {
+    if (log != null && log.getRetryCount < MAX_RETRY_COUNT) {
       QueueFactory.getQueue("message").add(
         Builder
           .withUrl("/system/resend")

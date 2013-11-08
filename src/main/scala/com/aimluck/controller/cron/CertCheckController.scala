@@ -9,17 +9,27 @@ import com.google.appengine.api.datastore.KeyFactory
 import com.google.appengine.api.taskqueue.{ QueueFactory, TaskOptions }
 import TaskOptions.{ Builder, Method }
 import com.aimluck.service.CertCheckService
+import java.util.logging.Logger
 
 class CertCheckController extends Controller {
 
+  override val logger = Logger.getLogger(classOf[CertCheckController].getName)
+
   @throws(classOf[Exception])
   override def run(): Navigation = {
-    CertCheckService.fetchActiveAllKeys(None).foreach {
-      key =>
-        QueueFactory.getDefaultQueue
-          .add(Builder.withUrl("/task/certCheck")
-            .param(Constants.KEY_ID, KeyFactory.keyToString(key))
-            .method(Method.POST))
+    try {
+      CertCheckService.fetchActiveAllKeys(None).foreach {
+        key =>
+          QueueFactory.getDefaultQueue
+            .add(Builder.withUrl("/task/certCheck")
+              .param(Constants.KEY_ID, KeyFactory.keyToString(key))
+              .method(Method.POST))
+      }
+    } catch {
+      case e: Exception => {
+        logger.warning(e.getMessage)
+        logger.warning(e.getStackTraceString)
+      }
     }
     null;
   }
