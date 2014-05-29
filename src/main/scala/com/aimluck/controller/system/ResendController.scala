@@ -32,41 +32,38 @@ class ResendController extends Controller {
     val checkLog = CheckLogService.fetchWithKey(checkLogKey).get
     val ms = MailServiceFactory.getMailService // MailServiceを取得
 
-    val msg = new MailService.Message
-    val (isSuccess, message) = (try {
-      msg.setSubject("[%s] Status updated: %s is %s".format(
-        LanguageUtil.get("title"),
-        check.getName,
-        CheckLogService.statusString(checkLog)))
-      msg.setTo(address)
-      msg.setSender(AppConstants.DEFAULT_SENDER)
-      msg.setTextBody(checkLog.getErrorMessage)
-      ms.send(msg) // メール送信を実行
-      (true, None)
-    } catch {
-      case e: Exception => {
-        logger.severe(e.getMessage)
-        logger.severe(e.getStackTraceString)
-        (false, Option(e.getMessage))
-      }
-    })
-    // ログをDatastoreに保存
-    val log: SendMailLog = SendMailLogService.fetchWithAddressAndCheckKey(address, checkKey) match {
-      case Some(log) if isSuccess => SendMailLogService.updateSuccess(log)
-      case Some(log) if log.getRetryCount < MAX_RETRY_COUNT => SendMailLogService.updateFail(log, message.orNull)
-      case _ => SendMailLogService.createNew(address, msg, check, checkLog, message.orNull)
+    val mailLog: SendMailLog = SendMailLogService.fetchWithAddressAndCheckKey(address, checkKey) match {
+      case Some(log) => log
+      case _ => null
     }
+    val retryCount: Integer = mailLog.getRetryCount()
 
-    if (log != null && log.getRetryCount < MAX_RETRY_COUNT) {
-      QueueFactory.getQueue("message").add(
-        Builder
-          .withUrl("/system/resend")
-          .param("address", address)
-          .param("checkKey", Datastore.keyToString(checkKey))
-          .param("checkLogKey", Datastore.keyToString(checkLogKey))
-          .etaMillis(5 * 1000)
-          .method(Method.POST));
-    } else {}
+    if (retryCount != null && retryCount < MAX_RETRY_COUNT) {
+      val msg = new MailService.Message
+      val (isSuccess, message) = (try {
+        msg.setSubject("[%s] Status updated: %s is %s".format(
+          LanguageUtil.get("title"),
+          check.getName,
+          CheckLogService.statusString(checkLog)))
+        msg.setTo(address)
+        msg.setSender(AppConstants.DEFAULT_SENDER)
+        msg.setTextBody(checkLog.getErrorMessage)
+        ms.send(msg) // メール送信を実行
+        (true, None)
+      } catch {
+        case e: Exception => {
+          logger.severe(e.getMessage)
+          logger.severe(e.getStackTraceString)
+          (false, Option(e.getMessage))
+        }
+      })
+      // ログをDatastoreに保存
+      val log: SendMailLog = SendMailLogService.fetchWithAddressAndCheckKey(address, checkKey) match {
+        case Some(log) if isSuccess => SendMailLogService.updateSuccess(log)
+        case Some(log) if log.getRetryCount < MAX_RETRY_COUNT => SendMailLogService.updateFail(log, message.orNull)
+        case _ => SendMailLogService.createNew(address, msg, check, checkLog, message.orNull)
+      }
+    }
     null
   }
 }
