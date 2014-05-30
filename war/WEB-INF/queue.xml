@@ -32,5 +32,8 @@
 	<queue>
 		<name>message</name>
 		<rate>30/s</rate>
+		<retry-parameters>
+			<task-retry-limit>5</task-retry-limit>
+		</retry-parameters>
 	</queue>
 </queue-entries>
