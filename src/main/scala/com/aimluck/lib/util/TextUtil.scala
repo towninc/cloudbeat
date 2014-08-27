@@ -31,12 +31,19 @@ object TextUtil {
     val buf = new StringBuilder
 
     for (str <- ncrStringSplit) {
-      if (str.startsWith("&#x"))
-        buf.append(Integer.parseInt(str.toLowerCase.replace("&#x", ""), 16).toInt.asInstanceOf[Char])
-      else if (str.startsWith("&#"))
-        buf.append(Integer.parseInt(str.toLowerCase.replace("&#", "")).toInt.asInstanceOf[Char])
-      else
-        buf.append(str)
+      try {
+        if (str.startsWith("&#x"))
+          buf.append(Integer.parseInt(str.toLowerCase.replace("&#x", ""), 16).toInt.asInstanceOf[Char])
+        else if (str.startsWith("&#"))
+          buf.append(Integer.parseInt(str.toLowerCase.replace("&#", "")).toInt.asInstanceOf[Char])
+        else
+          buf.append(str)
+      } catch {
+        case e: Exception => {
+          buf.append(str)
+        }
+      }
+
     }
 
     buf.toString

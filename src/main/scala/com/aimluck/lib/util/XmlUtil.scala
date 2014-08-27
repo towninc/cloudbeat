@@ -220,7 +220,7 @@ object XmlUtil {
     lazy val text = TextUtil.convert(textsFromUrl(urlString, timeout, headers.toList, formParams))
 
     val hasText =
-      if (noText)
+      if (noText && text != null)
         true
       else if (noXpath)
         text.contains(_assertText.replace(".*", ""))

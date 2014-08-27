@@ -3,6 +3,7 @@ package com.aimluck.controller.task
 import com.google.appengine.api.datastore.KeyFactory
 import com.google.appengine.api.mail.MailService
 import com.google.appengine.api.mail.MailServiceFactory
+import java.io.IOException;
 import java.util.Date
 import java.util.logging.Logger
 import org.dotme.liquidtpl.Constants
@@ -49,7 +50,8 @@ class CheckController extends Controller {
         LanguageUtil.get("check.assertText"), check.getAssertText,
         LanguageUtil.get("check.xPath"), check.getXPath)
 
-      val tempStatus: Boolean = try {
+      // 1: OK, 0:NG, -1:Unknown 
+      val tempStatus: Int = try {
 
         //debug
         //          XmlUtil.getTextList(XmlUtil.perseFromUrl(check.getUrl, check.getTimeOut), check.getXPath).foreach{
@@ -58,14 +60,13 @@ class CheckController extends Controller {
         //            buf.append(checkSummary)
         //            buf.append(Constants.LINE_SEPARATOR)
         //          }
-
         val (assertResult, textList) = XmlUtil.assertText(check.getPreloadUrl, check.getUrl, check.getFormParams, check.getAssertText, check.getXPath, check.getTimeOut)
         if (assertResult) {
           buf.append(LanguageUtil.get("check.StatusMessage.ok"))
           buf.append(Constants.LINE_SEPARATOR)
           buf.append(checkSummary)
           buf.append(Constants.LINE_SEPARATOR)
-          true
+          1
         } else {
           buf.append(LanguageUtil.get("check.StatusMessage.error"))
           buf.append(Constants.LINE_SEPARATOR)
@@ -80,11 +81,40 @@ class CheckController extends Controller {
             }
           }
           buf.append(Constants.LINE_SEPARATOR)
-
-          false
+          0
         }
       } catch {
+        case e: IOException =>
+          val msg = e.getMessage()
+          val bufException: StringBuilder = new StringBuilder
+          if (msg != null && msg.contains("Could not fetch URL")) {
+            buf.append(e.getClass().getCanonicalName());
+            buf.append(Constants.LINE_SEPARATOR)
+            buf.append(LanguageUtil.get("check.StatusMessage.error"))
+            buf.append(Constants.LINE_SEPARATOR)
+            buf.append(checkSummary)
+            buf.append(Constants.LINE_SEPARATOR)
+            buf.append(e.getLocalizedMessage)
+            buf.append(Constants.LINE_SEPARATOR)
+            buf.append(e.getStackTraceString)
+            logger.warning(e.getClass().getCanonicalName());
+            logger.warning(e.getMessage());
+            logger.warning(e.getStackTraceString);
+            0
+          } else {
+            bufException.append("Unhandled Error occurred.")
+            bufException.append(Constants.LINE_SEPARATOR)
+            bufException.append(e.getClass().getCanonicalName());
+            bufException.append(Constants.LINE_SEPARATOR)
+            bufException.append(e.getMessage());
+            bufException.append(Constants.LINE_SEPARATOR)
+            bufException.append(e.getStackTraceString);
+            logger.severe(bufException.toString());
+            -1
+          }
         case e: Exception =>
+          buf.append(e.getClass().getCanonicalName());
+          buf.append(Constants.LINE_SEPARATOR)
           buf.append(LanguageUtil.get("check.StatusMessage.error"))
           buf.append(Constants.LINE_SEPARATOR)
           buf.append(checkSummary)
@@ -92,12 +122,13 @@ class CheckController extends Controller {
           buf.append(e.getLocalizedMessage)
           buf.append(Constants.LINE_SEPARATOR)
           buf.append(e.getStackTraceString)
+          logger.warning(e.getClass().getCanonicalName());
           logger.warning(e.getMessage());
           logger.warning(e.getStackTraceString);
-          false
+          0
       }
 
-      val newStatus: Boolean = if (tempStatus) {
+      val newStatus: Boolean = if (tempStatus == 1) {
         val resetFlag: Boolean = check.getFailCount match {
           case i: Int => if (i != 0) true else false
           case other => true
@@ -108,10 +139,12 @@ class CheckController extends Controller {
         }
         true
       } else {
-        if (check.getFailCount < Integer.MAX_VALUE) {
-          check.setFailCount(check.getFailCount + 1)
+        if (tempStatus == 0) {
+          if (check.getFailCount < Integer.MAX_VALUE) {
+            check.setFailCount(check.getFailCount + 1)
+          }
+          CheckService.saveWithUserData(check, check.getUserDataRef.getModel)
         }
-        CheckService.saveWithUserData(check, check.getUserDataRef.getModel)
         if (check.getFailCount >= check.getFailThreshold) {
           false
         } else {
