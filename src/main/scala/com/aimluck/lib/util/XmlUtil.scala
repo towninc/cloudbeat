@@ -214,26 +214,27 @@ object XmlUtil {
     headers += new HTTPHeader("Content-Type", "application/x-www-form-urlencoded")
 
     val allListBuffer: ListBuffer[String] = ListBuffer[String]()
-
-    lazy val node = perseFromUrl(urlString, timeout, headers.toList, formParams)
-
-    lazy val text = TextUtil.convert(textsFromUrl(urlString, timeout, headers.toList, formParams))
-
+ 
     val hasText =
-      if (noText && text != null)
+      if (noText) {
+        readerFromUrl(urlString, timeout, headers.toList, formParams)
         true
-      else if (noXpath)
+      } else if (noXpath) {
+        val text = TextUtil.convert(textsFromUrl(urlString, timeout, headers.toList, formParams))
         text.contains(_assertText.replace(".*", ""))
-      else getTextList(node, _xpath).filter { _text =>
-        {
-          val text = _text.trim
-          //   logger.info("TEXT: " + text.toString())
-          if (text.size > 0) {
-            allListBuffer.append(text)
+      } else {
+        val node = perseFromUrl(urlString, timeout, headers.toList, formParams)
+        getTextList(node, _xpath).filter { _text =>
+          {
+            val text = _text.trim
+            //   logger.info("TEXT: " + text.toString())
+            if (text.size > 0) {
+              allListBuffer.append(text)
+            }
+            text.matches(_assertText)
           }
-          text.matches(_assertText)
-        }
-      }.size > 0
+        }.size > 0
+      }
 
     if (!noText && noXpath) {
       // 検索テキストエラー処理

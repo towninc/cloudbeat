@@ -36,4 +36,11 @@
 			<task-retry-limit>5</task-retry-limit>
 		</retry-parameters>
 	</queue>
+	<queue>
+		<name>check</name>
+		<rate>10/s</rate>
+		<retry-parameters>
+			<task-age-limit>1s</task-age-limit>
+		</retry-parameters>
+	</queue>
 </queue-entries>

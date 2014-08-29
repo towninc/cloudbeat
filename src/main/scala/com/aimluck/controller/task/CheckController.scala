@@ -87,7 +87,8 @@ class CheckController extends Controller {
         case e: IOException =>
           val msg = e.getMessage()
           val bufException: StringBuilder = new StringBuilder
-          if (msg != null && msg.contains("Could not fetch URL")) {
+          if ((e.getClass() != classOf[IOException])
+            || msg != null && msg.contains("Could not fetch URL")) {
             buf.append(e.getClass().getCanonicalName());
             buf.append(Constants.LINE_SEPARATOR)
             buf.append(LanguageUtil.get("check.StatusMessage.error"))
@@ -109,7 +110,7 @@ class CheckController extends Controller {
             bufException.append(e.getMessage());
             bufException.append(Constants.LINE_SEPARATOR)
             bufException.append(e.getStackTraceString);
-            logger.severe(bufException.toString());
+            logger.warning(bufException.toString());
             -1
           }
         case e: Exception =>
