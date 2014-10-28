@@ -12,7 +12,7 @@ import org.slim3.datastore.ModelRef;
 
 @Model(kind = "dC", schemaVersion = 1, schemaVersionName = "sV")
 public class DomainCheck implements Serializable {
-
+	private static final long serialVersionUID = 1L;
 	@Attribute(primaryKey = true, name = "k")
 	private Key key;
 	@Attribute(version = true, name = "v")

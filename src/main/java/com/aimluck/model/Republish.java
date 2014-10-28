@@ -1,96 +1,95 @@
 package com.aimluck.model;
 
-import java.util.Date;
+import java.io.Serializable;
 
 import org.slim3.datastore.Attribute;
 import org.slim3.datastore.Model;
 
-import com.aimluck.lib.util.Encrypter;
 import com.google.appengine.api.datastore.Key;
 
 @Model(kind = "rep", schemaVersion = 1, schemaVersionName = "sV")
-public class Republish {
+public class Republish implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	  @Attribute(primaryKey = true, name = "k")
-	  private Key key;
+	@Attribute(primaryKey = true, name = "k")
+	private Key key;
 
-	  @Attribute(version = true, name = "v")
-	  private Long version;
+	@Attribute(version = true, name = "v")
+	private Long version;
 
-	  @Attribute(name = "m", unindexed = true)
-	  private String mail;
+	@Attribute(name = "m", unindexed = true)
+	private String mail;
 
-	  @Attribute(name = "uId")
-	  private String userId;
+	@Attribute(name = "uId")
+	private String userId;
 
-	  /**
-	   * Returns the key.
-	   * 
-	   * @return the key
-	   */
-	  public Key getKey() {
-	    return key;
-	  }
+	/**
+	 * Returns the key.
+	 * 
+	 * @return the key
+	 */
+	public Key getKey() {
+		return key;
+	}
 
-	  /**
-	   * Sets the key.
-	   * 
-	   * @param key
-	   *          the key
-	   */
-	  public void setKey(Key key) {
-	    this.key = key;
-	  }
+	/**
+	 * Sets the key.
+	 * 
+	 * @param key
+	 *            the key
+	 */
+	public void setKey(Key key) {
+		this.key = key;
+	}
 
-	  /**
-	   * Returns the version.
-	   * 
-	   * @return the version
-	   */
-	  public Long getVersion() {
-	    return version;
-	  }
+	/**
+	 * Returns the version.
+	 * 
+	 * @return the version
+	 */
+	public Long getVersion() {
+		return version;
+	}
 
-	  /**
-	   * Sets the version.
-	   * 
-	   * @param version
-	   *          the version
-	   */
-	  public void setVersion(Long version) {
-	    this.version = version;
-	  }
+	/**
+	 * Sets the version.
+	 * 
+	 * @param version
+	 *            the version
+	 */
+	public void setVersion(Long version) {
+		this.version = version;
+	}
 
-	  @Override
-	  public int hashCode() {
-	    final int prime = 31;
-	    int result = 1;
-	    result = prime * result + ((key == null) ? 0 : key.hashCode());
-	    return result;
-	  }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((key == null) ? 0 : key.hashCode());
+		return result;
+	}
 
-	  public String getMail() {
-	    return mail;
-	  }
+	public String getMail() {
+		return mail;
+	}
 
-	  public void setMail(String mail) {
-	    this.mail = mail;
-	  }
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
 
-	  /**
-	   * @return userId
-	   */
-	  public String getUserId() {
-	    return userId;
-	  }
+	/**
+	 * @return userId
+	 */
+	public String getUserId() {
+		return userId;
+	}
 
-	  /**
-	   * @param userId
-	   *          セットする userId
-	   */
-	  public void setUserId(String userId) {
-	    this.userId = userId;
-	  }
-	
+	/**
+	 * @param userId
+	 *            セットする userId
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 }
