@@ -144,11 +144,15 @@ object XmlUtil {
 
     val httpResponse = urlFetchService.fetch(httpRequest)
 
-    val contentType = (for {
-      header <- httpResponse.getHeaders
-      if (header.getName.equalsIgnoreCase("Content-Type"))
-      contentType = header.getValue
-    } yield contentType).head
+    val contentType = try {
+      (for {
+        header <- httpResponse.getHeaders
+        if (header.getName.equalsIgnoreCase("Content-Type"))
+        contentType = header.getValue
+      } yield contentType).head
+    } catch {
+      case _:Exception => ""
+    }
 
     val regex = new Regex("(?i).*charset\\s*=\\s*[\"']?([0-9a-z|\\-|_]+)[\"']?.*")
     val charsetSearch: String = regex.findFirstMatchIn(contentType) match {
@@ -214,7 +218,7 @@ object XmlUtil {
     headers += new HTTPHeader("Content-Type", "application/x-www-form-urlencoded")
 
     val allListBuffer: ListBuffer[String] = ListBuffer[String]()
- 
+
     val hasText =
       if (noText) {
         readerFromUrl(urlString, timeout, headers.toList, formParams)
