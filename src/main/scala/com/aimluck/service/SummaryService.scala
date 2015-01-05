@@ -118,7 +118,7 @@ object SummaryService {
           }
         }
       } catch {
-        case _ => {
+        case _ : Throwable => {
           val count: Integer = Datastore.query(m)
             .filter(m.userDataRef.equal(key))
             .filter(m.active.equal(true))
@@ -145,7 +145,7 @@ object SummaryService {
           }
         }
       } catch {
-        case _ => {
+        case _ : Throwable => {
           val count: Integer = Datastore.query(m)
             .filter(m.userDataRef.equal(key))
             .filter(m.active.equal(true))
@@ -173,7 +173,7 @@ object SummaryService {
           }
         }
       } catch {
-        case _ => {
+        case _ : Throwable => {
           val dateStr = AppConstants.dayCountFormatWithTimeZone(AppConstants.timeZone)
             .format(new Date())
           val count: Integer = Datastore.query(m)
@@ -203,7 +203,7 @@ object SummaryService {
           }
         }
       } catch {
-        case _ => {
+        case _ : Throwable => {
           val count: Integer = Datastore.query(m)
             .filter(m.userDataRef.equal(key))
             .filter(m.active.equal(true))
@@ -230,7 +230,7 @@ object SummaryService {
           }
         }
       } catch {
-        case _ => {
+        case _ : Throwable => {
           val count: Integer = Datastore.query(m)
             .filter(m.userDataRef.equal(key))
             .filter(m.active.equal(true))
@@ -258,7 +258,7 @@ object SummaryService {
           }
         }
       } catch {
-        case _ => {
+        case _ : Throwable => {
           val dateStr = AppConstants.dayCountFormatWithTimeZone(AppConstants.timeZone)
             .format(new Date())
           val count: Integer = Datastore.query(m)
@@ -288,7 +288,7 @@ object SummaryService {
           }
         }
       } catch {
-        case _ => {
+        case _ : Throwable => {
           val count: Integer = Datastore.query(m)
             .filter(m.userDataRef.equal(key))
             .filter(m.active.equal(true)).limit(1000).count();
@@ -314,7 +314,7 @@ object SummaryService {
           }
         }
       } catch {
-        case _ => {
+        case _ : Throwable => {
           val count: Integer = Datastore.query(m)
             .filter(m.userDataRef.equal(key))
             .filter(m.active.equal(true)).limit(1000).count();
@@ -340,7 +340,7 @@ object SummaryService {
           }
         }
       } catch {
-        case _ => {
+        case _ : Throwable => {
           val count: Integer = Datastore.query(m)
             .filter(m.userDataRef.equal(key))
             .filter(m.active.equal(true))
@@ -367,7 +367,7 @@ object SummaryService {
           }
         }
       } catch {
-        case _ => {
+        case _ : Throwable => {
           val dateStr = AppConstants.dayCountFormatWithTimeZone(AppConstants.timeZone)
             .format(new Date())
           val count: Integer = Datastore.query(m)

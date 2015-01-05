@@ -4,8 +4,8 @@ import com.aimluck.model.Check
 import com.aimluck.service.CheckService
 
 import com.aimluck.service.UserDataService
-import dispatch.json.JsObject
-import dispatch.json.JsString
+import dispatch.classic.json.JsObject
+import dispatch.classic.json.JsString
 import sjson.json.JsonSerialization
 import sjson.json.JsonSerialization._
 import sjson.json.DefaultProtocol._

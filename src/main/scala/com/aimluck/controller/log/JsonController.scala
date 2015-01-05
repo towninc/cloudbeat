@@ -2,7 +2,7 @@ package com.aimluck.controller.log;
 
 import com.aimluck.service.CheckLogService
 import com.aimluck.service.UserDataService
-import dispatch.json.JsValue
+import dispatch.classic.json.JsValue
 import java.util.Date
 import java.util.logging.Logger
 import org.dotme.liquidtpl.Constants

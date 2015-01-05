@@ -9,7 +9,7 @@ import org.dotme.liquidtpl.LanguageUtil
 import com.aimluck.model.Check
 import com.aimluck.service.CheckService
 import com.aimluck.service.UserDataService
-import dispatch.json.JsValue
+import dispatch.classic.json.JsValue
 import sjson.json.JsonSerialization._
 import sjson.json.JsonSerialization
 import com.aimluck.lib.util.BaseUtil

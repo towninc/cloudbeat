@@ -36,7 +36,7 @@ object CheckLogService {
   }
 
   object CheckLogProtocol extends DefaultProtocol {
-    import dispatch.json._
+    import dispatch.classic.json._
     import JsonSerialization._
 
     implicit object CheckLogFormat extends Format[CheckLog] {

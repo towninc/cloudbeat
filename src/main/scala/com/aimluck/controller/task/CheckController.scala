@@ -3,7 +3,7 @@ package com.aimluck.controller.task
 import com.google.appengine.api.datastore.KeyFactory
 import com.google.appengine.api.mail.MailService
 import com.google.appengine.api.mail.MailServiceFactory
-import java.io.IOException;
+import java.io.IOException
 import java.util.Date
 import java.util.logging.Logger
 import org.dotme.liquidtpl.Constants
@@ -23,6 +23,7 @@ import org.slim3.datastore.Datastore
 import com.google.appengine.api.taskqueue.TaskOptions.Method
 import com.aimluck.model.CheckLog
 import com.aimluck.lib.util.CheckUtil
+import com.aimluck.model.Check
 
 class CheckController extends Controller {
   val logger = Logger.getLogger(classOf[CheckController].getName)
@@ -219,13 +220,17 @@ class CheckController extends Controller {
           }
         }
         CheckLogService.saveWithUserData(checkLog, check.getUserDataRef.getModel)
-        check.setStatus(if (newStatus) {
-          CheckService.Status.OK.toString
-        } else {
-          CheckService.Status.ERROR.toString
-        })
-        check.setErrorMessage(errorMessage)
-        CheckService.saveWithUserData(check, check.getUserDataRef.getModel)
+        
+        val checkToSave:Check = Datastore.get(classOf[Check], check.getKey());
+        if (checkToSave != null) {
+          checkToSave.setStatus(if (newStatus) {
+            CheckService.Status.OK.toString
+          } else {
+            CheckService.Status.ERROR.toString
+          })
+          checkToSave.setErrorMessage(errorMessage)
+          CheckService.saveWithUserData(checkToSave, checkToSave.getUserDataRef.getModel)
+        }
       }
       CheckService.updateCheckedAt(check)
     }

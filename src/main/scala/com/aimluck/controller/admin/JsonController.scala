@@ -8,7 +8,7 @@ import org.dotme.liquidtpl.controller.AbstractJsonDataController
 import org.dotme.liquidtpl.Constants
 import org.dotme.liquidtpl.LanguageUtil
 import com.aimluck.service.UserDataService
-import dispatch.json.JsValue
+import dispatch.classic.json.JsValue
 import sjson.json.JsonSerialization._
 import sjson.json.JsonSerialization
 import com.aimluck.lib.util.BaseUtil

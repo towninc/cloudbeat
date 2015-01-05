@@ -90,10 +90,10 @@ object PlanService {
           memcacheService.get(cacheKey) match {
             case null => throw new NullPointerException
             case pL: PlanLink => pL.getUrl()
-            case _ => throw new NullPointerException
+            case _ : Throwable => throw new NullPointerException
           }
         } catch {
-          case _ => {
+          case _ : Throwable => {
             Datastore.query(m).filter(m.name.equal(name)).limit(1).asSingle() match {
               case link: PlanLink => {
                 memcacheService.put(cacheKey, link)

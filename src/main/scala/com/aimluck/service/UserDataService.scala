@@ -28,12 +28,12 @@ object UserDataService {
   val logger = Logger.getLogger(UserDataService.getClass.getName)
 
   object UserDataProtocol extends DefaultProtocol {
-    import dispatch.json._
+    import dispatch.classic.json._
     import JsonSerialization._
 
     implicit object UserDataFormat extends Format[UserData] {
       override def reads(json: JsValue): UserData = json match {
-        case _ => throw new IllegalArgumentException
+        case _ : Throwable => throw new IllegalArgumentException
       }
 
       def writes(userData: UserData): JsValue =
