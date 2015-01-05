@@ -43,7 +43,7 @@ object DomainCheckService {
 
 
   object DomainCheckProtocol extends DefaultProtocol {
-    import dispatch.json._
+    import dispatch.classic.json._
     import JsonSerialization._
 
     implicit object DomainCheckFormat extends Format[DomainCheck] {
@@ -75,7 +75,7 @@ object DomainCheckService {
   object DomainCheckListProtocol extends DefaultProtocol {
 
 
-    import dispatch.json._
+    import dispatch.classic.json._
     import JsonSerialization._
 
     implicit object CheckFormat extends Format[DomainCheck] {
@@ -167,7 +167,7 @@ object DomainCheckService {
           }
         }
       } catch {
-        case _ => Datastore.query(m).filter(m.active.equal(true)).asKeyList.toList
+        case _: Throwable => Datastore.query(m).filter(m.active.equal(true)).asKeyList.toList
       }
     }
   }
@@ -184,7 +184,7 @@ object DomainCheckService {
     val m: DomainCheckMeta = DomainCheckMeta.get
     Option(Datastore.query(m).filter(m.domainName equal domain).asSingle)
   } catch {
-    case _ => None
+    case _: Throwable => None
   }
 
   def createNew(): DomainCheck = {

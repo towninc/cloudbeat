@@ -33,7 +33,7 @@ object CheckDomainUtil {
       else x
     whois.split("""[\r\n|\r|\n]""").foldLeft(None: Option[Date])(parseSub)
   } catch {
-    case _ => None
+    case _: Throwable => None
   }
 
   def check(url: String) =

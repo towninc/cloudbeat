@@ -36,7 +36,6 @@ class DomainCheckController extends Controller {
           CheckUtil.checkAndSend(check, CheckUtil.TYPE_DOMAIN)
           Datastore.putWithoutTx(check)
         }
-        case e: Exception => check.setErrorMessage(e.getMessage)
         case None =>
       }
       DomainCheckService.saveWithUserData(check, check.getUserDataRef.getModel)
@@ -44,6 +43,6 @@ class DomainCheckController extends Controller {
 
     null
   } catch {
-    case _ => null
+    case _ : Throwable => null
   }
 }

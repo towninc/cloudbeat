@@ -38,7 +38,7 @@ object CheckService {
   }
 
   object CheckProtocol extends DefaultProtocol {
-    import dispatch.json._
+    import dispatch.classic.json._
     import JsonSerialization._
 
     implicit object CheckFormat extends Format[Check] {
@@ -76,7 +76,7 @@ object CheckService {
   }
 
   object CheckListProtocol extends DefaultProtocol {
-    import dispatch.json._
+    import dispatch.classic.json._
     import JsonSerialization._
 
     implicit object CheckFormat extends Format[Check] {
@@ -125,7 +125,7 @@ object CheckService {
               case v => Some(v)
             }
           } catch {
-            case _ => Datastore.query(m).filter(m.key.equal(key)).asSingle match {
+            case _: Throwable => Datastore.query(m).filter(m.key.equal(key)).asSingle match {
               case check: Check => {
                 memcacheService.put(getCheckCacheKey(id), check)
                 Some(check)
@@ -225,7 +225,7 @@ object CheckService {
           }
         }
       } catch {
-        case _ => Datastore.query(m).filter(m.active.equal(true)).asKeyList.toList
+        case _: Throwable => Datastore.query(m).filter(m.active.equal(true)).asKeyList.toList
       }
     }
   }
@@ -243,7 +243,7 @@ object CheckService {
           }
         }
       } catch {
-        case _ => Datastore.query(m).asKeyList.toList
+        case _: Throwable => Datastore.query(m).asKeyList.toList
       }
     }
   }
@@ -327,7 +327,7 @@ object CheckService {
     try {
       memcacheService.get(getCheckedAtKey(check)).asInstanceOf[Date]
     } catch {
-      case _ => null
+      case _: Throwable => null
     }
   }
 

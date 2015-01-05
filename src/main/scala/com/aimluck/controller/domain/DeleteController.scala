@@ -4,8 +4,8 @@ import com.aimluck.model.DomainCheck
 import com.aimluck.service.DomainCheckService
 
 import com.aimluck.service.UserDataService
-import dispatch.json.JsObject
-import dispatch.json.JsString
+import dispatch.classic.json.JsObject
+import dispatch.classic.json.JsString
 import sjson.json.JsonSerialization
 import sjson.json.JsonSerialization._
 import sjson.json.DefaultProtocol._

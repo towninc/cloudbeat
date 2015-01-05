@@ -10,25 +10,7 @@ object IndexControllerSpec extends org.specs.Specification {
   val tester = new ControllerTester( classOf[IndexController] )
 
   "IndexController" should {
-    Constants._pathPrefix = "war/"
-    doBefore{ tester.setUp;tester.start("/log/index")}
 
-    "not null" >> {
-      val controller = tester.getController[IndexController]
-      controller mustNotBe null
-    }
-    "not redirect" >> {
-      tester.isRedirect mustBe false
-    }
-    "get destination path is null" >> {
-      tester.getDestinationPath mustBe null
-    }
-
-    doAfter{ tester.tearDown}
-
-    "after tearDown" >> {
-        true
-    }
   }
 }
 class IndexControllerSpecTest extends JUnit4( IndexControllerSpec )

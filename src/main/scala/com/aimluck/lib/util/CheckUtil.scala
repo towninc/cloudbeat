@@ -54,7 +54,7 @@ object CheckUtil {
   def isEnableUser[A <: HasUserDataRef](check: A) =
     check.getUserDataRef.getModel.getState == AppConstants.USER_STATE_ENABLE
 
-  def isOverCapacity[A <: HasActive](user: UserData, isNew: Boolean, model: A, isActived: Boolean, isLogin: Option[Boolean]) =
+  def isOverCapacity[A <: HasActive](user: UserData, isNew: Boolean, model: A, isActived: Boolean, isLogin: Option[Boolean]): Boolean =
     if (isNew)
       PlanService.isReachedMax(user, model.getClass, isLogin) //Activeが増える
     else if (isActived)
@@ -67,7 +67,7 @@ object CheckUtil {
     else
       false
 
-  def isOverCapacity[A <: HasActive](user: UserData, isNew: Boolean, model: A, isActived: Boolean) =
+  def isOverCapacity[A <: HasActive](user: UserData, isNew: Boolean, model: A, isActived: Boolean): Boolean =
     isOverCapacity[A](user, isNew, model, isActived, None)
 
 }

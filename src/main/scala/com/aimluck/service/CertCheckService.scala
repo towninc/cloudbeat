@@ -55,7 +55,7 @@ object CertCheckService {
   private val HALF_YEAR = ONE_DAY * 180
 
   object CertCheckProtocol extends DefaultProtocol {
-    import dispatch.json._
+    import dispatch.classic.json._
     import JsonSerialization._
 
     implicit object CertCheckFormat extends Format[CertCheck] {
@@ -81,7 +81,7 @@ object CertCheckService {
   }
 
   object CertCheckListProtocol extends DefaultProtocol {
-    import dispatch.json._
+    import dispatch.classic.json._
     import JsonSerialization._
 
     implicit object CertCheckFormat extends Format[CertCheck] {
@@ -123,7 +123,7 @@ object CertCheckService {
               case v => Some(v)
             }
           } catch {
-            case _ => Datastore.query(m).filter(m.key.equal(key)).asSingle match {
+            case _: Throwable => Datastore.query(m).filter(m.key.equal(key)).asSingle match {
               case check: CertCheck => {
                 memcacheService.put(getCertCheckCacheKey(id), check)
                 Some(check)
@@ -166,7 +166,7 @@ object CertCheckService {
           }
         }
       } catch {
-        case _ => Datastore.query(m).filter(m.active.equal(true)).asKeyList.toList
+        case _: Throwable => Datastore.query(m).filter(m.active.equal(true)).asKeyList.toList
       }
     }
   }
@@ -182,7 +182,7 @@ object CertCheckService {
     val m: CertCheckMeta = CertCheckMeta.get
     Option(Datastore.query(m).filter(m.domainName equal domain).asSingle)
   } catch {
-    case _ => None
+    case _: Throwable => None
   }
 
   def fetchList(_userData: Option[UserData], limit: Option[Int]) = limit match {
@@ -259,7 +259,7 @@ object CertCheckService {
   }
 
   def certCheck(check: CertCheck, servletContext: ServletContext): CertCheck = {
-    import dispatch.json._
+    import dispatch.classic.json._
     import JsonSerialization._
     import CertInfoProtocol._
     try {
@@ -328,7 +328,6 @@ object CertCheckService {
         null
       }
     } finally {
-      check
     }
 
   } catch {

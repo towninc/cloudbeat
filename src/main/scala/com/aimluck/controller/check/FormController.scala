@@ -51,7 +51,7 @@ class FormController extends AbstractUserBaseFormController {
             val (assertResult, textList) = try {
               XmlUtil.assertText(preloadUrl, url, formParams, assertText, xPath, 1000)
             } catch {
-              case _ => (false, Nil)
+              case _ : Throwable => (false, Nil)
             }
             if (assertResult)
               addError("checkSuccess", "サイトに接続出来ました")

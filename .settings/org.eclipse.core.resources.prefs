@@ -1,7 +1,7 @@
-#Thu May 09 16:37:07 JST 2013
 eclipse.preferences.version=1
 encoding//war/templates/cert/form.html=UTF-8
 encoding//war/templates/check/form.html=UTF-8
+encoding//war/templates/domain/form.html=UTF-8
 encoding//war/templates/log/index.html=UTF-8
 encoding//war/templates/login.html=UTF-8
 encoding//war/templates/user/editMail.html=UTF-8
