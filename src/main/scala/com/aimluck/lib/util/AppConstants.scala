@@ -49,12 +49,14 @@ object AppConstants {
   val PLAN_MICRO = "micro"
   val PLAN_STARTER = "starter"
   val PLAN_BUSINESS = "business"
+  val PLAN_100ITEM = "100item"
   val PLAN_UNLIMITED = "unlimited"
   
   val PLAN_MAP = Map(
     PLAN_MICRO -> PlanBean("Micro", 5, 5, 5, 5, 0),
     PLAN_STARTER -> PlanBean("Starter", 20, 20, 20, 20, 2100),
     PLAN_BUSINESS -> PlanBean("Business", 50, 50, 50, 50, 5250),
+    PLAN_100ITEM -> PlanBean("100Item", 100, 100, 100, 100, 10500),
     PLAN_UNLIMITED -> PlanBean("Unlimited", -1, -1, -1, -1, -1))
 
 
