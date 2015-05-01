@@ -62,7 +62,35 @@ object XmlUtil {
     httpRequest.getFetchOptions().setDeadline(timeout * 1000)
 
     httpRequest.getFetchOptions().doNotFollowRedirects()
-    val httpResponse: HTTPResponse = urlFetchService.fetch(httpRequest)
+
+    var httpResponse: HTTPResponse = null;
+    var endTry: Boolean = false;
+    var tryCount:Int = 1;
+    while (!endTry) {
+      try {
+        httpResponse = urlFetchService.fetch(httpRequest)
+        endTry = true;
+      } catch {
+        case e1: java.net.UnknownHostException => {
+          tryCount = tryCount + 1;
+          if (tryCount >= 3) {
+            throw e1
+          }
+        }
+        case e2: java.io.IOException => {
+          tryCount = tryCount + 1;
+          if (tryCount >= 3) {
+            throw e2
+          }
+        }
+        case e: Exception =>{
+          endTry = true;
+          e.printStackTrace()
+          throw e
+        } 
+      }
+    }
+
     httpResponse.getHeaders().foreach {
       header =>
         {
@@ -142,7 +170,33 @@ object XmlUtil {
       httpRequest.setPayload(formParams.getBytes("UTF-8"))
     }
 
-    val httpResponse = urlFetchService.fetch(httpRequest)
+    var httpResponse: HTTPResponse = null;
+    var endTry: Boolean = false;
+    var tryCount:Int = 0;
+    while (!endTry) {
+      try {
+        httpResponse = urlFetchService.fetch(httpRequest)
+        endTry = true;
+      } catch {
+        case e1: java.net.UnknownHostException => {
+          tryCount = tryCount + 1;
+          if (tryCount >= 3) {
+            throw e1
+          }
+        }
+        case e2: java.io.IOException => {
+          tryCount = tryCount + 1;
+          if (tryCount >= 3) {
+            throw e2
+          }
+        }
+        case e: Exception =>{
+          endTry = true;
+          e.printStackTrace()
+          throw e
+        } 
+      }
+    }
 
     val contentType = try {
       (for {
@@ -151,7 +205,7 @@ object XmlUtil {
         contentType = header.getValue
       } yield contentType).head
     } catch {
-      case _:Exception => ""
+      case _: Exception => ""
     }
 
     val regex = new Regex("(?i).*charset\\s*=\\s*[\"']?([0-9a-z|\\-|_]+)[\"']?.*")
